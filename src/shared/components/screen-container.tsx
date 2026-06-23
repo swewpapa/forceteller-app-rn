@@ -1,17 +1,22 @@
 import { useMemo, type PropsWithChildren } from 'react';
-import { StyleSheet } from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import { StyleSheet, View } from 'react-native';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppColors, type AppColors } from '../theme';
 
-/** Base screen wrapper: safe-area insets + scheme-aware background. */
+/**
+ * Base screen wrapper: top safe-area inset + scheme-aware background.
+ * bottom inset은 탭바(AppTabBar)가 처리하므로 top만 적용한다.
+ * React Navigation 권장에 따라 SafeAreaView 대신 useSafeAreaInsets를 사용한다.
+ */
 export function ScreenContainer({ children }: PropsWithChildren) {
   const colors = useAppColors();
+  const insets = useSafeAreaInsets();
   const styles = useMemo(() => makeStyles(colors), [colors]);
 
   return (
-    <SafeAreaView style={styles.container} edges={['top']}>
+    <View style={[styles.container, { paddingTop: insets.top }]}>
       {children}
-    </SafeAreaView>
+    </View>
   );
 }
 
