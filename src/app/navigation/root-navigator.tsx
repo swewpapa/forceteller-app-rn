@@ -23,7 +23,7 @@ export function RootNavigator() {
     <NavigationContainer
       theme={scheme === 'dark' ? navigationDarkTheme : navigationLightTheme}
     >
-      <Tab.Navigator tabBar={renderTabBar}>
+      <Tab.Navigator tabBar={renderTabBar} screenOptions={{ headerShown: false }}>
         <Tab.Screen
           name="Home"
           component={HomeScreen}
