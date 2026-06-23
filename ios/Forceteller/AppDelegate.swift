@@ -3,6 +3,7 @@ internal import Expo
 import React
 import React_RCTAppDelegate
 import ReactAppDependencyProvider
+import RNBootSplash
 
 @main
 class AppDelegate: ExpoAppDelegate {
@@ -46,5 +47,11 @@ class ReactNativeDelegate: ExpoReactNativeFactoryDelegate {
 #else
     Bundle.main.url(forResource: "main", withExtension: "jsbundle")
 #endif
+  }
+
+  // ⬇️ initialize the native splash screen (react-native-bootsplash)
+  override func customize(_ rootView: RCTRootView) {
+    super.customize(rootView)
+    RNBootSplash.initWithStoryboard("BootSplash", rootView: rootView)
   }
 }
