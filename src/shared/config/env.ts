@@ -6,4 +6,7 @@ import Config from 'react-native-config';
  */
 export const env = {
   apiBaseUrl: Config.API_BASE_URL ?? 'https://api.forceteller.com',
+  splashConfigUrl:
+    Config.SPLASH_CONFIG_URL ??
+    'https://static.forceteller.com/images/splash/splash.json',
 } as const;
