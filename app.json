@@ -1,4 +1,7 @@
 {
   "name": "Forceteller",
-  "displayName": "포스텔러"
+  "displayName": "포스텔러",
+  "plugins": [
+    "expo-image"
+  ]
 }
