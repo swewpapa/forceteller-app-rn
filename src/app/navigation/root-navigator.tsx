@@ -1,21 +1,17 @@
 import { useColorScheme } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import {
-  createBottomTabNavigator,
-  type BottomTabBarProps,
-} from '@react-navigation/bottom-tabs';
-import { HomeScreen } from '@/features/home';
-import { TodayScreen } from '@/features/today';
-import { PremiumScreen } from '@/features/premium';
-import { MoreScreen } from '@/features/more';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { navigationDarkTheme, navigationLightTheme } from '@/shared/theme';
-import { AppTabBar } from './app-tab-bar';
-import type { RootTabParamList } from './navigation-types';
+import { TabsNavigator } from './tabs-navigator';
+import { WebScreen } from './web-screen';
+import type { RootStackParamList } from './navigation-types';
 
-const Tab = createBottomTabNavigator<RootTabParamList>();
+const Stack = createNativeStackNavigator<RootStackParamList>();
 
-const renderTabBar = (props: BottomTabBarProps) => <AppTabBar {...props} />;
-
+/**
+ * 루트 스택: 네이티브 탭(Tabs) 위에 WebView 상세 화면(Web)을 얹는다.
+ * 탭에서 navigate('Web', { path })로 상세 페이지에 진입한다.
+ */
 export function RootNavigator() {
   const scheme = useColorScheme();
 
@@ -23,28 +19,17 @@ export function RootNavigator() {
     <NavigationContainer
       theme={scheme === 'dark' ? navigationDarkTheme : navigationLightTheme}
     >
-      <Tab.Navigator tabBar={renderTabBar} screenOptions={{ headerShown: false }}>
-        <Tab.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{ title: '홈' }}
+      <Stack.Navigator screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="Tabs" component={TabsNavigator} />
+        <Stack.Screen
+          name="Web"
+          component={WebScreen}
+          options={({ route }) => ({
+            headerShown: true,
+            title: route.params.title ?? '',
+          })}
         />
-        <Tab.Screen
-          name="Today"
-          component={TodayScreen}
-          options={{ title: '투데이' }}
-        />
-        <Tab.Screen
-          name="Premium"
-          component={PremiumScreen}
-          options={{ title: '프리미엄' }}
-        />
-        <Tab.Screen
-          name="More"
-          component={MoreScreen}
-          options={{ title: '더 보기' }}
-        />
-      </Tab.Navigator>
+      </Stack.Navigator>
     </NavigationContainer>
   );
 }

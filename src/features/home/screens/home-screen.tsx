@@ -1,5 +1,61 @@
-import { PlaceholderScreen } from '@/shared/components';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { useNavigation } from '@react-navigation/native';
+import { ScreenContainer } from '@/shared/components';
+import { spacing, useAppColors } from '@/shared/theme';
 
+/** 홈 탭(RN). 예시로 상세 페이지(WebView) 진입 버튼을 둔다. */
 export function HomeScreen() {
-  return <PlaceholderScreen title="홈" />;
+  const navigation = useNavigation();
+  const colors = useAppColors();
+
+  return (
+    <ScreenContainer>
+      <View style={styles.body}>
+        <Text style={[styles.title, { color: colors.text }]}>홈</Text>
+        <Pressable
+          accessibilityRole="button"
+          onPress={() =>
+            navigation.navigate('Web', {
+              path: '/premium/2284',
+              title: '상세',
+            })
+          }
+          style={[styles.link, { borderColor: colors.tabBarBorder }]}
+        >
+          <Text style={[styles.linkText, { color: colors.text }]}>
+            상세 페이지 열기 (WebView)
+          </Text>
+        </Pressable>
+
+
+        <Pressable
+          accessibilityRole="button"
+          onPress={() =>
+            navigation.navigate('Web', {
+              path: '/item/4053',
+              title: '상세',
+            })
+          }
+          style={[styles.link, { borderColor: colors.tabBarBorder }]}
+        >
+          <Text style={[styles.linkText, { color: colors.text }]}>
+            상세 페이지 열기 (WebView)
+          </Text>
+        </Pressable>
+      </View>
+    </ScreenContainer>
+  );
 }
+
+const styles = StyleSheet.create({
+  body: { flex: 1, padding: spacing.lg, gap: spacing.lg },
+  title: { fontSize: 24, fontWeight: '700' },
+  link: {
+    borderWidth: 1,
+    borderRadius: 8,
+    paddingVertical: spacing.sm,
+    paddingHorizontal: spacing.lg,
+    alignItems: 'center',
+  },
+  linkText: { fontSize: 15, fontWeight: '500' },
+});
