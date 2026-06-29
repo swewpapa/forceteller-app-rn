@@ -28,7 +28,7 @@ export function useAuthGuard(
         // navigate의 타입은 RootParamList가 ParamListBase를 만족하지 않아
         // 정적 오버로드 추론이 [never, never]로 수렴한다.
         // Task 7과 동일하게 navRef를 any로 캐스트해 호출한다.
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         
         (navRef as any).navigate('Login', {
           redirect: { screen: route.name, params: route.params },
         });

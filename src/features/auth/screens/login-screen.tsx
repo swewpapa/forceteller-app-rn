@@ -22,7 +22,7 @@ export function LoginScreen() {
       if (redirect)
         // navigate의 rest-param 오버로드는 RouteName이 union일 때 두 인자를 [never,never]로 추론해
         // 타입 안전 캐스트가 불가능하다. Task 7과 동일하게 navigation을 any로 캐스트한다.
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+         
         (navigation as any).navigate(redirect.screen, redirect.params);
       else navigation.goBack();
     } catch {

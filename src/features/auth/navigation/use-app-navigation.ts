@@ -35,7 +35,7 @@ export function useAppNavigation() {
       }
       // navigate의 rest-param 오버로드는 RouteName이 union일 때 두 인자를 [never,never]로 추론해
       // 타입 안전 캐스트가 불가능하다. nav 자체를 any로 캐스트해 호출한다.
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       (nav as any).navigate(screen, params);
     };
 
