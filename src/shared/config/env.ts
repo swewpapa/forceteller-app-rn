@@ -13,4 +13,6 @@ export const env = {
   webBaseUrl: Config.WEB_BASE_URL ?? 'https://forceteller.com',
   // MMKV 암호화 키(토큰 저장용). .env로 주입하고, 없으면 dev fallback.
   mmkvEncryptionKey: Config.MMKV_ENCRYPTION_KEY ?? 'forceteller-dev-key',
+  // Google Sign-In web client ID. Firebase Console → OAuth 2.0 클라이언트 ID.
+  googleWebClientId: Config.GOOGLE_WEB_CLIENT_ID ?? '',
 } as const;
