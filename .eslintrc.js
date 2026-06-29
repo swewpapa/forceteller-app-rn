@@ -10,6 +10,21 @@ module.exports = {
     },
   },
   rules: {
+    // 인증 가드 우회 방지: 화면에서 useNavigation 직접 사용 금지.
+    // use-app-navigation.ts, login-screen.tsx 등 의도적 사용처에는 eslint-disable-line 주석.
+    'no-restricted-imports': [
+      'error',
+      {
+        paths: [
+          {
+            name: '@react-navigation/native',
+            importNames: ['useNavigation'],
+            message:
+              'useNavigation 직접 사용 금지. useAppNavigation으로 이동하세요 (인증 가드 우회 방지).',
+          },
+        ],
+      },
+    ],
     // Domain-based architecture boundaries: shared -> features -> app.
     // See docs/architecture.md.
     'import/no-restricted-paths': [
@@ -22,25 +37,27 @@ module.exports = {
           // `features` must not import from the app layer.
           { target: './src/features', from: './src/app' },
           // No cross-feature imports — each feature is isolated.
+          // Exception: `auth` is a foundation feature (navigation guard, auth store)
+          // that all other features depend on.
           {
             target: './src/features/home',
             from: './src/features',
-            except: ['./home'],
+            except: ['./home', './auth'],
           },
           {
             target: './src/features/today',
             from: './src/features',
-            except: ['./today'],
+            except: ['./today', './auth'],
           },
           {
             target: './src/features/premium',
             from: './src/features',
-            except: ['./premium'],
+            except: ['./premium', './auth'],
           },
           {
             target: './src/features/more',
             from: './src/features',
-            except: ['./more'],
+            except: ['./more', './auth'],
           },
         ],
       },

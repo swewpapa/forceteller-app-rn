@@ -1,11 +1,11 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
+import { useAppNavigation } from '@/features/auth';
 import { ScreenContainer } from '@/shared/components';
 import { spacing, useAppColors } from '@/shared/theme';
 
 /** 홈 탭(RN). 예시로 상세 페이지(WebView) 진입 버튼을 둔다. */
 export function HomeScreen() {
-  const navigation = useNavigation();
+  const navigation = useAppNavigation();
   const colors = useAppColors();
 
   return (
