@@ -9,13 +9,19 @@ export type RootTabParamList = {
 };
 
 /**
- * Root stack: 네이티브 탭(Tabs) + WebView 상세 화면(Web).
+ * Root stack: 네이티브 탭(Tabs) + WebView 상세 화면(Web) + 로그인 화면(Login).
  * 탭 메인은 RN, 거기서 진입하는 상세/하위 페이지는 단일 WebView(SPA)가 담당한다.
  * 'Web' params 계약은 화면을 소유한 features/web에서 가져온다(app→features).
  */
 export type RootStackParamList = {
   Tabs: undefined;
   Web: WebRouteParams;
+  Login: {
+    redirect?: {
+      screen: keyof RootStackParamList;
+      params?: Record<string, unknown>;
+    };
+  };
 };
 
 /**
