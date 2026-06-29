@@ -1,3 +1,5 @@
+import type { WebRouteParams } from '@/features/web';
+
 /** Bottom-tab routes. Stack/param types per feature get added as they land. */
 export type RootTabParamList = {
   Home: undefined;
@@ -9,10 +11,11 @@ export type RootTabParamList = {
 /**
  * Root stack: 네이티브 탭(Tabs) + WebView 상세 화면(Web).
  * 탭 메인은 RN, 거기서 진입하는 상세/하위 페이지는 단일 WebView(SPA)가 담당한다.
+ * 'Web' params 계약은 화면을 소유한 features/web에서 가져온다(app→features).
  */
 export type RootStackParamList = {
   Tabs: undefined;
-  Web: { path: string; title?: string };
+  Web: WebRouteParams;
 };
 
 /**

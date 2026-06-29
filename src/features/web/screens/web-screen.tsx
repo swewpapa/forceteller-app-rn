@@ -9,11 +9,9 @@ import RNWebView, {
   type WebViewNavigation,
   type WebViewProps,
 } from 'react-native-webview';
-import { useFocusEffect } from '@react-navigation/native';
-import type { NativeStackScreenProps } from '@react-navigation/native-stack';
+import { useFocusEffect, type RouteProp } from '@react-navigation/native';
 import { env } from '@/shared/config';
 import { useAppColors } from '@/shared/theme';
-import type { RootStackParamList } from './navigation-types';
 
 /**
  * react-native-webview 14.0.1의 타입은 `class WebView<P = undefined>`로 선언돼,
@@ -24,7 +22,13 @@ const WebView = RNWebView as unknown as ForwardRefExoticComponent<
   WebViewProps & RefAttributes<RNWebView>
 >;
 
-type Props = NativeStackScreenProps<RootStackParamList, 'Web'>;
+/**
+ * 'Web' 라우트 params 계약. 이 화면이 소유하고, app/navigation의
+ * RootStackParamList가 이를 가져다 조립한다(의존 방향 app→features, features→app 0).
+ */
+export type WebRouteParams = { path: string; title?: string };
+
+type Props = { route: RouteProp<{ Web: WebRouteParams }, 'Web'> };
 
 /**
  * 상세/하위 페이지를 띄우는 단일 WebView 호스트.

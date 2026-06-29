@@ -2,8 +2,8 @@ import { useColorScheme } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { navigationDarkTheme, navigationLightTheme } from '@/shared/theme';
+import { WebScreen } from '@/features/web';
 import { TabsNavigator } from './tabs-navigator';
-import { WebScreen } from './web-screen';
 import type { RootStackParamList } from './navigation-types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
