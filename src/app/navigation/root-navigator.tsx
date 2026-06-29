@@ -1,22 +1,29 @@
 import { useColorScheme } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { navigationDarkTheme, navigationLightTheme } from '@/shared/theme';
 import { WebScreen } from '@/features/web';
+import { LoginScreen, useAuthGuard } from '@/features/auth';
 import { TabsNavigator } from './tabs-navigator';
 import type { RootStackParamList } from './navigation-types';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();
 
 /**
- * 루트 스택: 네이티브 탭(Tabs) 위에 WebView 상세 화면(Web)을 얹는다.
- * 탭에서 navigate('Web', { path })로 상세 페이지에 진입한다.
+ * 루트 스택: 네이티브 탭(Tabs) + WebView 상세(Web) + 로그인 모달(Login).
+ * - useAuthGuard: 가드 대상 라우트 진입 시 미인증이면 Login 모달로 리다이렉트.
+ * - navRef.addListener('state')는 NavigationContainer ref assign 후 연결되므로
+ *   첫 initial route 이벤트는 guard를 통과할 수 있으나(백스톱 특성상 허용),
+ *   이후 모든 navigation 이벤트를 잡는다.
  */
 export function RootNavigator() {
   const scheme = useColorScheme();
+  const navRef = useNavigationContainerRef<RootStackParamList>();
+  useAuthGuard(navRef);
 
   return (
     <NavigationContainer
+      ref={navRef}
       theme={scheme === 'dark' ? navigationDarkTheme : navigationLightTheme}
     >
       <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -29,6 +36,13 @@ export function RootNavigator() {
             title: route.params.title ?? '',
           })}
         />
+        <Stack.Group screenOptions={{ presentation: 'modal' }}>
+          <Stack.Screen
+            name="Login"
+            component={LoginScreen}
+            options={{ headerShown: true, title: '로그인' }}
+          />
+        </Stack.Group>
       </Stack.Navigator>
     </NavigationContainer>
   );
