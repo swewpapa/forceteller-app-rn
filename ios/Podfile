@@ -18,6 +18,13 @@ end
 target 'Forceteller' do
   use_expo_modules!
 
+  # Required by react-native-firebase: Firebase Swift pods need modular headers
+  # when building as static libraries (default linkage without use_frameworks!)
+  pod 'GoogleUtilities', :modular_headers => true
+  pod 'FirebaseAuthInterop', :modular_headers => true
+  pod 'FirebaseAppCheckInterop', :modular_headers => true
+  pod 'RecaptchaInterop', :modular_headers => true
+
   if ENV['EXPO_USE_COMMUNITY_AUTOLINKING'] == '1'
     config_command = ['node', '-e', "process.argv=['', '', 'config'];require('@react-native-community/cli').run()"];
   else
