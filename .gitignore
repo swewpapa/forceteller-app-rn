@@ -78,3 +78,8 @@ yarn-error.log
 .expo
 dist/
 web-build/
+
+# react-native-config 환경 파일 (실값 — 커밋 금지)
+.env
+.env.*
+!.env.example
