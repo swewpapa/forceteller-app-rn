@@ -15,6 +15,9 @@ buildscript {
         classpath("com.android.tools.build:gradle")
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin")
+        // Firebase 환경별 설정(google-services.json) 연결용.
+        // AGP 호환 문제 시 https://developers.google.com/android/guides/google-services-plugin 에서 최신 확인.
+        classpath("com.google.gms:google-services:4.4.2")
     }
 }
 
