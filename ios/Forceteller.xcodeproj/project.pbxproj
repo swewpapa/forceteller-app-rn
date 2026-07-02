@@ -580,6 +580,7 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.un7qi3.forceteller;
 				PRODUCT_NAME = Forceteller;
+				REVERSED_CLIENT_ID = "com.googleusercontent.apps.PROD-CLIENT-ID-TBD";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -609,6 +610,7 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
 				PRODUCT_BUNDLE_IDENTIFIER = com.un7qi3.forceteller;
 				PRODUCT_NAME = Forceteller;
+				REVERSED_CLIENT_ID = "com.googleusercontent.apps.647270051241-9bc6iivmk74pkp625hci8kis6eb9bhlo";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -639,6 +641,7 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.un7qi3.forceteller;
 				PRODUCT_NAME = Forceteller;
+				REVERSED_CLIENT_ID = "com.googleusercontent.apps.647270051241-9bc6iivmk74pkp625hci8kis6eb9bhlo";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
@@ -830,6 +833,7 @@
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
 				PRODUCT_BUNDLE_IDENTIFIER = com.un7qi3.forceteller;
 				PRODUCT_NAME = Forceteller;
+				REVERSED_CLIENT_ID = "com.googleusercontent.apps.PROD-CLIENT-ID-TBD";
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 5.0;
