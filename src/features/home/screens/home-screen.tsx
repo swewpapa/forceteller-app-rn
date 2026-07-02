@@ -1,5 +1,5 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { useAppNavigation } from '@/features/auth';
+import { useAppNavigation, useAuthStore } from '@/features/auth';
 import { ScreenContainer } from '@/shared/components';
 import { spacing, useAppColors } from '@/shared/theme';
 
@@ -7,11 +7,38 @@ import { spacing, useAppColors } from '@/shared/theme';
 export function HomeScreen() {
   const navigation = useAppNavigation();
   const colors = useAppColors();
+  const status = useAuthStore((s) => s.status);
+  const signOut = useAuthStore((s) => s.signOut);
 
   return (
     <ScreenContainer>
       <View style={styles.body}>
         <Text style={[styles.title, { color: colors.text }]}>홈</Text>
+
+        {status === 'authenticated' ? (
+          <Pressable
+            accessibilityRole="button"
+            onPress={() => {
+              // 로그아웃 실패는 무시(상태 유지)
+              signOut().catch(() => undefined);
+            }}
+            style={[styles.link, { borderColor: colors.tabBarBorder }]}
+          >
+            <Text style={[styles.linkText, { color: colors.text }]}>로그아웃</Text>
+          </Pressable>
+        ) : (
+          <Pressable
+            accessibilityRole="button"
+            disabled={status === 'loading'}
+            onPress={() => navigation.navigate('Login')}
+            style={[styles.link, { borderColor: colors.tabBarBorder }]}
+          >
+            <Text style={[styles.linkText, { color: colors.text }]}>
+              {status === 'loading' ? '...' : '로그인'}
+            </Text>
+          </Pressable>
+        )}
+
         <Pressable
           accessibilityRole="button"
           onPress={() =>

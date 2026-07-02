@@ -1,4 +1,4 @@
-package com.un7qi3i.forceteller
+package com.un7qi3.forceteller
 import expo.modules.ReactActivityDelegateWrapper
 
 import android.os.Bundle
