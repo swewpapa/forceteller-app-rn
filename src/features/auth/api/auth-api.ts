@@ -11,12 +11,12 @@ export type ExchangeResult = { serviceToken: string; user: AuthUser };
  */
 export function exchangeToken(
   firebaseIdToken: string,
-  idToken: string,
+  uid: string,
   name: string | null,
 ): Promise<ExchangeResult> {
   return http.post<ExchangeResult>('/api/auth/firebase', {
     provider: 'google',
-    idToken,
+    id: uid,
     name,
     access_token: firebaseIdToken,
   }); // ⚠️ B1: 응답 형태(serviceToken/user)는 서버 실제 응답 확인 후 확정
