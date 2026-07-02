@@ -13,7 +13,7 @@ export function HomeScreen() {
   return (
     <ScreenContainer>
       <View style={styles.body}>
-        <Text style={[styles.title, { color: colors.text }]}>홈</Text>
+        <Text style={[styles.title, { color: colors.text.default }]}>홈</Text>
 
         {status === 'authenticated' ? (
           <Pressable
@@ -22,18 +22,20 @@ export function HomeScreen() {
               // 로그아웃 실패는 무시(상태 유지)
               signOut().catch(() => undefined);
             }}
-            style={[styles.link, { borderColor: colors.tabBarBorder }]}
+            style={[styles.link, { borderColor: colors.stroke.subtle }]}
           >
-            <Text style={[styles.linkText, { color: colors.text }]}>로그아웃</Text>
+            <Text style={[styles.linkText, { color: colors.text.default }]}>
+              로그아웃
+            </Text>
           </Pressable>
         ) : (
           <Pressable
             accessibilityRole="button"
             disabled={status === 'loading'}
             onPress={() => navigation.navigate('Login')}
-            style={[styles.link, { borderColor: colors.tabBarBorder }]}
+            style={[styles.link, { borderColor: colors.stroke.subtle }]}
           >
-            <Text style={[styles.linkText, { color: colors.text }]}>
+            <Text style={[styles.linkText, { color: colors.text.default }]}>
               {status === 'loading' ? '...' : '로그인'}
             </Text>
           </Pressable>
@@ -47,9 +49,9 @@ export function HomeScreen() {
               title: '상세',
             })
           }
-          style={[styles.link, { borderColor: colors.tabBarBorder }]}
+          style={[styles.link, { borderColor: colors.stroke.subtle }]}
         >
-          <Text style={[styles.linkText, { color: colors.text }]}>
+          <Text style={[styles.linkText, { color: colors.text.default }]}>
             상세 페이지 열기 (WebView)
           </Text>
         </Pressable>
@@ -63,9 +65,9 @@ export function HomeScreen() {
               title: '상세',
             })
           }
-          style={[styles.link, { borderColor: colors.tabBarBorder }]}
+          style={[styles.link, { borderColor: colors.stroke.subtle }]}
         >
-          <Text style={[styles.linkText, { color: colors.text }]}>
+          <Text style={[styles.linkText, { color: colors.text.default }]}>
             상세 페이지 열기 (WebView)
           </Text>
         </Pressable>

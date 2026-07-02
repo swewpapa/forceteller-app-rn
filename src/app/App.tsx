@@ -1,18 +1,27 @@
 import { useEffect } from 'react';
-import { StatusBar, useColorScheme } from 'react-native';
+import { StatusBar } from 'react-native';
 import { AppProviders } from './providers';
 import { RootNavigator } from './navigation';
 import { SplashGate } from './splash';
 import { http, authTokenStore, createAuthRequestInterceptor } from '@/shared/lib';
 import { useAuthStore } from '@/features/auth';
+import { useTheme } from '@/shared/theme';
 
 // 앱 시작 시 토큰 주입 request 인터셉터를 등록한다(모듈 로드 1회).
 // http가 auth-token을 직접 import하면 순환이 되므로 app 레이어에서 연결한다.
 http.interceptors.request.use(createAuthRequestInterceptor(authTokenStore));
 
-function App() {
-  const isDarkMode = useColorScheme() === 'dark';
+// 수동 day/night 모드에서도 상태바가 따라오도록 OS 스킴이 아닌 resolvedTheme을 본다.
+function ThemedStatusBar() {
+  const { resolvedTheme } = useTheme();
+  return (
+    <StatusBar
+      barStyle={resolvedTheme === 'night' ? 'light-content' : 'dark-content'}
+    />
+  );
+}
 
+function App() {
   // MMKV 토큰 존재 여부로 초기 auth status를 결정한다.
   // useEffect를 사용하는 이유: restore()는 store 상태를 변경하는 액션이라
   // React 18 StrictMode에서 렌더 사이클 밖 store mutation이 경고를 유발할 수 있고,
@@ -24,7 +33,7 @@ function App() {
 
   return (
     <AppProviders>
-      <StatusBar barStyle={isDarkMode ? 'light-content' : 'dark-content'} />
+      <ThemedStatusBar />
       <SplashGate>
         <RootNavigator />
       </SplashGate>

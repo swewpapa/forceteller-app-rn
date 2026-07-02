@@ -12,7 +12,7 @@ import { faCalendar as faCalendarLight } from '@fortawesome/pro-light-svg-icons/
 import { faCrown as faCrownLight } from '@fortawesome/pro-light-svg-icons/faCrown';
 import { faEllipsis as faEllipsisLight } from '@fortawesome/pro-light-svg-icons/faEllipsis';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import { useAppColors, type AppColors } from '@/shared/theme';
+import { useAppColors, type ModeColors } from '@/shared/theme';
 import type { RootTabParamList } from './navigation-types';
 
 type TabIconSet = { active: IconDefinition; inactive: IconDefinition };
@@ -45,7 +45,7 @@ export function TabBar({
           typeof options.title === 'string' ? options.title : route.name;
         const focused = state.index === index;
         const icons = TAB_ICONS[route.name as keyof RootTabParamList];
-        const color = focused ? colors.tabBarActive : colors.tabBarInactive;
+        const color = focused ? colors.text.default : colors.text.muted;
 
         const onPress = () => {
           const event = navigation.emit({
@@ -97,13 +97,13 @@ export function TabBar({
   );
 }
 
-function makeStyles(colors: AppColors, bottomInset: number) {
+function makeStyles(colors: ModeColors, bottomInset: number) {
   return StyleSheet.create({
     bar: {
       flexDirection: 'row',
-      backgroundColor: colors.tabBarBackground,
+      backgroundColor: colors.background.surface,
       borderTopWidth: 1,
-      borderTopColor: colors.tabBarBorder,
+      borderTopColor: colors.stroke.subtle,
       paddingBottom: bottomInset,
     },
     tab: {
@@ -120,10 +120,10 @@ function makeStyles(colors: AppColors, bottomInset: number) {
       letterSpacing: -0.2,
     },
     labelActive: {
-      color: colors.tabBarActive,
+      color: colors.text.default,
     },
     labelInactive: {
-      color: colors.tabBarInactive,
+      color: colors.text.muted,
     },
   });
 }
