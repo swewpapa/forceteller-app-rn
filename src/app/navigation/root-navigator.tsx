@@ -1,7 +1,6 @@
-import { useColorScheme } from 'react-native';
 import { NavigationContainer, useNavigationContainerRef } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { navigationDarkTheme, navigationLightTheme } from '@/shared/theme';
+import { navigationDayTheme, navigationNightTheme, useTheme } from '@/shared/theme';
 import { WebScreen } from '@/features/web';
 import { LoginScreen, useAuthGuard } from '@/features/auth';
 import { TabsNavigator } from './tabs-navigator';
@@ -17,14 +16,14 @@ const Stack = createNativeStackNavigator<RootStackParamList>();
  *   이후 모든 navigation 이벤트를 잡는다.
  */
 export function RootNavigator() {
-  const scheme = useColorScheme();
+  const { resolvedTheme } = useTheme();
   const navRef = useNavigationContainerRef<RootStackParamList>();
   useAuthGuard(navRef);
 
   return (
     <NavigationContainer
       ref={navRef}
-      theme={scheme === 'dark' ? navigationDarkTheme : navigationLightTheme}
+      theme={resolvedTheme === 'night' ? navigationNightTheme : navigationDayTheme}
     >
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         <Stack.Screen name="Tabs" component={TabsNavigator} />

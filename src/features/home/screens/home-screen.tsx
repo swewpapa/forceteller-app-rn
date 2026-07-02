@@ -11,7 +11,7 @@ export function HomeScreen() {
   return (
     <ScreenContainer>
       <View style={styles.body}>
-        <Text style={[styles.title, { color: colors.text }]}>홈</Text>
+        <Text style={[styles.title, { color: colors.text.default }]}>홈</Text>
         <Pressable
           accessibilityRole="button"
           onPress={() =>
@@ -20,9 +20,9 @@ export function HomeScreen() {
               title: '상세',
             })
           }
-          style={[styles.link, { borderColor: colors.tabBarBorder }]}
+          style={[styles.link, { borderColor: colors.stroke.subtle }]}
         >
-          <Text style={[styles.linkText, { color: colors.text }]}>
+          <Text style={[styles.linkText, { color: colors.text.default }]}>
             상세 페이지 열기 (WebView)
           </Text>
         </Pressable>
@@ -36,9 +36,9 @@ export function HomeScreen() {
               title: '상세',
             })
           }
-          style={[styles.link, { borderColor: colors.tabBarBorder }]}
+          style={[styles.link, { borderColor: colors.stroke.subtle }]}
         >
-          <Text style={[styles.linkText, { color: colors.text }]}>
+          <Text style={[styles.linkText, { color: colors.text.default }]}>
             상세 페이지 열기 (WebView)
           </Text>
         </Pressable>
