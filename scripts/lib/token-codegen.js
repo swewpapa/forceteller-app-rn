@@ -2,7 +2,7 @@
 'use strict';
 
 const HEX_RE = /^#(?:[0-9a-fA-F]{6}|[0-9a-fA-F]{8})$/;
-// 고정 리스트인 이유: SemanticColors 타입 형태를 예측 가능하게 유지 — 새 그룹은 의도적 코드 변경으로만 추가.
+// 고정 리스트인 이유: ModeColors 타입 형태를 예측 가능하게 유지 — 새 그룹은 의도적 코드 변경으로만 추가.
 const SEMANTIC_GROUPS = ['primary', 'secondary', 'accent', 'background', 'text', 'stroke'];
 
 function camelize(str) {
@@ -171,9 +171,9 @@ function renderPaletteTs(palette) {
   return lines.join('\n');
 }
 
-function renderColorsTs(day, night) {
+function renderModeColorsTs(day, night) {
   const lines = [HEADER, "import { palette } from './palette';", ''];
-  lines.push('export type SemanticColors = {');
+  lines.push('export type ModeColors = {');
   for (const [group, entries] of Object.entries(day)) {
     const fields = Object.keys(entries)
       .map((k) => `${k}: string`)
@@ -185,7 +185,7 @@ function renderColorsTs(day, night) {
     ['dayColors', day],
     ['nightColors', night],
   ]) {
-    lines.push(`export const ${name}: SemanticColors = {`);
+    lines.push(`export const ${name}: ModeColors = {`);
     for (const [group, entries] of Object.entries(theme)) {
       lines.push(`  ${group}: {`);
       for (const [key, resolved] of Object.entries(entries)) {
@@ -211,7 +211,7 @@ function generate(tokens) {
   const nightResolved = buildSemantic(night, primitive);
   return {
     paletteTs: renderPaletteTs(palette),
-    colorsTs: renderColorsTs(dayResolved, nightResolved),
+    modeColorsTs: renderModeColorsTs(dayResolved, nightResolved),
   };
 }
 

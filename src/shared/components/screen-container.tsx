@@ -1,7 +1,7 @@
 import { useMemo, type PropsWithChildren } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useAppColors, type SemanticColors } from '../theme';
+import { useAppColors, type ModeColors } from '../theme';
 
 /**
  * Base screen wrapper: top safe-area inset + scheme-aware background.
@@ -20,7 +20,7 @@ export function ScreenContainer({ children }: PropsWithChildren) {
   );
 }
 
-function makeStyles(colors: SemanticColors) {
+function makeStyles(colors: ModeColors) {
   return StyleSheet.create({
     container: {
       flex: 1,

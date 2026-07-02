@@ -8,6 +8,8 @@
 
 **Tech Stack:** Node CJS codegen, react-native-mmkv 4.x(`createMMKV`), React Context, jest(@react-native/jest-preset)
 
+> **사후 변경 (2026-07-02, 실행 완료 후):** 팀 용어 합의에 따라 `SemanticColors` → `ModeColors`, `generated/colors.ts` → `generated/mode-colors.ts`로 리네이밍됨 (PR 6번째 커밋). 이 플랜 본문의 `SemanticColors`/`colors.ts` 표기는 실행 당시 기록으로 유지한다. 현행 계약은 스펙 문서 참조.
+
 ---
 
 ## 실행 전제 (반드시 읽을 것)

@@ -1,5 +1,5 @@
 import { DarkTheme, DefaultTheme, type Theme } from '@react-navigation/native';
-import { dayColors, nightColors } from './generated/colors';
+import { dayColors, nightColors } from './generated/mode-colors';
 
 /**
  * React Navigation 테마(헤더/씬 배경)를 시맨틱 컬러에 맞춘다.

@@ -12,7 +12,7 @@
 
 ## Architecture (요약)
 
-`assets/design-tokens/tokens.json`(디자이너 export 원본 커밋) → `scripts/generate-theme.js`(의존성 0 codegen) → `src/shared/theme/generated/`에 `palette.ts`(원색 상수) + `colors.ts`(day/night `SemanticColors`가 palette 상수를 참조) → `ThemeProvider`(mode 상태 + MMKV 영속 + OS 스킴 구독) → `useAppColors()`/`useTheme()` 훅으로 소비. 토큰 업데이트 = JSON 교체 + `npm run generate:theme` 재실행으로 끝나며 소비처는 무수정.
+`assets/design-tokens/tokens.json`(디자이너 export 원본 커밋) → `scripts/generate-theme.js`(의존성 0 codegen) → `src/shared/theme/generated/`에 `palette.ts`(원색 상수) + `mode-colors.ts`(day/night `ModeColors`가 palette 상수를 참조) → `ThemeProvider`(mode 상태 + MMKV 영속 + OS 스킴 구독) → `useAppColors()`/`useTheme()` 훅으로 소비. 토큰 업데이트 = JSON 교체 + `npm run generate:theme` 재실행으로 끝나며 소비처는 무수정.
 
 ## Tech Stack
 
@@ -62,9 +62,9 @@
 | **테마 용어** | `day`/`night` 유지 (light/dark로 변환 안 함) | 디자인 시스템·디자이너와 용어 일치. OS light/dark 매핑은 `resolveTheme` 런타임 책임 |
 | **정본 스코프** | `theme.day`/`theme.night`만 사용, `primitive`의 시맨틱 그룹 무시 | 완전 중복 확인됨 |
 | **토큰 위치** | `assets/design-tokens/tokens.json` | 사용자 선택. 루트 `assets/`는 bootsplash 원본 등 "생성 입력물" 성격 — 동일 맥락 |
-| **2층 생성물 구조** | `palette.ts`(원색 상수) + `colors.ts`(시맨틱이 palette 참조) | 사용자 선택. 토큰의 참조 구조를 코드에 보존 — 생성물 가독성과 토큰 변경 diff 명확성. 단 **공개 API는 시맨틱만 노출**(팔레트는 theme 내부용 — 컴포넌트의 팔레트 직접 소비를 막아 시맨틱 레이어 무력화 방지) |
+| **2층 생성물 구조** | `palette.ts`(원색 상수) + `mode-colors.ts`(모드 컬러가 palette 참조) | 사용자 선택. 토큰의 참조 구조를 코드에 보존 — 생성물 가독성과 토큰 변경 diff 명확성. 단 **공개 API는 모드 컬러만 노출**(팔레트는 theme 내부용 — 컴포넌트의 팔레트 직접 소비를 막아 시맨틱 레이어 무력화 방지) |
 | **탭바 컴포넌트 토큰** | 만들지 않음 — 시맨틱 직접 소비 | 토큰에 tab bar 시맨틱 부재 + hex 일치 확인. 컴포넌트 토큰 레이어는 후속 판단 |
-| **`useAppColors` 이름 유지** | 반환 타입만 `SemanticColors`로 교체 | 훅 이름·`makeStyles(colors)` 패턴 유지로 마이그레이션 diff 최소화 |
+| **`useAppColors` 이름 유지** | 반환 타입만 `ModeColors`로 교체 | 훅 이름·`makeStyles(colors)` 패턴 유지로 마이그레이션 diff 최소화 |
 | **호환 브릿지 없음** | 구 `AppColors` 어댑터 안 만들고 일괄 전환 | 소비처 6곳뿐 — 브릿지 유지비가 더 큼 |
 | **웹뷰 동기화** | 범위 밖 — `resolvedTheme` 노출까지만 | 전달 메커니즘(URL 파라미터/postMessage)은 웹 파트 협의 필요 |
 
@@ -82,7 +82,7 @@ scripts/
 src/shared/theme/
   generated/
     palette.ts             # 생성물: 팔레트 원색 상수 (8색군×10단계 + white)
-    colors.ts              # 생성물: SemanticColors 타입 + dayColors/nightColors (palette 참조)
+    mode-colors.ts              # 생성물: ModeColors 타입 + dayColors/nightColors (palette 참조)
   theme-provider.tsx       # ThemeProvider + Context
   theme-storage.ts         # KVStore DI 패턴 모드 영속
   resolve-theme.ts         # (mode, osScheme) → 'day'|'night' 순수 함수
@@ -103,8 +103,8 @@ export const palette = {
   white: '#ffffff',
 } as const;
 
-// generated/colors.ts (발췌) — 시맨틱이 palette 상수를 참조 (토큰의 참조 구조를 코드에 보존)
-export type SemanticColors = {
+// generated/mode-colors.ts (발췌) — 모드 컬러가 palette 상수를 참조 (토큰의 참조 구조를 코드에 보존)
+export type ModeColors = {
   primary: { primary: string; onPrimary: string; primaryDisabled: string; onPrimaryDisabled: string };
   secondary: { secondary: string; onSecondary: string; secondaryDisabled: string; onSecondaryDisabled: string };
   accent: {
@@ -118,11 +118,11 @@ export type SemanticColors = {
   text: { default: string; subtle: string; muted: string; link: string; alert: string; force: string; forceInversed: string };
   stroke: { default: string; subtle: string; muted: string; primary: string; alert: string };
 };
-export const dayColors: SemanticColors = {
+export const dayColors: ModeColors = {
   text: { default: palette.gray[900], subtle: palette.gray[600], /* ... */ force: '#c38800' /* off-palette */ },
   /* ... */
 };
-export const nightColors: SemanticColors = { /* ... */ };
+export const nightColors: ModeColors = { /* ... */ };
 ```
 
 - 네이밍 변환: kebab-case → camelCase (`kkarina-blue`→`kkarinaBlue`). 팔레트 단계 키는 숫자 인덱스(`palette.gray[900]`)로 토큰 표기와 일치. `accent` 그룹은 `accent-wood`→`wood`, `on-accent-wood`→`onWood`, `accent-wood-tonal`→`woodTonal`, `on-accent-wood-tonal`→`onWoodTonal`로 접두 중복 제거.
@@ -145,7 +145,7 @@ resolveTheme(mode, osScheme): system이면 (dark→night, 그 외→day), 아니
 
 - `ThemeProvider`: MMKV에서 mode 동기 복원(기본 `system`), `useColorScheme()` 구독, `setMode` 시 저장+반영. Context value = `{ colors, mode, resolvedTheme, setMode }`.
 - 배치: `AppProviders` 합성에 추가 — SplashGate·RootNavigator보다 상위.
-- `useAppColors()`: `colors`(SemanticColors)만 반환. Provider 밖 호출은 명시적 throw.
+- `useAppColors()`: `colors`(ModeColors)만 반환. Provider 밖 호출은 명시적 throw.
 - `useTheme()`: 전체 value 반환 — StatusBar, (후속) 설정 UI용.
 - StatusBar: `App.tsx`의 `useColorScheme` 직접 사용을 `resolvedTheme` 기반으로 교체 — 수동 night 모드에서도 상태바 스타일이 따라오도록. StatusBar 렌더 위치를 Provider 안쪽 컴포넌트로 이동.
 

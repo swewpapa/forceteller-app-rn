@@ -11,13 +11,13 @@ const SOURCE = path.join(ROOT, 'assets/design-tokens/tokens.json');
 const OUT_DIR = path.join(ROOT, 'src/shared/theme/generated');
 
 const tokens = JSON.parse(fs.readFileSync(SOURCE, 'utf8'));
-const { paletteTs, colorsTs } = generate(tokens);
+const { paletteTs, modeColorsTs } = generate(tokens);
 
 fs.mkdirSync(OUT_DIR, { recursive: true });
 const palettePath = path.join(OUT_DIR, 'palette.ts');
-const colorsPath = path.join(OUT_DIR, 'colors.ts');
+const colorsPath = path.join(OUT_DIR, 'mode-colors.ts');
 fs.writeFileSync(palettePath, paletteTs);
-fs.writeFileSync(colorsPath, colorsTs);
+fs.writeFileSync(colorsPath, modeColorsTs);
 execFileSync('npx', ['prettier', '--write', palettePath, colorsPath], {
   stdio: 'inherit',
 });

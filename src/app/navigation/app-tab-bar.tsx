@@ -12,7 +12,7 @@ import { faCalendar as faCalendarLight } from '@fortawesome/pro-light-svg-icons/
 import { faCrown as faCrownLight } from '@fortawesome/pro-light-svg-icons/faCrown';
 import { faEllipsis as faEllipsisLight } from '@fortawesome/pro-light-svg-icons/faEllipsis';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import { useAppColors, type SemanticColors } from '@/shared/theme';
+import { useAppColors, type ModeColors } from '@/shared/theme';
 import type { RootTabParamList } from './navigation-types';
 
 type TabIconSet = { active: IconDefinition; inactive: IconDefinition };
@@ -87,7 +87,7 @@ export function AppTabBar({
   );
 }
 
-function makeStyles(colors: SemanticColors, bottomInset: number) {
+function makeStyles(colors: ModeColors, bottomInset: number) {
   return StyleSheet.create({
     bar: {
       flexDirection: 'row',

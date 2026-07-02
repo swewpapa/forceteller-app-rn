@@ -7,12 +7,12 @@ import {
 } from 'react';
 import { useColorScheme } from 'react-native';
 import { createMMKV } from 'react-native-mmkv';
-import { dayColors, nightColors, type SemanticColors } from './generated/colors';
+import { dayColors, nightColors, type ModeColors } from './generated/mode-colors';
 import { resolveTheme, type ResolvedTheme, type ThemeMode } from './resolve-theme';
 import { createThemeStorage } from './theme-storage';
 
 export type ThemeContextValue = {
-  colors: SemanticColors;
+  colors: ModeColors;
   mode: ThemeMode;
   resolvedTheme: ResolvedTheme;
   setMode: (mode: ThemeMode) => void;

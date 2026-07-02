@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { spacing, useAppColors, type SemanticColors } from '../theme';
+import { spacing, useAppColors, type ModeColors } from '../theme';
 import { ScreenContainer } from './screen-container';
 
 type PlaceholderScreenProps = {
@@ -23,7 +23,7 @@ export function PlaceholderScreen({ title, subtitle }: PlaceholderScreenProps) {
   );
 }
 
-function makeStyles(colors: SemanticColors) {
+function makeStyles(colors: ModeColors) {
   return StyleSheet.create({
     body: {
       flex: 1,

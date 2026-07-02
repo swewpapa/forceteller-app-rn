@@ -3,7 +3,7 @@
 
 import { palette } from './palette';
 
-export type SemanticColors = {
+export type ModeColors = {
   primary: {
     primary: string;
     onPrimary: string;
@@ -63,7 +63,7 @@ export type SemanticColors = {
   };
 };
 
-export const dayColors: SemanticColors = {
+export const dayColors: ModeColors = {
   primary: {
     primary: palette.gray[900],
     onPrimary: palette.white,
@@ -123,7 +123,7 @@ export const dayColors: SemanticColors = {
   },
 };
 
-export const nightColors: SemanticColors = {
+export const nightColors: ModeColors = {
   primary: {
     primary: palette.white,
     onPrimary: palette.gray[900],

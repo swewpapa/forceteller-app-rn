@@ -104,18 +104,18 @@ describe('generate', () => {
   const tokens = { primitive, theme: { day: semantic, night: semantic } };
 
   it('emits palette constants and semantic colors referencing them', () => {
-    const { paletteTs, colorsTs } = generate(tokens);
+    const { paletteTs, modeColorsTs } = generate(tokens);
     expect(paletteTs).toContain('export const palette = {');
     expect(paletteTs).toContain('kkarinaBlue: {');
     expect(paletteTs).toContain("900: '#191919',");
     expect(paletteTs).toContain("white: '#ffffff',");
-    expect(colorsTs).toContain("import { palette } from './palette';");
-    expect(colorsTs).toContain('export type SemanticColors = {');
-    expect(colorsTs).toContain('primary: palette.gray[900],');
-    expect(colorsTs).toContain('wood: palette.gray[100],');
-    expect(colorsTs).toContain("force: '#c38800',");
-    expect(colorsTs).toContain('export const dayColors: SemanticColors');
-    expect(colorsTs).toContain('export const nightColors: SemanticColors');
+    expect(modeColorsTs).toContain("import { palette } from './palette';");
+    expect(modeColorsTs).toContain('export type ModeColors = {');
+    expect(modeColorsTs).toContain('primary: palette.gray[900],');
+    expect(modeColorsTs).toContain('wood: palette.gray[100],');
+    expect(modeColorsTs).toContain("force: '#c38800',");
+    expect(modeColorsTs).toContain('export const dayColors: ModeColors');
+    expect(modeColorsTs).toContain('export const nightColors: ModeColors');
   });
   it('throws when a semantic group is missing', () => {
     const broken = {
