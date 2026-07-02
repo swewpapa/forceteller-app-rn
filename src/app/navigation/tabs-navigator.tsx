@@ -6,12 +6,12 @@ import { HomeScreen } from '@/features/home';
 import { TodayScreen } from '@/features/today';
 import { PremiumScreen } from '@/features/premium';
 import { MoreScreen } from '@/features/more';
-import { AppTabBar } from './app-tab-bar';
+import { TabBar } from './tab-bar';
 import type { RootTabParamList } from './navigation-types';
 
 const Tab = createBottomTabNavigator<RootTabParamList>();
 
-const renderTabBar = (props: BottomTabBarProps) => <AppTabBar {...props} />;
+const renderTabBar = (props: BottomTabBarProps) => <TabBar {...props} />;
 
 /** 네이티브 하단 탭. 각 탭의 메인 화면은 RN으로 렌더한다. */
 export function TabsNavigator() {

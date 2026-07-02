@@ -25,7 +25,7 @@ const TAB_ICONS: Record<keyof RootTabParamList, TabIconSet> = {
   More: { active: faEllipsis, inactive: faEllipsisLight },
 };
 
-export function AppTabBar({
+export function TabBar({
   state,
   descriptors,
   navigation,

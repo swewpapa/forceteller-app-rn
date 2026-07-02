@@ -5,7 +5,7 @@ import { useAppColors, type AppColors } from '../theme';
 
 /**
  * Base screen wrapper: top safe-area inset + scheme-aware background.
- * bottom inset은 탭바(AppTabBar)가 처리하므로 top만 적용한다.
+ * bottom inset은 탭바(TabBar)가 처리하므로 top만 적용한다.
  * React Navigation 권장에 따라 SafeAreaView 대신 useSafeAreaInsets를 사용한다.
  */
 export function ScreenContainer({ children }: PropsWithChildren) {
