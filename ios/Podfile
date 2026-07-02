@@ -9,6 +9,15 @@ require Pod::Executable.execute_command('node', ['-p',
 platform :ios, '16.4'
 prepare_react_native_project!
 
+# Map custom dev/prod build configurations to the base Debug/Release types
+# so CocoaPods generates the correct xcconfig per configuration.
+project 'Forceteller', {
+  'Debug-dev' => :debug,
+  'Debug-prod' => :debug,
+  'Release-dev' => :release,
+  'Release-prod' => :release,
+}
+
 linkage = ENV['USE_FRAMEWORKS']
 if linkage != nil
   Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
@@ -55,5 +64,19 @@ target 'Forceteller' do
       :mac_catalyst_enabled => false,
       # :ccache_enabled => true
     )
+
+    envfiles = {
+      'Debug-dev'   => '$(PODS_ROOT)/../../.env.dev',
+      'Release-dev' => '$(PODS_ROOT)/../../.env.dev',
+      'Debug-prod'  => '$(PODS_ROOT)/../../.env.prod',
+      'Release-prod'=> '$(PODS_ROOT)/../../.env.prod',
+    }
+    installer.pods_project.targets.each do |target|
+      if target.name == 'react-native-config'
+        target.build_configurations.each do |config|
+          config.build_settings['ENVFILE'] = envfiles[config.name] if envfiles[config.name]
+        end
+      end
+    end
   end
 end
