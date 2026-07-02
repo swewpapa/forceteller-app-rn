@@ -340,7 +340,7 @@
 					"-lc++",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_DEBUG";
-				PRODUCT_BUNDLE_IDENTIFIER = com.un7qi3i.forceteller;
+				PRODUCT_BUNDLE_IDENTIFIER = com.un7qi3.forceteller;
 				PRODUCT_NAME = Forceteller;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -370,7 +370,7 @@
 					"-lc++",
 				);
 				OTHER_SWIFT_FLAGS = "$(inherited) -D EXPO_CONFIGURATION_RELEASE";
-				PRODUCT_BUNDLE_IDENTIFIER = com.un7qi3i.forceteller;
+				PRODUCT_BUNDLE_IDENTIFIER = com.un7qi3.forceteller;
 				PRODUCT_NAME = Forceteller;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SWIFT_VERSION = 5.0;
