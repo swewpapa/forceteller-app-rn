@@ -85,6 +85,6 @@ web-build/
 !.env.example
 
 # Firebase 환경별 설정 (기본 커밋 금지 — 팀 정책 따라 조정 가능)
-android/app/src/debug/google-services.json
-android/app/src/release/google-services.json
+android/app/src/dev/google-services.json
+android/app/src/prod/google-services.json
 ios/**/GoogleService-Info*.plist

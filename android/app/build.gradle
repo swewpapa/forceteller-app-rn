@@ -2,13 +2,13 @@ apply plugin: "com.android.application"
 apply plugin: "org.jetbrains.kotlin.android"
 apply plugin: "com.facebook.react"
 
-// react-native-config: 빌드타입(debug/release) → .env 파일 매핑.
-// debug=dev 환경, release=prod 환경. dotenv.gradle apply 이전에 정의해야 한다.
+// react-native-config: productFlavor(dev/prod) → .env 파일 매핑.
+// dotenv.gradle apply 이전에 정의해야 한다.
 // `:react-native-config` 경로가 미등록으로 실패하면 직접 경로로 대체:
 //   apply from: "../../node_modules/react-native-config/android/dotenv.gradle"
 project.ext.envConfigFiles = [
-    debug:   ".env.dev",
-    release: ".env.prod",
+    dev:  ".env.dev",
+    prod: ".env.prod",
 ]
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
 
@@ -120,6 +120,11 @@ android {
             proguardFiles getDefaultProguardFile("proguard-android.txt"), "proguard-rules.pro"
         }
     }
+    flavorDimensions "env"
+    productFlavors {
+        dev  { dimension "env" }   // applicationId 동일(suffix 없음)
+        prod { dimension "env" }
+    }
 }
 
 dependencies {
@@ -133,6 +138,6 @@ dependencies {
     }
 }
 
-// buildType sourceSet(src/debug, src/release)의 google-services.json을 환경별로 매핑.
+// productFlavor sourceSet(src/dev, src/prod)의 google-services.json을 환경별로 매핑.
 // 반드시 파일 맨 끝에서 apply 한다.
 apply plugin: 'com.google.gms.google-services'
