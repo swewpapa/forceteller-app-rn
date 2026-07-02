@@ -140,6 +140,7 @@
 			buildPhases = (
 				6978F0AF2622C788E3691CCA /* [CP] Check Pods Manifest.lock */,
 				A1E69C671CB15D367AD18262 /* [Expo] Configure project */,
+				7B51B68DBFB98BAB17064FAC /* Select GoogleService-Info.plist */,
 				13B07F871A680F5B00A75B9A /* Sources */,
 				13B07F8C1A680F5B00A75B9A /* Frameworks */,
 				13B07F8E1A680F5B00A75B9A /* Resources */,
@@ -241,6 +242,24 @@
 			shellPath = /bin/sh;
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
+		};
+		7B51B68DBFB98BAB17064FAC /* Select GoogleService-Info.plist */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Select GoogleService-Info.plist";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "ENV_SUFFIX=\"Prod\"\ncase \"${CONFIGURATION}\" in\n  *-dev) ENV_SUFFIX=\"Dev\" ;;\n  *-prod) ENV_SUFFIX=\"Prod\" ;;\nesac\nSRC=\"${PROJECT_DIR}/Forceteller/Firebase/GoogleService-Info-${ENV_SUFFIX}.plist\"\nDEST=\"${BUILT_PRODUCTS_DIR}/${PRODUCT_NAME}.app/GoogleService-Info.plist\"\necho \"Using Firebase plist: ${SRC}\"\nmkdir -p \"$(dirname \"${DEST}\")\"\ncp \"${SRC}\" \"${DEST}\"\n";
 		};
 		8347F9AA1453BBFB0A929EA8 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
