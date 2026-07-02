@@ -54,8 +54,17 @@ export function TabBar({
             canPreventDefault: true,
           });
           if (!focused && !event.defaultPrevented) {
-            navigation.navigate(route.name);
+            navigation.navigate(route.name, route.params);
           }
+        };
+
+        // 커스텀 탭바 계약: 리스너가 없어도 tabLongPress는 발신해야
+        // 화면 쪽에서 addListener('tabLongPress')로 구독할 수 있다.
+        const onLongPress = () => {
+          navigation.emit({
+            type: 'tabLongPress',
+            target: route.key,
+          });
         };
 
         return (
@@ -65,6 +74,7 @@ export function TabBar({
             accessibilityState={{ selected: focused }}
             accessibilityLabel={label}
             onPress={onPress}
+            onLongPress={onLongPress}
             style={styles.tab}
           >
             <FontAwesomeIcon
