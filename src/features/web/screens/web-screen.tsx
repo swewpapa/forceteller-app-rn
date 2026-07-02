@@ -56,7 +56,7 @@ export function WebScreen({ route }: Props) {
   );
 
   return (
-    <View style={[styles.root, { backgroundColor: colors.background }]}>
+    <View style={[styles.root, { backgroundColor: colors.background.surface }]}>
       <WebView
         ref={webRef}
         source={{ uri: `${env.webBaseUrl}${path}` }}
@@ -66,7 +66,7 @@ export function WebScreen({ route }: Props) {
         startInLoadingState
         renderLoading={() => (
           <View style={styles.loading}>
-            <ActivityIndicator color={colors.text} />
+            <ActivityIndicator color={colors.text.default} />
           </View>
         )}
         // 캐싱: 실질은 서버 HTTP 헤더(Cache-Control/ETag)가 좌우한다.

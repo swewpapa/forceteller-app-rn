@@ -35,9 +35,9 @@ export function LoginScreen() {
   return (
     <ScreenContainer>
       <View style={styles.body}>
-        <Text style={[styles.title, { color: colors.text }]}>로그인</Text>
-        <Pressable accessibilityRole="button" onPress={onGoogle} disabled={loading} style={[styles.btn, { borderColor: colors.tabBarBorder }]}>
-          {loading ? <ActivityIndicator color={colors.text} /> : <Text style={[styles.btnText, { color: colors.text }]}>Google로 계속하기</Text>}
+        <Text style={[styles.title, { color: colors.text.default }]}>로그인</Text>
+        <Pressable accessibilityRole="button" onPress={onGoogle} disabled={loading} style={[styles.btn, { borderColor: colors.stroke.subtle }]}>
+          {loading ? <ActivityIndicator color={colors.text.default} /> : <Text style={[styles.btnText, { color: colors.text.default }]}>Google로 계속하기</Text>}
         </Pressable>
       </View>
     </ScreenContainer>
