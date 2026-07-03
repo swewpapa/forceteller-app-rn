@@ -17,20 +17,33 @@ const TYPOGRAPHY_OUT_DIR = path.join(
   'src/shared/components/Typography/generated',
 );
 
+// generate()의 반환 키 ↔ 파일 경로 매핑. 새 출력이 생기면 여기에도 등록해야 하며,
+// 빠뜨리면 아래 가드가 실패한다(조용히 파일이 안 써지는 사고 방지).
+const OUT_PATHS = {
+  paletteTs: path.join(THEME_OUT_DIR, 'palette.ts'),
+  modeColorsTs: path.join(THEME_OUT_DIR, 'mode-colors.ts'),
+  spacingTs: path.join(THEME_OUT_DIR, 'spacing.ts'),
+  radiusTs: path.join(THEME_OUT_DIR, 'radius.ts'),
+  typographyTs: path.join(TYPOGRAPHY_OUT_DIR, 'typography.ts'),
+};
+
 const tokens = JSON.parse(fs.readFileSync(SOURCE, 'utf8'));
-const { paletteTs, modeColorsTs, spacingTs, radiusTs, typographyTs } =
-  generate(tokens);
+const generated = generate(tokens);
+
+const unmapped = Object.keys(generated).filter((key) => !(key in OUT_PATHS));
+if (unmapped.length) {
+  throw new Error(
+    `generate() 출력에 대응하는 경로 없음: ${unmapped.join(', ')} — OUT_PATHS에 추가 필요`,
+  );
+}
 
 fs.mkdirSync(THEME_OUT_DIR, { recursive: true });
 fs.mkdirSync(TYPOGRAPHY_OUT_DIR, { recursive: true });
 
-const outputs = [
-  [path.join(THEME_OUT_DIR, 'palette.ts'), paletteTs],
-  [path.join(THEME_OUT_DIR, 'mode-colors.ts'), modeColorsTs],
-  [path.join(THEME_OUT_DIR, 'spacing.ts'), spacingTs],
-  [path.join(THEME_OUT_DIR, 'radius.ts'), radiusTs],
-  [path.join(TYPOGRAPHY_OUT_DIR, 'typography.ts'), typographyTs],
-];
+const outputs = Object.entries(OUT_PATHS).map(([key, filePath]) => [
+  filePath,
+  generated[key],
+]);
 
 for (const [filePath, content] of outputs) {
   fs.writeFileSync(filePath, content);

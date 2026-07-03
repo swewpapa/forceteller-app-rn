@@ -125,16 +125,24 @@ const TYPOGRAPHY_FIELDS = [
   'letterSpacing',
   'textDecoration',
 ];
+// 용도가 불확실한 채로 남아있는 비-variant 형제 키 — codegen이 임의로 해석하지 않고
+// 명시적으로 건너뛴다. 그 외 비-typography 항목은 오타/드리프트로 간주해 실패시킨다.
+const TYPOGRAPHY_IGNORED_KEYS = ['font-family', 'numeric'];
 
 /**
  * primitive.typography → { variant명: TextStyle 필드 레코드 }.
- * type이 "typography"가 아닌 형제 키(font-family, numeric 등)는 무시한다 —
- * 용도가 불확실한 채로 남아있는 토큰 항목을 codegen이 임의로 해석하지 않기 위함.
+ * 형제 빌더들과 동일하게 fail-closed: 알 수 없는 항목·필드 누락은 조용히
+ * 넘어가지 않고 에러로 생성 자체를 중단한다(토큰 드리프트 조기 발견).
  */
 function buildTypography(typographyNode) {
   const out = {};
   for (const [key, node] of Object.entries(typographyNode)) {
-    if (!node || node.type !== 'typography') continue;
+    if (TYPOGRAPHY_IGNORED_KEYS.includes(key)) continue;
+    if (!node || node.type !== 'typography') {
+      throw new Error(
+        `unexpected non-typography entry: ${key} — 오타이거나 새 형제 키라면 TYPOGRAPHY_IGNORED_KEYS에 추가 필요`,
+      );
+    }
     const value = node.value || {};
     const style = {};
     for (const [field, raw] of Object.entries(value)) {
@@ -146,7 +154,17 @@ function buildTypography(typographyNode) {
       const outField = TYPOGRAPHY_FIELD_RENAMES[field] || field;
       style[outField] = raw;
     }
+    for (const field of TYPOGRAPHY_FIELDS) {
+      if (!(field in value)) {
+        throw new Error(`missing typography field: ${key}.${field}`);
+      }
+    }
     out[key] = style;
+  }
+  if (Object.keys(out).length === 0) {
+    throw new Error(
+      'no typography variants found — primitive.typography에 type:"typography" 항목이 최소 1개 필요',
+    );
   }
   return out;
 }
@@ -209,21 +227,23 @@ function renderDimensionScaleTs(exportName, scale) {
   return lines.join('\n');
 }
 
+// 문자열은 JSON.stringify로 이스케이프해 따옴표 포함 값도 유효한 TS로 출력한다.
+// (최종 따옴표 스타일은 prettier가 정규화)
 function renderStyleValue(v) {
-  return typeof v === 'string' ? `'${v}'` : String(v);
+  return typeof v === 'string' ? JSON.stringify(v) : String(v);
 }
 
 function renderTypographyTs(variants) {
   const names = Object.keys(variants);
   const lines = [HEADER, "import type { TextStyle } from 'react-native';", ''];
   lines.push('export type TypographyVariant =');
-  lines.push(names.map((n) => `  | '${n}'`).join('\n') + ';');
+  lines.push(names.map((n) => `  | ${JSON.stringify(n)}`).join('\n') + ';');
   lines.push('');
   lines.push(
     'export const typographyStyles: Record<TypographyVariant, TextStyle> = {',
   );
   for (const name of names) {
-    lines.push(`  '${name}': {`);
+    lines.push(`  ${JSON.stringify(name)}: {`);
     for (const [field, v] of Object.entries(variants[name])) {
       lines.push(`    ${field}: ${renderStyleValue(v)},`);
     }

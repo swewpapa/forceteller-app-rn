@@ -145,9 +145,48 @@ describe('buildTypography', () => {
     },
   };
 
-  it('extracts only type:"typography" entries, ignoring string/dimension siblings', () => {
+  it('extracts variants, ignoring the known non-variant siblings', () => {
     const result = buildTypography(typographyNode);
     expect(Object.keys(result)).toEqual(['headline-lg']);
+  });
+
+  it('throws on a non-typography entry that is not a known ignored sibling', () => {
+    const withStray = {
+      ...typographyNode,
+      'headine-lg': { type: 'typograhpy', value: { fontSize: 28 } },
+    };
+    expect(() => buildTypography(withStray)).toThrow(
+      'unexpected non-typography entry: headine-lg',
+    );
+  });
+
+  it('throws when a variant is missing a required field', () => {
+    const broken = {
+      'headline-lg': {
+        type: 'typography',
+        value: {
+          fontSize: 28,
+          fontFamily: 'Noto Sans KR',
+          fontWeight: 700,
+          lineHeight: 36,
+          letterSpacing: -1,
+          // textDecoration 누락
+        },
+      },
+    };
+    expect(() => buildTypography(broken)).toThrow(
+      'missing typography field: headline-lg.textDecoration',
+    );
+  });
+
+  it('throws when no typography variants remain after filtering', () => {
+    const onlySiblings = {
+      'font-family': { type: 'string', value: 'Noto Sans KR' },
+      numeric: { type: 'dimension', value: 0 },
+    };
+    expect(() => buildTypography(onlySiblings)).toThrow(
+      'no typography variants',
+    );
   });
 
   it('renames textDecoration to textDecorationLine', () => {
@@ -189,13 +228,20 @@ describe('renderTypographyTs', () => {
       },
     });
     expect(ts).toContain("import type { TextStyle } from 'react-native';");
-    expect(ts).toContain("export type TypographyVariant =\n  | 'headline-lg';");
+    expect(ts).toContain('export type TypographyVariant =\n  | "headline-lg";');
     expect(ts).toContain(
       'export const typographyStyles: Record<TypographyVariant, TextStyle> = {',
     );
-    expect(ts).toContain("'headline-lg': {");
+    expect(ts).toContain('"headline-lg": {');
     expect(ts).toContain('fontSize: 28,');
-    expect(ts).toContain("textDecorationLine: 'none',");
+    expect(ts).toContain('textDecorationLine: "none",');
+  });
+
+  it('escapes quotes in string values so generated TS stays valid', () => {
+    const ts = renderTypographyTs({
+      'body-md': { fontFamily: "Helvetica's Neue", fontSize: 14 },
+    });
+    expect(ts).toContain(`fontFamily: "Helvetica's Neue",`);
   });
 });
 
@@ -215,7 +261,14 @@ describe('generate', () => {
     typography: {
       'headline-lg': {
         type: 'typography',
-        value: { fontSize: 28, fontWeight: 700 },
+        value: {
+          fontSize: 28,
+          fontFamily: 'Noto Sans KR',
+          fontWeight: 700,
+          lineHeight: 36,
+          letterSpacing: -1,
+          textDecoration: 'none',
+        },
       },
     },
   };
@@ -242,7 +295,7 @@ describe('generate', () => {
     expect(radiusTs).toContain('export const radius = {');
     expect(radiusTs).toContain('xs: 2,');
     expect(typographyTs).toContain('export type TypographyVariant');
-    expect(typographyTs).toContain("'headline-lg'");
+    expect(typographyTs).toContain('"headline-lg"');
     expect(typographyTs).toContain('fontWeight: 700,');
   });
   it('throws when a semantic group is missing', () => {
