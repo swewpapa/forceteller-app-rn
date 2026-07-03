@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { spacing, useAppColors, type ModeColors } from '../theme';
+import { StyleSheet, Text } from 'react-native';
+import { useAppColors, type ModeColors } from '../theme';
+import { Column } from './layout';
 import { ScreenContainer } from './screen-container';
 
 type PlaceholderScreenProps = {
@@ -15,10 +16,10 @@ export function PlaceholderScreen({ title, subtitle }: PlaceholderScreenProps) {
 
   return (
     <ScreenContainer>
-      <View style={styles.body}>
+      <Column padding="300" gap="100" style={styles.body}>
         <Text style={styles.title}>{title}</Text>
         {subtitle ? <Text style={styles.caption}>{subtitle}</Text> : null}
-      </View>
+      </Column>
     </ScreenContainer>
   );
 }
@@ -27,7 +28,6 @@ function makeStyles(colors: ModeColors) {
   return StyleSheet.create({
     body: {
       flex: 1,
-      padding: spacing[300],
     },
     title: {
       color: colors.text.default,
@@ -37,7 +37,6 @@ function makeStyles(colors: ModeColors) {
     caption: {
       color: colors.text.subtle,
       fontSize: 14,
-      marginTop: spacing[100],
     },
   });
 }

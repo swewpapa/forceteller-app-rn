@@ -1,7 +1,7 @@
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text } from 'react-native';
 import { useAppNavigation, useAuthStore } from '@/features/auth';
-import { ScreenContainer, Typography } from '@/shared/components';
-import { spacing, useAppColors } from '@/shared/theme';
+import { Column, ScreenContainer, Typography } from '@/shared/components';
+import { radius, spacing, useAppColors } from '@/shared/theme';
 
 /** 홈 탭(RN). 예시로 상세 페이지(WebView) 진입 버튼을 둔다. */
 export function HomeScreen() {
@@ -12,7 +12,7 @@ export function HomeScreen() {
 
   return (
     <ScreenContainer>
-      <View style={styles.body}>
+      <Column padding="300" gap="300" style={styles.body}>
         <Text style={[styles.title, { color: colors.text.default }]}>홈</Text>
 
         {status === 'authenticated' ? (
@@ -68,17 +68,17 @@ export function HomeScreen() {
             상세 페이지 열기 (WebView)
           </Text>
         </Pressable>
-      </View>
+      </Column>
     </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  body: { flex: 1, padding: spacing[300], gap: spacing[300] },
+  body: { flex: 1 },
   title: { fontSize: 24, fontWeight: '700' },
   link: {
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: radius.md,
     paddingVertical: spacing[100],
     paddingHorizontal: spacing[300],
     alignItems: 'center',
