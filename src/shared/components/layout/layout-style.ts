@@ -47,13 +47,10 @@ export type FlowProps = SharedLayoutProps & {
 };
 
 /** buildLayoutStyle이 소비하는 토큰 props 부분집합. */
-export type LayoutTokenProps = {
-  padding?: PaddingValue;
-  p?: PaddingValue;
-  background?: BackgroundKey;
-  radius?: RadiusKey;
-  gap?: SpaceValue;
-};
+export type LayoutTokenProps = Pick<
+  FlowProps,
+  'padding' | 'p' | 'background' | 'radius' | 'gap'
+>;
 
 function resolveSpace(value: SpaceValue): number {
   return typeof value === 'string' ? spacing[value] : value;

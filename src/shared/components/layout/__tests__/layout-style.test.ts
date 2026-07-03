@@ -108,3 +108,51 @@ describe('buildLayoutStyle — 기타 토큰', () => {
     expect(buildLayoutStyle({ gap: 10 }, colors)).toStrictEqual({ gap: 10 });
   });
 });
+
+describe('buildLayoutStyle — 병합/엣지', () => {
+  it('복합 지정 시 모든 토큰이 병합된다', () => {
+    expect(
+      buildLayoutStyle(
+        { padding: '100', gap: '50', background: 'surface', radius: 'md' },
+        colors,
+      ),
+    ).toStrictEqual({
+      paddingTop: 8,
+      paddingRight: 8,
+      paddingBottom: 8,
+      paddingLeft: 8,
+      gap: 4,
+      backgroundColor: '#ffffff',
+      borderRadius: 8,
+    });
+  });
+
+  it('스칼라 0도 명시 방출한다 (falsy 가드 회귀 방지)', () => {
+    expect(buildLayoutStyle({ padding: 0, gap: 0 }, colors)).toStrictEqual({
+      paddingTop: 0,
+      paddingRight: 0,
+      paddingBottom: 0,
+      paddingLeft: 0,
+      gap: 0,
+    });
+  });
+});
+
+/**
+ * 컴파일 계약(음성 케이스). 호출하지 않는 함수라 런타임 실행은 없다.
+ * 아래 @ts-expect-error 라인이 에러가 아니게 되면(누군가 타입을 넓히면)
+ * "Unused '@ts-expect-error' directive"로 tsc 자체가 실패해 회귀를 잡는다.
+ */
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+function compileTimeContract() {
+  // @ts-expect-error 스케일 밖 spacing 토큰 키 불허
+  buildLayoutStyle({ padding: '301' }, colors);
+  // @ts-expect-error 5-tuple padding 불허
+  buildLayoutStyle({ padding: ['50', '50', '50', '50', '50'] }, colors);
+  // @ts-expect-error radius 스케일에 없는 키 불허
+  buildLayoutStyle({ radius: 'sm' }, colors);
+  // @ts-expect-error background 그룹에 없는 키 불허
+  buildLayoutStyle({ background: 'primary' }, colors);
+  // @ts-expect-error radius는 원시 숫자 불허 (토큰 온리)
+  buildLayoutStyle({ radius: 8 }, colors);
+}
