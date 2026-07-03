@@ -18,21 +18,14 @@ project 'Forceteller', {
   'Release-prod' => :release,
 }
 
-linkage = ENV['USE_FRAMEWORKS']
-if linkage != nil
-  Pod::UI.puts "Configuring Pod with #{linkage}ally linked Frameworks".green
-  use_frameworks! :linkage => linkage.to_sym
-end
+# react-native-firebase(firebase-ios-sdk v9+) 필수 요구사항: static frameworks.
+# 정적 라이브러리 모드에선 Firebase.h가 요구하는 <FirebaseAuth/FirebaseAuth-Swift.h>
+# (Swift 인터롭 헤더)가 해석 불가 — https://rnfirebase.io 설치 문서 참조.
+use_frameworks! :linkage => :static
+$RNFirebaseAsStaticFramework = true
 
 target 'Forceteller' do
   use_expo_modules!
-
-  # Required by react-native-firebase: Firebase Swift pods need modular headers
-  # when building as static libraries (default linkage without use_frameworks!)
-  pod 'GoogleUtilities', :modular_headers => true
-  pod 'FirebaseAuthInterop', :modular_headers => true
-  pod 'FirebaseAppCheckInterop', :modular_headers => true
-  pod 'RecaptchaInterop', :modular_headers => true
 
   if ENV['EXPO_USE_COMMUNITY_AUTOLINKING'] == '1'
     config_command = ['node', '-e', "process.argv=['', '', 'config'];require('@react-native-community/cli').run()"];
@@ -64,6 +57,15 @@ target 'Forceteller' do
       :mac_catalyst_enabled => false,
       # :ccache_enabled => true
     )
+
+    # use_frameworks!(static) + 프리빌트 React-Core 조합에서 RNFB 등 서드파티 팟이
+    # <React/...> 헤더를 텍스트 include할 때 나는 non-modular 에러 허용.
+    # (react-native-firebase#6933, expo#39607 표준 처방)
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES'] = 'YES'
+      end
+    end
 
     envfiles = {
       'Debug-dev'   => '$(PODS_ROOT)/../../.env.dev',

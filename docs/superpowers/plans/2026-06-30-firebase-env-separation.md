@@ -557,6 +557,8 @@ git commit -m "docs(env): finalize dev/prod separation verification notes"
 
 ## 미해소 / 범위 밖 (명시)
 
+- **(2026-07-03 실행 중 발견·해결) iOS static frameworks 전환**: RNFB(firebase-ios-sdk v9+)는 `use_frameworks! :linkage => :static` + `$RNFirebaseAsStaticFramework = true`가 필수(rnfirebase.io). 기존 정적 라이브러리+modular_headers 구성으론 `Firebase.h`의 `<FirebaseAuth/FirebaseAuth-Swift.h>` 해석이 불가능해 **RNFB 도입 이후 iOS 빌드가 성공한 적이 없었음**. Podfile 전환 + `CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES=YES`(프리빌트 React-Core 조합의 알려진 이슈, RNFB#6933) + AppDelegate의 `React_RCTAppDelegate` import 제거(frameworks 모드에선 Expo 호환 modulemap이 단일 `React` 모듈만 노출)로 해결. 참고: FirebaseCore CocoaPods 배포는 2026-10 이후 중단 예정 — SPM 전환 로드맵 별도 필요.
+
 - **release 서명**: 현재 `release`가 `debug.keystore`로 임시 서명(`android/app/build.gradle:108`). prod 정식 keystore는 별도 작업.
 - **국가축**: `flavorDimensions "env", "country"`로 확장 예정 — 이 plan 범위 밖.
 - **인증 게이트 재활성화**(`ROUTE_GUARDS = { Web: { requiresAuth: true } }`): 이 plan 검증 통과 후 인증 plan에서 수행.
