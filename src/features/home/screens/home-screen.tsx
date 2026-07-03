@@ -77,13 +77,13 @@ export function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  body: { flex: 1, padding: spacing.lg, gap: spacing.lg },
+  body: { flex: 1, padding: spacing[300], gap: spacing[300] },
   title: { fontSize: 24, fontWeight: '700' },
   link: {
     borderWidth: 1,
     borderRadius: 8,
-    paddingVertical: spacing.sm,
-    paddingHorizontal: spacing.lg,
+    paddingVertical: spacing[100],
+    paddingHorizontal: spacing[300],
     alignItems: 'center',
   },
   linkText: { fontSize: 15, fontWeight: '500' },
