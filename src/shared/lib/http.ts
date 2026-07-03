@@ -105,6 +105,7 @@ export function createHttpClient({ baseURL, timeout }: HttpClientConfig) {
     for (const ri of requestInterceptors) {
       if (ri) config = await ri(config);
     }
+    console.log('[http] →', config.method, config.url); // [DEBUG] 제거 예정
 
     const controller = new AbortController();
     let timedOut = false;

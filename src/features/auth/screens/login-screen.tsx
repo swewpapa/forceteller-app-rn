@@ -3,7 +3,7 @@ import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-nati
 import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native'; // eslint-disable-line no-restricted-imports
 import { ScreenContainer } from '@/shared/components';
 import { spacing, useAppColors } from '@/shared/theme';
-import { useAuthStore } from '../stores/auth-store';
+import { useAuthStore } from '@/features/auth';
 
 type LoginRoute = RouteProp<{ Login: { redirect?: { screen: string; params?: object } } }, 'Login'>;
 
@@ -25,7 +25,8 @@ export function LoginScreen() {
          
         (navigation as any).navigate(redirect.screen, redirect.params);
       else navigation.goBack();
-    } catch {
+    } catch (e) {
+      console.log('[login] signIn 실패:', e); // [DEBUG] 제거 예정
       // 로그인 실패/취소: 모달 유지 (Task 12에서 에러 토스트 검토)
     } finally {
       setLoading(false);

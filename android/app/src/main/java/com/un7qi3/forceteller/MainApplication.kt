@@ -1,4 +1,4 @@
-package com.un7qi3i.forceteller
+package com.un7qi3.forceteller
 import android.content.res.Configuration
 import expo.modules.ApplicationLifecycleDispatcher
 import expo.modules.ExpoReactHostFactory

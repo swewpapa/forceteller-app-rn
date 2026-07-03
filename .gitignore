@@ -78,3 +78,16 @@ yarn-error.log
 .expo
 dist/
 web-build/
+
+# react-native-config 환경 파일 (실값 — 커밋 금지)
+.env
+.env.*
+!.env.example
+
+# Firebase 환경별 설정 (기본 커밋 금지 — 팀 정책 따라 조정 가능)
+android/app/src/dev/google-services.json
+android/app/src/prod/google-services.json
+
+# iOS Firebase 환경별 plist (커밋 금지)
+ios/Forceteller/Firebase/GoogleService-Info-Dev.plist
+ios/Forceteller/Firebase/GoogleService-Info-Prod.plist
