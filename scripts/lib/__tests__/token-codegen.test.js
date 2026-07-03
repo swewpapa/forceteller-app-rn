@@ -6,6 +6,10 @@ const {
   toCodeKey,
   resolveColor,
   validateSymmetry,
+  buildDimensionScale,
+  renderDimensionScaleTs,
+  buildTypography,
+  renderTypographyTs,
   generate,
 } = require('../token-codegen');
 
@@ -92,6 +96,109 @@ describe('validateSymmetry', () => {
   });
 });
 
+describe('buildDimensionScale', () => {
+  it('extracts numeric values from dimension leaves, keys as-is', () => {
+    const node = {
+      50: { type: 'dimension', value: 4 },
+      100: { type: 'dimension', value: 8 },
+    };
+    expect(buildDimensionScale(node, 'spacing')).toEqual({ 50: 4, 100: 8 });
+  });
+  it('throws when a leaf is not a dimension', () => {
+    const node = { xs: { type: 'color', value: '#fff' } };
+    expect(() => buildDimensionScale(node, 'radius')).toThrow(
+      'invalid dimension: radius.xs',
+    );
+  });
+  it('throws when value is not a number', () => {
+    const node = { xs: { type: 'dimension', value: '2' } };
+    expect(() => buildDimensionScale(node, 'radius')).toThrow(
+      'invalid dimension: radius.xs',
+    );
+  });
+});
+
+describe('renderDimensionScaleTs', () => {
+  it('renders a numeric-keyed const object', () => {
+    const ts = renderDimensionScaleTs('spacing', { 50: 4, 100: 8 });
+    expect(ts).toContain('export const spacing = {');
+    expect(ts).toContain('50: 4,');
+    expect(ts).toContain('100: 8,');
+    expect(ts).toContain('} as const;');
+  });
+});
+
+describe('buildTypography', () => {
+  const typographyNode = {
+    'font-family': { type: 'string', value: 'Noto Sans KR' },
+    numeric: { type: 'dimension', value: 0 },
+    'headline-lg': {
+      type: 'typography',
+      value: {
+        fontSize: 28,
+        fontFamily: 'Noto Sans KR',
+        fontWeight: 700,
+        lineHeight: 36,
+        letterSpacing: -1,
+        textDecoration: 'none',
+      },
+    },
+  };
+
+  it('extracts only type:"typography" entries, ignoring string/dimension siblings', () => {
+    const result = buildTypography(typographyNode);
+    expect(Object.keys(result)).toEqual(['headline-lg']);
+  });
+
+  it('renames textDecoration to textDecorationLine', () => {
+    const result = buildTypography(typographyNode);
+    expect(result['headline-lg']).toEqual({
+      fontSize: 28,
+      fontFamily: 'Noto Sans KR',
+      fontWeight: 700,
+      lineHeight: 36,
+      letterSpacing: -1,
+      textDecorationLine: 'none',
+    });
+    expect(result['headline-lg']).not.toHaveProperty('textDecoration');
+  });
+
+  it('throws when a typography entry has an unknown field', () => {
+    const broken = {
+      'headline-lg': {
+        type: 'typography',
+        value: { fontSize: 28, unknownField: 1 },
+      },
+    };
+    expect(() => buildTypography(broken)).toThrow(
+      'unknown typography field: headline-lg.unknownField',
+    );
+  });
+});
+
+describe('renderTypographyTs', () => {
+  it('renders a TypographyVariant union type and a style record', () => {
+    const ts = renderTypographyTs({
+      'headline-lg': {
+        fontSize: 28,
+        fontFamily: 'Noto Sans KR',
+        fontWeight: 700,
+        lineHeight: 36,
+        letterSpacing: -1,
+        textDecorationLine: 'none',
+      },
+    });
+    expect(ts).toContain("import type { TextStyle } from 'react-native';");
+    expect(ts).toContain("export type TypographyVariant =\n  | 'headline-lg';");
+    expect(ts).toContain(
+      'export const typographyStyles: Record<TypographyVariant, TextStyle> = {',
+    );
+    expect(ts).toContain("'headline-lg': {");
+    expect(ts).toContain('fontSize: 28,');
+    expect(ts).toContain("textDecorationLine: 'none',");
+  });
+});
+
 describe('generate', () => {
   const semantic = {
     primary: { primary: { type: 'color', value: '{palette.gray.900}' } },
@@ -101,10 +208,24 @@ describe('generate', () => {
     text: { force: { type: 'color', value: '#c38800' } },
     stroke: { primary: { type: 'color', value: '{primary.primary}' } },
   };
-  const tokens = { primitive, theme: { day: semantic, night: semantic } };
+  const primitiveWithScales = {
+    ...primitive,
+    spacing: { 50: { type: 'dimension', value: 4 } },
+    radius: { xs: { type: 'dimension', value: 2 } },
+    typography: {
+      'headline-lg': {
+        type: 'typography',
+        value: { fontSize: 28, fontWeight: 700 },
+      },
+    },
+  };
+  const tokens = {
+    primitive: primitiveWithScales,
+    theme: { day: semantic, night: semantic },
+  };
 
   it('emits palette constants and semantic colors referencing them', () => {
-    const { paletteTs, modeColorsTs } = generate(tokens);
+    const { paletteTs, modeColorsTs, spacingTs, radiusTs, typographyTs } = generate(tokens);
     expect(paletteTs).toContain('export const palette = {');
     expect(paletteTs).toContain('kkarinaBlue: {');
     expect(paletteTs).toContain("900: '#191919',");
@@ -116,10 +237,17 @@ describe('generate', () => {
     expect(modeColorsTs).toContain("force: '#c38800',");
     expect(modeColorsTs).toContain('export const dayColors: ModeColors');
     expect(modeColorsTs).toContain('export const nightColors: ModeColors');
+    expect(spacingTs).toContain('export const spacing = {');
+    expect(spacingTs).toContain('50: 4,');
+    expect(radiusTs).toContain('export const radius = {');
+    expect(radiusTs).toContain('xs: 2,');
+    expect(typographyTs).toContain('export type TypographyVariant');
+    expect(typographyTs).toContain("'headline-lg'");
+    expect(typographyTs).toContain('fontWeight: 700,');
   });
   it('throws when a semantic group is missing', () => {
     const broken = {
-      primitive,
+      primitive: primitiveWithScales,
       theme: { day: { ...semantic }, night: { ...semantic } },
     };
     delete broken.theme.day.stroke;
@@ -128,12 +256,17 @@ describe('generate', () => {
   });
   it('throws when tokens contain an unknown semantic group', () => {
     const withExtra = {
-      primitive,
+      primitive: primitiveWithScales,
       theme: {
         day: { ...semantic, elevation: { level: { type: 'color', value: '{palette.white}' } } },
         night: { ...semantic, elevation: { level: { type: 'color', value: '{palette.white}' } } },
       },
     };
     expect(() => generate(withExtra)).toThrow('unknown semantic group: elevation');
+  });
+  it('throws when primitive lacks spacing/radius/typography', () => {
+    expect(() =>
+      generate({ primitive, theme: { day: semantic, night: semantic } }),
+    ).toThrow('primitive.spacing, primitive.radius, primitive.typography');
   });
 });
