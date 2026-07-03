@@ -27,7 +27,7 @@ function makeStyles(colors: ModeColors) {
   return StyleSheet.create({
     body: {
       flex: 1,
-      padding: spacing.lg,
+      padding: spacing[300],
     },
     title: {
       color: colors.text.default,
@@ -37,7 +37,7 @@ function makeStyles(colors: ModeColors) {
     caption: {
       color: colors.text.subtle,
       fontSize: 14,
-      marginTop: spacing.sm,
+      marginTop: spacing[100],
     },
   });
 }

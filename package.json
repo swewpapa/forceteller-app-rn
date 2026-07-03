@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
-    "generate:theme": "node scripts/generate-theme.js",
+    "generate:tokens": "node scripts/generate-tokens.js",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

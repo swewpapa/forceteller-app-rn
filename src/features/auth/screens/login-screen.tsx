@@ -46,8 +46,8 @@ export function LoginScreen() {
 }
 
 const styles = StyleSheet.create({
-  body: { flex: 1, padding: spacing.lg, gap: spacing.lg, justifyContent: 'center' },
+  body: { flex: 1, padding: spacing[300], gap: spacing[300], justifyContent: 'center' },
   title: { fontSize: 24, fontWeight: '700', textAlign: 'center' },
-  btn: { borderWidth: 1, borderRadius: 8, paddingVertical: spacing.md, alignItems: 'center' },
+  btn: { borderWidth: 1, borderRadius: 8, paddingVertical: spacing[200], alignItems: 'center' },
   btnText: { fontSize: 15, fontWeight: '500' },
 });
