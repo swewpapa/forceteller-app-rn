@@ -1,14 +1,14 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { useAppNavigation, useAuthStore } from '@/features/auth';
-import { ScreenContainer } from '@/shared/components';
+import { ScreenContainer, Typography } from '@/shared/components';
 import { spacing, useAppColors } from '@/shared/theme';
 
 /** 홈 탭(RN). 예시로 상세 페이지(WebView) 진입 버튼을 둔다. */
 export function HomeScreen() {
   const navigation = useAppNavigation();
   const colors = useAppColors();
-  const status = useAuthStore((s) => s.status);
-  const signOut = useAuthStore((s) => s.signOut);
+  const status = useAuthStore(s => s.status);
+  const signOut = useAuthStore(s => s.signOut);
 
   return (
     <ScreenContainer>
@@ -24,9 +24,7 @@ export function HomeScreen() {
             }}
             style={[styles.link, { borderColor: colors.stroke.subtle }]}
           >
-            <Text style={[styles.linkText, { color: colors.text.default }]}>
-              로그아웃
-            </Text>
+            <Typography variant="body-md">로그아웃</Typography>
           </Pressable>
         ) : (
           <Pressable
@@ -35,9 +33,9 @@ export function HomeScreen() {
             onPress={() => navigation.navigate('Login')}
             style={[styles.link, { borderColor: colors.stroke.subtle }]}
           >
-            <Text style={[styles.linkText, { color: colors.text.default }]}>
+            <Typography variant="body-md">
               {status === 'loading' ? '...' : '로그인'}
-            </Text>
+            </Typography>
           </Pressable>
         )}
 
@@ -55,7 +53,6 @@ export function HomeScreen() {
             상세 페이지 열기 (WebView)
           </Text>
         </Pressable>
-
 
         <Pressable
           accessibilityRole="button"
