@@ -14,7 +14,7 @@ const SOURCE = path.join(ROOT, 'assets/design-tokens/tokens.json');
 const THEME_OUT_DIR = path.join(ROOT, 'src/shared/theme/generated');
 const TYPOGRAPHY_OUT_DIR = path.join(
   ROOT,
-  'src/shared/components/Typography/generated',
+  'src/shared/components/typography/generated',
 );
 
 // generate()의 반환 키 ↔ 파일 경로 매핑. 새 출력이 생기면 여기에도 등록해야 하며,

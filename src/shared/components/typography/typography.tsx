@@ -1,4 +1,4 @@
-// src/shared/components/Typography/Typography.tsx
+// src/shared/components/typography/typography.tsx
 import type { ReactNode } from 'react';
 import { Text, type StyleProp, type TextProps, type TextStyle } from 'react-native';
 import { useAppColors, type ModeColors } from '@/shared/theme';
