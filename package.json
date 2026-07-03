@@ -3,8 +3,10 @@
   "version": "0.0.1",
   "private": true,
   "scripts": {
-    "android": "react-native run-android",
-    "ios": "react-native run-ios",
+    "android": "react-native run-android --mode devDebug",
+    "android:prod": "react-native run-android --mode prodDebug",
+    "ios": "react-native run-ios --scheme 'Forceteller Dev' --mode Debug-dev",
+    "ios:prod": "react-native run-ios --scheme Forceteller --mode Debug-prod",
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
