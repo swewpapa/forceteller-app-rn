@@ -12,3 +12,4 @@ export {
 } from './button';
 export { TextField, type TextFieldProps } from './text-field';
 export { Field, type FieldProps } from './field';
+export { FormTextField, type FormTextFieldProps } from './form';
