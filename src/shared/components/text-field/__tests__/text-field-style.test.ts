@@ -39,12 +39,21 @@ describe('buildTextFieldStyle — 상태별 색', () => {
     expect(r.container.backgroundColor).toBe('#f4f4f4');
     expect(r.container.borderColor).toBe('#cccccc');
     expect(r.inputColor).toBe('#adadad');
+    expect(r.placeholderColor).toBe('#adadad');
   });
 
   it('disabled가 error보다 우선: disabled+error → border default, bg inset', () => {
     const r = buildTextFieldStyle({ ...base, disabled: true, error: true }, colors);
     expect(r.container.borderColor).toBe('#cccccc');
     expect(r.container.backgroundColor).toBe('#f4f4f4');
+    expect(r.inputColor).toBe('#adadad');
+  });
+
+  it('disabled가 focused보다 우선: disabled+focused → border default, bg inset, input muted', () => {
+    const r = buildTextFieldStyle({ ...base, disabled: true, focused: true }, colors);
+    expect(r.container.borderColor).toBe('#cccccc');
+    expect(r.container.backgroundColor).toBe('#f4f4f4');
+    expect(r.inputColor).toBe('#adadad');
   });
 });
 
