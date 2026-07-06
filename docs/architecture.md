@@ -13,7 +13,7 @@
 | 서버 상태 | TanStack Query | 5.x |
 | 클라이언트 상태 | Zustand | 5.x |
 | 환경변수 | react-native-config | 1.6.x |
-| HTTP | axios | 1.x |
+| HTTP | fetch 기반 자체 클라이언트 (`shared/lib/http.ts`, axios 스타일 인터셉터) | — |
 | Path alias | babel-plugin-module-resolver + tsconfig paths (`@/*`) | — |
 
 > **pnpm + RN**: RN 툴체인(Metro/autolinking/CocoaPods)은 pnpm 기본 symlink node_modules와 충돌한다. `.npmrc`의 `node-linker=hoisted`로 npm/Yarn Classic 같은 flat 구조를 만들어 해소한다. (출처: [pnpm.io/settings#nodelinker](https://pnpm.io/settings) — "useful if your tooling doesn't work with symlinks (like React Native)")
@@ -71,6 +71,32 @@ ESLint `import/no-restricted-paths`로 **강제**한다 (`.eslintrc.js`):
 | 배럴 | feature/세그먼트마다 `index.ts` | `features/horoscope/index.ts` |
 
 근거: 현 Angular 가이드는 `.component.ts` 같은 dot 접미사를 폐기(2025 스타일 = 간결 kebab), feature 단위 구성, 제네릭 `utils.ts` 지양을 권장. 팀은 가독성을 위해 hyphen 타입 접미사(`-store`/`-api`/`-screen`)를 의식적으로 유지한다. (출처: [angular.dev/style-guide](https://angular.dev/style-guide), [angular.dev/cli/generate/application](https://angular.dev/cli/generate/application))
+
+### 계층별 네이밍 언어 (2026-07-06 확정)
+
+같은 도메인이라도 계층마다 이름이 답해야 할 질문이 다르다. **API/훅은 "어떻게 조회하는가", 타입/컴포넌트는 "무엇인가"** 를 말한다.
+
+| 계층 | 언어 | 규칙 | 예시 |
+|---|---|---|---|
+| API 메서드 | API-친화적 | 엔드포인트·파라미터가 이름에 드러남 | `themeApi.listByCode(code)`, `getById(id)` |
+| 훅 | API-친화적 | `use<도메인><조회방법>` | `useThemeListByCode(code)` |
+| 타입 | 도메인 개념 | HTTP 라우트 어휘 금지, 소비 컨텍스트 구분 | `ThemeWidget`, `ThemeView` |
+| 컴포넌트 | 도메인 개념 | 데이터 조회 방법이 아니라 개념을 렌더 | `ThemeWidgetList`, `TextOnlyWidget` |
+
+**theme 도메인의 컨텍스트 분리** — 같은 "테마" 엔티티가 두 방식으로 소비되므로 어휘를 분리한다:
+
+- **위젯 컨텍스트**: `/api/theme/list/{code}` — 홈 등에 꽂히는 서버 구성 블록. `ThemeWidget*` 어휘 사용. 응답의 `type` 필드(`text_only`/`thumbnail_carousel`/`full_image_carousel`/`keyword_cloud`)는 콘텐츠 분류가 아니라 **위젯 렌더러 지시자**다.
+- **페이지 컨텍스트**: `/api/theme/{id}` — 테마 1개의 풀 페이지(레거시 theme-list-page). `Theme`/`ThemePage`/`useThemeById` 어휘를 이쪽에 **예약**한다.
+- `ThemeList`는 **사용 금지** — "테마들의 목록"(위젯)과 "테마 안 아이템 목록"(페이지)이 충돌하는 중의적 이름.
+- `ThemeView` = 서버 `themeViews[]`의 아이템 단위 (서버 필드명 유지로 도메인 추적성 확보).
+- "위젯(widget)"은 React 생태계 용어가 아니라 **팀 도메인 용어**다 (컴포넌트 일반을 widget이라 부르지 않는다).
+
+## API 레이어 패턴
+
+- feature API는 **팩토리 + 싱글턴**으로 만든다: `createThemeApi(client: HttpClient)` → `export const themeApi = createThemeApi(http)`. `createHttpClient` 선례와 일관되고, 테스트에서 가짜 client를 생성자 주입할 수 있다. (인스턴스 상태가 없는 API 서비스에 class는 네임스페이스 역할뿐이므로 팩토리를 표준으로 한다.)
+- **정규화 경계**: raw 응답 타입은 `api/` 폴더 밖으로 내보내지 않는다. `api/normalize-*.ts` 순수함수가 raw → 도메인 타입(discriminated union)으로 변환하며, 이 함수가 TDD 대상이다.
+- **서버 드리븐 type 방어**: unknown type 값은 드롭(forward compat — 서버가 새 타입을 추가해도 구버전 앱이 깨지지 않는다). 렌더 불가능한 단위(빈 아이템 목록, link 없는 아이템)도 이 경계에서 드롭.
+- **데이터 페칭 위치**: 스크린이 훅을 호출(컨테이너)하고, 하위 컴포넌트는 props만 받는 presentational로 유지한다. TanStack Query가 같은 queryKey를 dedup하므로 컴포넌트 레벨 페칭도 가능하지만, 한 응답이 화면 전체를 채우는 구조에서는 스크린 레벨이 표준.
 
 ## Import 규칙
 
