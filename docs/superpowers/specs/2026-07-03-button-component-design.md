@@ -31,7 +31,10 @@ type ButtonAppearance = 'solid' | 'outline';    // 채움 스타일
 type ButtonSize = 'lg' | 'md' | 'sm';
 type ButtonShape = 'rounded' | 'pill';
 
-type ButtonProps = Omit<PressableProps, 'style' | 'children'> & {
+type ButtonProps = Omit<
+  PressableProps,
+  'style' | 'children' | 'accessibilityRole' | 'accessibilityState'
+> & {
   label: string;                 // Button이 size별 typographyStyles(label-lg/md)를 자동 적용
   onPress: () => void;
   color?: ButtonColor;           // default 'primary'
@@ -46,7 +49,7 @@ type ButtonProps = Omit<PressableProps, 'style' | 'children'> & {
 };
 ```
 
-**Prop 규약**([component-prop-conventions.md](../../design-system/component-prop-conventions.md)) 준수: `color`(on-color), `appearance`(채움), `size`/`shape`(시각 축), `leading`/`trailing`(슬롯), `Omit<PressableProps,'style'|'children'>` 패스스루, boolean 긍정 네이밍.
+**Prop 규약**([component-prop-conventions.md](../../design-system/component-prop-conventions.md)) 준수: `color`(on-color), `appearance`(채움), `size`/`shape`(시각 축), `leading`/`trailing`(슬롯), `Omit<PressableProps,'style'|'children'>` 패스스루, boolean 긍정 네이밍. accessibilityRole/State는 컴포넌트가 계산·소유하므로 패스스루에서 제외(Omit)한다.
 
 - **`color`는 on-color 시스템**(Martin 결정): solid는 `color`가 표면(배경) 역할을 지정하고 글자색은 짝 `on-*`을 자동 파생한다. `color="primary"` → bg `primary.primary`, text `primary.onPrimary`. 호출측이 글자색을 넘기지 않는다. **outline은 배경이 투명이라 `color`로 테두리+글자를 칠한다**(색-aware, 아래).
 - **`label: string`** (Martin 결정): Button이 라벨 타이포를 소유해 size별 `label-lg`/`label-md`가 항상 정확히 적용된다. 복잡한 라벨(가격 등)은 후속 조합형 컴포넌트 몫.

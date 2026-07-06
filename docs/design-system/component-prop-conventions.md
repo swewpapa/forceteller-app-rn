@@ -61,6 +61,7 @@ Typography에서 확립, 전 컴포넌트 공통:
 - 시그니처: `Omit<BaseProps, 'style' | 'children'> & { …overrides }`.
 - 나머지는 `{...rest}`로 루트에 전개 → `onLayout`·`testID`·`accessibility*`·`ref`(React 19) 자동 통과.
 - `style`·`children`은 **Omit 후 재정의**해 통제(§3, §1).
+- **컴포넌트가 파생·제어하는 prop도 Omit**: 컴포넌트가 계산해 보장하는 값(예: `disabled`/`loading`에서 파생한 `accessibilityState`, 항상 고정인 `accessibilityRole`)은 Omit해 호출측이 `{...rest}`로 덮어써 계약을 무력화하지 못하게 한다. (style/children과 같은 원리.)
 - Pick 화이트리스트는 쓰지 않는다(매번 열거 부담 + 기존 컴포넌트와 불일치).
 
 ## 6. 기본값 · 필수

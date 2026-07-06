@@ -17,7 +17,10 @@ import {
   type ButtonSize,
 } from './button-style';
 
-export type ButtonProps = Omit<PressableProps, 'style' | 'children'> & {
+export type ButtonProps = Omit<
+  PressableProps,
+  'style' | 'children' | 'accessibilityRole' | 'accessibilityState'
+> & {
   label: string;
   onPress: () => void;
   color?: ButtonColor;
