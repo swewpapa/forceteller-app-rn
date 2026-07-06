@@ -40,6 +40,11 @@
 - boolean은 긍정 네이밍(`disabled`·`loading`·`fullWidth`), default `false`.
 - 핸들러는 `onXxx`.
 
+### 폼 결합 접두사
+
+- **`Form` 접두사 = 폼 라이브러리(react-hook-form) 결합 계층**(`components/form/` 폴더). 무접두사 = 순수 DS.
+- 이름만으로 결합 여부를 식별한다: `Field`(순수 라벨+에러 래퍼) vs `FormTextField`(RHF 어댑터), 향후 `Checkbox` vs `FormCheckbox`. 업계 연상(shadcn `FormField`=RHF 래퍼, Chakra v3 `Field`=순수)과 일치. RHF 교체 시 `form/` 폴더만 재작업.
+
 ## 3. `style` 탈출구 3계층 정책
 
 Typography에서 확립, 전 컴포넌트 공통:
