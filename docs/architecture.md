@@ -50,6 +50,7 @@ ESLint `import/no-restricted-paths`로 **강제**한다 (`.eslintrc.js`):
 - `shared`는 `features`/`app`을 import할 수 없다 (최하위 레이어).
 - `features`는 `app`을 import할 수 없다.
 - **feature 간 직접 import 금지** — 각 feature는 격리. 공유가 필요하면 `shared`로 승격.
+  - **cross-consumable 예외**: `auth`(foundation infra)와 `theme`(여러 화면이 소비하는 콘텐츠 도메인)는 예외로 허용. `.eslintrc.js`에서 소비 zone별로 `except`에 whitelist한다.
 - `app`은 `features`·`shared`를 자유롭게 import (조립 레이어).
 
 위반 시 lint 에러. feature 추가 시 `.eslintrc.js`의 zones에 해당 feature 줄을 추가한다.

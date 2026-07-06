@@ -37,12 +37,12 @@ module.exports = {
           // `features` must not import from the app layer.
           { target: './src/features', from: './src/app' },
           // No cross-feature imports — each feature is isolated.
-          // Exception: `auth` is a foundation feature (navigation guard, auth store)
-          // that all other features depend on.
+          // Exceptions (cross-consumable): `auth` (foundation infra: nav guard, auth store)
+          // and `theme` (content domain rendered by multiple screens).
           {
             target: './src/features/home',
             from: './src/features',
-            except: ['./home', './auth'],
+            except: ['./home', './auth', './theme'],
           },
           {
             target: './src/features/today',
