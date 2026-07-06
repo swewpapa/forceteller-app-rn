@@ -1,4 +1,4 @@
-import { normalizeThemeWidgets } from '../api/normalize-theme-widgets';
+import { normalizeThemes } from '../api/normalize-themes';
 
 /** dev 실응답(GET /api/theme/list/recommend_top) 축약 픽스처 */
 const rawTextOnly = {
@@ -38,9 +38,9 @@ const rawKeywordCloud = {
   ],
 };
 
-describe('normalizeThemeWidgets', () => {
+describe('normalizeThemes', () => {
   it('text_only 위젯을 views와 함께 매핑한다', () => {
-    const [w] = normalizeThemeWidgets([rawTextOnly]);
+    const [w] = normalizeThemes([rawTextOnly]);
     expect(w).toMatchObject({
       id: 41, uuid: 'c2cf77ef-bba4-41ab-8c62-5868a6cd6b43',
       type: 'text_only', title: '실시간 인기 급상승', subtitle: '지금 대세',
@@ -56,14 +56,14 @@ describe('normalizeThemeWidgets', () => {
   });
 
   it("''(빈 문자열) subtitle/이미지는 null로 정규화한다", () => {
-    const [w] = normalizeThemeWidgets([rawTextOnly]);
+    const [w] = normalizeThemes([rawTextOnly]);
     if (w.type !== 'text_only') throw new Error('unreachable');
     expect(w.views[1].subtitle).toBeNull();
     expect(w.views[1].thumbnailImage).toBeNull();
   });
 
   it('thumbnail_carousel / full_image_carousel도 views로 매핑한다', () => {
-    const widgets = normalizeThemeWidgets([
+    const widgets = normalizeThemes([
       { ...rawTextOnly, id: 1, uuid: 'u1', type: 'thumbnail_carousel' },
       { ...rawTextOnly, id: 2, uuid: 'u2', type: 'full_image_carousel' },
     ]);
@@ -71,7 +71,7 @@ describe('normalizeThemeWidgets', () => {
   });
 
   it('keyword_cloud는 themeViews[0].keywords를 keywords로 승격하고, link 없는 키워드는 드롭한다', () => {
-    const [w] = normalizeThemeWidgets([rawKeywordCloud]);
+    const [w] = normalizeThemes([rawKeywordCloud]);
     if (w.type !== 'keyword_cloud') throw new Error('unreachable');
     expect(w.keywords).toEqual([
       { text: '바다', isMore: false, link: { type: 'url', value: '/dream', queryParams: { keyword: '바다' } } },
@@ -80,18 +80,18 @@ describe('normalizeThemeWidgets', () => {
   });
 
   it('keyword_cloud의 키워드가 전부 link 없으면 위젯을 드롭한다', () => {
-    expect(normalizeThemeWidgets([{
+    expect(normalizeThemes([{
       id: 8, uuid: 'u8', type: 'keyword_cloud', title: '예지 꿈 해몽', subtitle: '',
       themeViews: [{ id: -1, viewId: 2669, keywords: [{ text: '링크없음1' }, { text: '링크없음2' }] }],
     }])).toEqual([]);
   });
 
   it('unknown type 위젯은 드롭한다 (forward compat)', () => {
-    expect(normalizeThemeWidgets([{ ...rawTextOnly, type: 'hologram_banner' }])).toEqual([]);
+    expect(normalizeThemes([{ ...rawTextOnly, type: 'hologram_banner' }])).toEqual([]);
   });
 
   it('themeViews가 없거나 빈 위젯은 드롭한다', () => {
-    expect(normalizeThemeWidgets([
+    expect(normalizeThemes([
       { id: 78, uuid: 'u78', type: 'thumbnail_carousel', title: '헤나테스트', subtitle: '' },
       { ...rawTextOnly, themeViews: [] },
     ])).toEqual([]);
@@ -99,11 +99,11 @@ describe('normalizeThemeWidgets', () => {
 
   it('link 없는 view는 드롭하고, 유효 view가 0이면 위젯도 드롭한다', () => {
     const noLink = { ...rawTextOnly, themeViews: [{ id: 9, viewId: 9, title: 'x' }] };
-    expect(normalizeThemeWidgets([noLink])).toEqual([]);
+    expect(normalizeThemes([noLink])).toEqual([]);
   });
 
   it('label_text/label_color 쌍이 불완전하면 label은 null', () => {
-    const [w] = normalizeThemeWidgets([{
+    const [w] = normalizeThemes([{
       ...rawTextOnly,
       themeViews: [{ id: 1, viewId: 1, title: 't', label_text: '사주', link: { type: 'url', value: '/x' } }],
     }]);
@@ -112,7 +112,7 @@ describe('normalizeThemeWidgets', () => {
   });
 
   it('tag_filter 링크를 보존하고, unknown link type인 view는 드롭한다', () => {
-    const [w] = normalizeThemeWidgets([{
+    const [w] = normalizeThemes([{
       ...rawTextOnly,
       themeViews: [
         { id: 1, viewId: 1, title: 'a', link: { type: 'tag_filter', value: 'all' } },

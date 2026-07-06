@@ -1,8 +1,8 @@
 import type {
+  Theme,
   ThemeKeyword,
   ThemeLink,
   ThemeView,
-  ThemeWidget,
 } from '../types/theme-types';
 
 // ─── raw 타입: 서버 응답 그대로. api/ 내부 전용 — feature 배럴로 반출 금지 ───
@@ -33,7 +33,7 @@ export type RawThemeView = {
   keywords?: RawThemeKeyword[];
 };
 
-export type RawThemeWidget = {
+export type RawTheme = {
   id?: number;
   uuid?: string;
   type?: string;
@@ -42,7 +42,7 @@ export type RawThemeWidget = {
   themeViews?: RawThemeView[];
 };
 
-export type RawThemeListResponse = { status: number; data: RawThemeWidget[] };
+export type RawThemeListResponse = { status: number; data: RawTheme[] };
 
 // ─── 정규화 ───
 
@@ -98,12 +98,12 @@ function normalizeKeyword(keyword: RawThemeKeyword): ThemeKeyword | null {
 }
 
 /**
- * raw 위젯 목록 → 도메인 ThemeWidget[].
+ * raw 테마 목록 → 도메인 Theme[].
  * 렌더 불가능한 단위는 이 경계에서 드롭한다: unknown type(forward compat),
  * 빈 themeViews, link 없는 view/keyword. 스펙 §5 참조.
  */
-export function normalizeThemeWidgets(raw: RawThemeWidget[]): ThemeWidget[] {
-  const widgets: ThemeWidget[] = [];
+export function normalizeThemes(raw: RawTheme[]): Theme[] {
+  const themes: Theme[] = [];
   for (const w of raw) {
     if (w.id === undefined || !w.uuid || !w.title || !w.type) continue;
     const rawViews = w.themeViews ?? [];
@@ -115,15 +115,15 @@ export function normalizeThemeWidgets(raw: RawThemeWidget[]): ThemeWidget[] {
         .map(normalizeKeyword)
         .filter((k): k is ThemeKeyword => k !== null);
       if (keywords.length === 0) continue;
-      widgets.push({ ...base, type: 'keyword_cloud', keywords });
+      themes.push({ ...base, type: 'keyword_cloud', keywords });
     } else if (isContentType(w.type)) {
       const views = rawViews
         .map(normalizeView)
         .filter((v): v is ThemeView => v !== null);
       if (views.length === 0) continue;
-      widgets.push({ ...base, type: w.type, views });
+      themes.push({ ...base, type: w.type, views });
     }
     // unknown type → drop
   }
-  return widgets;
+  return themes;
 }

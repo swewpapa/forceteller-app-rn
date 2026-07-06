@@ -23,16 +23,16 @@ export type ThemeKeyword = {
   link: ThemeLink;
 };
 
-type ThemeWidgetBase = {
+type ThemeBase = {
   id: number;
   uuid: string;
   title: string;
   subtitle: string | null;
 };
 
-/** /api/theme/list/{code}의 위젯 단위. type은 위젯 렌더러 지시자(서버 드리븐). */
-export type ThemeWidget =
-  | (ThemeWidgetBase & { type: 'text_only'; views: ThemeView[] })
-  | (ThemeWidgetBase & { type: 'thumbnail_carousel'; views: ThemeView[] })
-  | (ThemeWidgetBase & { type: 'full_image_carousel'; views: ThemeView[] })
-  | (ThemeWidgetBase & { type: 'keyword_cloud'; keywords: ThemeKeyword[] });
+/** /api/theme/list/{code}의 테마 단위. type은 위젯 렌더러 지시자(서버 드리븐). */
+export type Theme =
+  | (ThemeBase & { type: 'text_only'; views: ThemeView[] })
+  | (ThemeBase & { type: 'thumbnail_carousel'; views: ThemeView[] })
+  | (ThemeBase & { type: 'full_image_carousel'; views: ThemeView[] })
+  | (ThemeBase & { type: 'keyword_cloud'; keywords: ThemeKeyword[] });

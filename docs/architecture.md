@@ -80,14 +80,14 @@ ESLint `import/no-restricted-paths`로 **강제**한다 (`.eslintrc.js`):
 |---|---|---|---|
 | API 메서드 | API-친화적 | 엔드포인트·파라미터가 이름에 드러남 | `themeApi.listByCode(code)`, `getById(id)` |
 | 훅 | API-친화적 | `use<도메인><조회방법>` | `useThemeListByCode(code)` |
-| 타입 | 도메인 개념 | HTTP 라우트 어휘 금지, 소비 컨텍스트 구분 | `ThemeWidget`, `ThemeView` |
-| 컴포넌트 | 도메인 개념 | 데이터 조회 방법이 아니라 개념을 렌더 | `ThemeWidgetList`, `TextOnlyWidget` |
+| 타입 | 도메인 개념 | HTTP 라우트 어휘 금지, 도메인 엔티티 | `Theme`, `ThemeView` |
+| 컴포넌트 | 도메인 개념 | 데이터 조회 방법이 아니라 개념을 렌더 | `ThemeWidget`, `ThemeWidgetList`, `TextOnlyWidget` |
 
-**theme 도메인의 컨텍스트 분리** — 같은 "테마" 엔티티가 두 방식으로 소비되므로 어휘를 분리한다:
+**theme 도메인의 엔티티/컴포넌트 분리** — 엔티티 이름과 컴포넌트 이름의 언어를 나눈다:
 
-- **위젯 컨텍스트**: `/api/theme/list/{code}` — 홈 등에 꽂히는 서버 구성 블록. `ThemeWidget*` 어휘 사용. 응답의 `type` 필드(`text_only`/`thumbnail_carousel`/`full_image_carousel`/`keyword_cloud`)는 콘텐츠 분류가 아니라 **위젯 렌더러 지시자**다.
-- **페이지 컨텍스트**: `/api/theme/{id}` — 테마 1개의 풀 페이지(레거시 theme-list-page). `Theme`/`ThemePage`/`useThemeById` 어휘를 이쪽에 **예약**한다.
-- `ThemeList`는 **사용 금지** — "테마들의 목록"(위젯)과 "테마 안 아이템 목록"(페이지)이 충돌하는 중의적 이름.
+- **엔티티 = `Theme`**: `/api/theme/list/{code}`와 향후 `/api/theme/{id}`가 **같은 도메인 엔티티**를 반환한다. 두 컨텍스트를 어휘가 아니라 **훅 이름**(`listByCode` vs 향후 `getById`)으로 구분한다. 엔티티에는 라우트 어휘를 새기지 않는다.
+- **컴포넌트 = `ThemeWidget*`**: `Theme`를 홈 위젯 UI로 렌더하는 컴포넌트 레이어(`ThemeWidget` 스위치, `ThemeWidgetList`, `TextOnlyWidget`). 응답의 `type` 필드(`text_only`/`thumbnail_carousel`/`full_image_carousel`/`keyword_cloud`)는 콘텐츠 분류가 아니라 **위젯 렌더러 지시자**다.
+- `ThemeList` 타입은 **만들지 않는다** — "테마들의 목록"과 "테마 안 아이템 목록"(레거시 theme-list-page)이 충돌하는 중의적 이름. 응답은 그냥 `Theme[]`.
 - `ThemeView` = 서버 `themeViews[]`의 아이템 단위 (서버 필드명 유지로 도메인 추적성 확보).
 - "위젯(widget)"은 React 생태계 용어가 아니라 **팀 도메인 용어**다 (컴포넌트 일반을 widget이라 부르지 않는다).
 

@@ -1,25 +1,25 @@
 import { Column, ListHeader, ListItem } from '@/shared/components';
-import type { ThemeView, ThemeWidget } from '../types/theme-types';
+import type { Theme, ThemeView } from '../types/theme-types';
 
-type TextOnlyWidgetData = Extract<ThemeWidget, { type: 'text_only' }>;
+type TextOnlyTheme = Extract<Theme, { type: 'text_only' }>;
 
 export type TextOnlyWidgetProps = {
-  widget: TextOnlyWidgetData;
+  theme: TextOnlyTheme;
   onPressView: (view: ThemeView) => void;
-  onPressViewAll?: (widget: TextOnlyWidgetData) => void;
+  onPressViewAll?: (theme: TextOnlyTheme) => void;
 };
 
 /** text_only 위젯: ListHeader + 라벨/제목 텍스트 행 목록. */
-export function TextOnlyWidget({ widget, onPressView, onPressViewAll }: TextOnlyWidgetProps) {
+export function TextOnlyWidget({ theme, onPressView, onPressViewAll }: TextOnlyWidgetProps) {
   return (
     <Column gap="150">
       <ListHeader
-        title={widget.title}
-        subtitle={widget.subtitle ?? undefined}
-        onPressViewAll={onPressViewAll ? () => onPressViewAll(widget) : undefined}
+        title={theme.title}
+        subtitle={theme.subtitle ?? undefined}
+        onPressViewAll={onPressViewAll ? () => onPressViewAll(theme) : undefined}
       />
       <Column>
-        {widget.views.map(view => (
+        {theme.views.map(view => (
           <ListItem
             key={view.viewId}
             label={view.label?.text}
