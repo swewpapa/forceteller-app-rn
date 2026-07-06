@@ -47,8 +47,8 @@ type TextFieldProps = Omit<
   clearable?: boolean;                  // default true — 포커스+값 있을 때 클리어(circle-xmark), disabled면 숨김
   leading?: ReactNode;                  // 선행 슬롯(예: 검색 아이콘)
   trailing?: ReactNode;                 // 후행 슬롯
-  onFocus?: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void; // 내부 포커스 추적 후 호출측에도 전달
-  onBlur?: (e: NativeSyntheticEvent<TextInputFocusEventData>) => void;
+  onFocus?: (e: FocusEvent) => void;   // RN 0.85 FocusEvent (TextInputFocusEventData는 deprecated). 내부 포커스 추적 후 호출측에도 전달
+  onBlur?: (e: BlurEvent) => void;     // RN 0.85 BlurEvent
   /** 컨테이너 레이아웃 전용 탈출구(margin/width 등). 병합 마지막. */
   style?: StyleProp<ViewStyle>;
 };
