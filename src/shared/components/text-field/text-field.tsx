@@ -1,6 +1,7 @@
 import { useState, type ReactNode } from 'react';
 import {
   Pressable,
+  StyleSheet,
   TextInput,
   View,
   type BlurEvent,
@@ -80,7 +81,7 @@ export function TextField({
           setFocused(false);
           onBlur?.(e);
         }}
-        style={[typographyStyles['body-lg'], { color: inputColor, flex: 1, padding: 0 }]}
+        style={[styles.input, { color: inputColor }]}
         {...rest}
       />
       {trailing}
@@ -99,3 +100,19 @@ export function TextField({
     </View>
   );
 }
+
+const bodyLg = typographyStyles['body-lg'];
+
+const styles = StyleSheet.create({
+  // body-lg에서 lineHeight를 제외해 적용한다: TextInput은 lineHeight가 걸리면 텍스트가
+  // 입력 박스 높이 기준으로 세로 중앙 정렬되지 않는다(<Text>(Typography)는 정상이라 거긴 유지).
+  // 정적값을 StyleSheet로 분리해 no-inline-styles 경고도 방지(색만 동적이라 인라인 유지).
+  input: {
+    fontSize: bodyLg.fontSize,
+    fontFamily: bodyLg.fontFamily,
+    fontWeight: bodyLg.fontWeight,
+    letterSpacing: bodyLg.letterSpacing,
+    flex: 1,
+    padding: 0,
+  },
+});
