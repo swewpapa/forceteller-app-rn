@@ -10,3 +10,4 @@ export {
   type ButtonShape,
   type ButtonSize,
 } from './button';
+export { TextField, type TextFieldProps } from './text-field';
