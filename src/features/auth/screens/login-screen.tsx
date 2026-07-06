@@ -1,8 +1,8 @@
 import { useCallback, useState } from 'react';
-import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native'; // eslint-disable-line no-restricted-imports
-import { Column, ScreenContainer } from '@/shared/components';
-import { radius, spacing, useAppColors } from '@/shared/theme';
+import { Button, Column, ScreenContainer } from '@/shared/components';
+import { useAppColors } from '@/shared/theme';
 import { useAuthStore } from '@/features/auth';
 
 type LoginRoute = RouteProp<{ Login: { redirect?: { screen: string; params?: object } } }, 'Login'>;
@@ -37,9 +37,14 @@ export function LoginScreen() {
     <ScreenContainer>
       <Column padding="300" gap="300" justify="center" style={styles.body}>
         <Text style={[styles.title, { color: colors.text.default }]}>로그인</Text>
-        <Pressable accessibilityRole="button" onPress={onGoogle} disabled={loading} style={[styles.btn, { borderColor: colors.stroke.subtle }]}>
-          {loading ? <ActivityIndicator color={colors.text.default} /> : <Text style={[styles.btnText, { color: colors.text.default }]}>Google로 계속하기</Text>}
-        </Pressable>
+        <Button
+          appearance="outline"
+          size="lg"
+          fullWidth
+          loading={loading}
+          label="Google로 계속하기"
+          onPress={onGoogle}
+        />
       </Column>
     </ScreenContainer>
   );
@@ -48,6 +53,4 @@ export function LoginScreen() {
 const styles = StyleSheet.create({
   body: { flex: 1 },
   title: { fontSize: 24, fontWeight: '700', textAlign: 'center' },
-  btn: { borderWidth: 1, borderRadius: radius.md, paddingVertical: spacing[200], alignItems: 'center' },
-  btnText: { fontSize: 15, fontWeight: '500' },
 });
