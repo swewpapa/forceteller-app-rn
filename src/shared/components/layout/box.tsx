@@ -16,3 +16,4 @@ export const Box = withStyleProps<SpacingProps & BackgroundColorProps & RadiusPr
 });
 
 export type BoxProps = ComponentProps<typeof Box>;
+Box.displayName = 'Box';

@@ -24,3 +24,4 @@ export const Column = withStyleProps<
 });
 
 export type ColumnProps = ComponentProps<typeof Column>;
+Column.displayName = 'Column';

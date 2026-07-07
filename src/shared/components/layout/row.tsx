@@ -24,3 +24,4 @@ export const Row = withStyleProps<
 });
 
 export type RowProps = ComponentProps<typeof Row>;
+Row.displayName = 'Row';
