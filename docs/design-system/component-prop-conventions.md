@@ -1,6 +1,6 @@
 # 컴포넌트 Prop 규약
 
-`src/shared/components/`의 디자인 시스템 컴포넌트가 prop을 정의하는 표준. Typography · layout(Box/Row/Column) · Button을 만들며 확립. **새 컴포넌트(Card 등)는 이 규약을 따른다.**
+`src/shared/components/`의 디자인 시스템 컴포넌트가 prop을 정의하는 표준. Typography · layout(Box/Row/Column) · Button · Chip을 만들며 확립. **새 컴포넌트(Card 등)는 이 규약을 따른다.**
 
 ## 1. Prop 카테고리
 
@@ -78,6 +78,110 @@ Typography에서 확립, 전 컴포넌트 공통:
 
 - `ref`는 일반 prop이라 `{...rest}`로 전달. `forwardRef` 불필요.
 
+## 8. 아토믹 컴포넌트 조합 + 스타일 엔진
+
+Chip에서 확립. 닫힌 DS 컴포넌트(시각 정체성이 고정된 것 — Chip/Button 등)를 **열린 아톰 조합 + variant 데이터**로 조립하는 패턴이다. 사용자에겐 named prop(`label`/`appearance` 등)만 노출하고, 내부는 토큰 prop을 받는 재사용 아톰을 variant 데이터로 값 고정해 만든다.
+
+### 스타일 엔진 (`src/shared/lib/style-engine/`)
+
+- 토큰 인지 스타일 prop 팩토리 **`withStyleProps(Component, { base?, pressedStyle?, resolvers })`** + 순수 리졸버(`color` / `textColor` / `font`) + `composeStyles`(base→리졸버 순 병합, 순수함수).
+- 리졸버는 `useTheme()`(전체 토큰 묶음)을 소비해 토큰 참조 → 스타일값으로 변환. 소비한 prop은 네이티브로 forward하지 않는다.
+- `pressedStyle`은 Pressable 계열 base 전용(style이 함수형으로 전달되므로).
+
+### 아토믹 조합 모델
+
+- 아톰은 **엔진산(토큰 prop을 받는 열린 컴포넌트)**. 조합 컴포넌트가 variant 데이터로 값을 고정해 시각 정체성을 닫는다.
+- 아톰은 기본 **비공개**(컴포넌트 파일 내부). `leading`/`trailing` 공개 prop(ReactNode)은 기존 §2 규약을 유지 — 아톰 이름만 `*Visual`.
+
+### 아톰 suffix 4종
+
+| suffix | 역할 |
+|---|---|
+| **`{Component}Container`** | 셸(배경/보더/레이아웃) |
+| **`{Component}TextLabel`** | 텍스트 |
+| **`{Component}LeadingVisual`** / **`{Component}TrailingVisual`** | 비주얼 슬롯 |
+
+### variant = 데이터
+
+- variant는 스타일 함수가 아니라 **토큰 참조 값의 묶음** 객체다.
+- 타입은 **`Record<AppearanceKey, VariantShape>` 어노테이션**으로 단다. `as const satisfies`는 리터럴 유니온이 되어 `v.foo` read 시 TS2339(속성 없음)를 유발하므로 쓰지 않는다.
+- 값은 **토큰 참조만** — 색 경로(`'text.default'`), 타입스케일(`'label-lg'`). 생 hex 등 토큰 밖 값 금지.
+
+### variant 키 = 슬롯 접두사 + 속성
+
+- 키 = `{슬롯 접두사}{속성}`: `containerColor`, `containerBorderColor`, `textLabelColor`, `textLabelFont`, `leadingVisualSize` 등.
+- **속성 어휘(슬롯 상대적)**:
+  - **`Color`** — 색. `containerColor`는 배경/fill 역할(M3 계열).
+  - **`Font`** — 타입스케일 한 묶음. 텍스트 슬롯 기본(스케일 규율 유지).
+  - **`Size`/`Weight`/`LineHeight`/`Tracking`** — 스케일 밖 오버라이드 + Visual 슬롯용.
+
+### 키 → 아톰 prop 유도
+
+- variant 키에서 슬롯 접두사를 떼면 아톰 prop명이 된다: `textLabelFont`→`font`, `textLabelColor`→`color`.
+- 특례 하나: **`containerColor`→`background`**(엔진 `color` 리졸버의 기존 Box 어휘 유지).
+
+### 색은 시맨틱 경로
+
+- 엔진 색 prop은 **`ColorPath`**(`'group.key'`, `ModeColors`에서 유도). 그룹 한정(`keyof ModeColors['text']`)이 아닌 경로 방식인 이유: on-color가 그룹을 넘나드는 조합(예: solid 라벨 = `'background.surface'`)을 표현해야 하기 때문.
+
+### 예시 (Chip)
+
+```tsx
+// ── 아톰(비공개) ─────────────────────────────
+const ChipContainer = withStyleProps<ColorProps, PressableProps>(Pressable, {
+  base: {
+    height: 32,
+    paddingHorizontal: 14, // Figma 실측(스케일 밖 — 원시 px)
+    borderRadius: radius.xl, // pill
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: 'transparent', // solid도 1px 투명 보더 → outline과 박스 크기 동일
+  },
+  pressedStyle: { opacity: 0.85 },
+  resolvers: [color],
+});
+
+const ChipTextLabel = withStyleProps<FontProps & TextColorProps, ComponentProps<typeof Text>>(Text, {
+  resolvers: [font, textColor],
+});
+
+// ── variant = 토큰 경로 데이터 ────────────────
+type ChipAppearance = 'outline' | 'solid';
+type ChipVariant = {
+  containerColor?: ColorPath;
+  containerBorderColor?: ColorPath;
+  textLabelColor: ColorPath;
+  textLabelFont: TypographyVariant;
+};
+
+// Record<…> 어노테이션 (as const satisfies 아님 — read 시 TS2339 방지)
+const chipVariants: Record<ChipAppearance, ChipVariant> = {
+  outline: { containerBorderColor: 'text.default', textLabelColor: 'text.default', textLabelFont: 'label-lg' },
+  solid: { containerColor: 'text.muted', textLabelColor: 'background.surface', textLabelFont: 'body-lg' },
+};
+
+// ── 조합(공개) ───────────────────────────────
+export function Chip({ label, onPress, appearance = 'outline', style, ...rest }: ChipProps) {
+  const v = chipVariants[appearance];
+  return (
+    <ChipContainer
+      accessibilityRole="button"
+      onPress={onPress}
+      background={v.containerColor} // containerColor → background 특례
+      borderColor={v.containerBorderColor}
+      style={style}
+      {...rest}
+    >
+      <ChipTextLabel font={v.textLabelFont} color={v.textLabelColor}>
+        {label}
+      </ChipTextLabel>
+    </ChipContainer>
+  );
+}
+```
+
 ## 현재 컴포넌트 대조표
 
 | 컴포넌트 | 시각 정체성 | 콘텐츠 | 탈출구 | 패스스루 |
@@ -85,6 +189,7 @@ Typography에서 확립, 전 컴포넌트 공통:
 | Typography | `variant`(타입 스케일), `color`(text 키·글자색 직접) | `children` | `style`(레이아웃) | `Omit<TextProps,'style'\|'children'>` |
 | Box/Row/Column | `padding`/`p`/`gap`(토큰\|px), `background`, `radius`, `justify`/`align` | `children` | `style`(레이아웃) | `Omit<ViewProps,'style'\|'children'>` |
 | Button | `color`(on-color), `appearance`, `size`, `shape` | `label`, `leading`/`trailing` | `style`(레이아웃) | `Omit<PressableProps,'style'\|'children'>` |
+| Chip | `appearance`(variant 데이터로 값 고정 — §8) | `label` | `style`(레이아웃) | `Omit<PressableProps,'style'\|'children'\|'accessibilityRole'>` |
 
 ## 비고
 

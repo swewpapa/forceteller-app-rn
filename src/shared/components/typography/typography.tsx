@@ -1,8 +1,12 @@
 // src/shared/components/typography/typography.tsx
 import type { ReactNode } from 'react';
 import { Text, type StyleProp, type TextProps, type TextStyle } from 'react-native';
-import { useAppColors, type ModeColors } from '@/shared/theme';
-import { typographyStyles, type TypographyVariant } from './generated/typography';
+import {
+  useAppColors,
+  typographyStyles,
+  type ModeColors,
+  type TypographyVariant,
+} from '@/shared/theme';
 
 export type TypographyProps = Omit<TextProps, 'style' | 'children'> & {
   variant: TypographyVariant;
