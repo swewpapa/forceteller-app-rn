@@ -1,0 +1,34 @@
+import { Column, ListHeader, ListItem } from '@/shared/components';
+import type { Theme, ThemeView } from '../types/theme-types';
+
+type TextOnlyTheme = Extract<Theme, { type: 'text_only' }>;
+
+export type TextOnlyWidgetProps = {
+  theme: TextOnlyTheme;
+  onPressView: (view: ThemeView) => void;
+  onPressViewAll?: (theme: TextOnlyTheme) => void;
+};
+
+/** text_only 위젯: ListHeader + 라벨/제목 텍스트 행 목록. */
+export function TextOnlyWidget({ theme, onPressView, onPressViewAll }: TextOnlyWidgetProps) {
+  return (
+    <Column gap="150">
+      <ListHeader
+        title={theme.title}
+        subtitle={theme.subtitle ?? undefined}
+        onPressViewAll={onPressViewAll ? () => onPressViewAll(theme) : undefined}
+      />
+      <Column>
+        {theme.views.map(view => (
+          <ListItem
+            key={view.viewId}
+            label={view.label?.text}
+            labelColor={view.label?.color}
+            title={view.title}
+            onPress={() => onPressView(view)}
+          />
+        ))}
+      </Column>
+    </Column>
+  );
+}

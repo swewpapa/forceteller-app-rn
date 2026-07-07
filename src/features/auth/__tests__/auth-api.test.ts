@@ -1,13 +1,15 @@
-jest.mock('@/shared/lib', () => ({ http: { post: jest.fn() } }));
-import { http } from '@/shared/lib';
-import { exchangeToken } from '../api/auth-api';
+import { createAuthApi } from '../api/auth-api';
+import type { HttpClient } from '@/shared/lib';
 
 describe('auth-api', () => {
   it('exchanges firebase id token for service token', async () => {
-    (http.post as jest.Mock).mockResolvedValue({ serviceToken: 'svc', user: { id: '1' } });
-    const result = await exchangeToken('fb-id-token', 'uid-1', 'Tester');
+    const post = jest.fn().mockResolvedValue({ serviceToken: 'svc', user: { id: '1' } });
+    const authApi = createAuthApi({ post } as unknown as HttpClient);
+
+    const result = await authApi.exchangeFirebaseToken('fb-id-token', 'uid-1', 'Tester');
+
     expect(result).toEqual({ serviceToken: 'svc', user: { id: '1' } });
-    expect(http.post).toHaveBeenCalledWith('/api/auth/firebase', {
+    expect(post).toHaveBeenCalledWith('/api/auth/firebase', {
       provider: 'google',
       id: 'uid-1',
       name: 'Tester',

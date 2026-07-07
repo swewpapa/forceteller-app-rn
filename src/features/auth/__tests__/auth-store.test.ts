@@ -5,7 +5,9 @@ jest.mock('../providers/google-provider', () => ({
   googleProvider: { signIn: jest.fn().mockResolvedValue({ firebaseIdToken: 'fb' }), signOut: jest.fn().mockResolvedValue(undefined) },
 }));
 jest.mock('../api/auth-api', () => ({
-  exchangeToken: jest.fn().mockResolvedValue({ serviceToken: 'svc', user: { id: '1' } }),
+  authApi: {
+    exchangeFirebaseToken: jest.fn().mockResolvedValue({ serviceToken: 'svc', user: { id: '1' } }),
+  },
 }));
 
 import { authTokenStore } from '@/shared/lib';
