@@ -4,3 +4,8 @@ export { color, type ColorProps } from './resolvers/color';
 export { textColor, type TextColorProps } from './resolvers/text-color';
 export { font, type FontProps } from './resolvers/font';
 export { withStyleProps } from './with-style-props';
+export { spacing, type SpacingProps, type SpaceValue, type PaddingValue } from './resolvers/spacing';
+export { gap, type GapProps } from './resolvers/gap';
+export { backgroundColor, type BackgroundColorProps, type BackgroundKey } from './resolvers/background-color';
+export { radius, type RadiusProps } from './resolvers/radius';
+export { flow, type FlowProps } from './resolvers/flow';

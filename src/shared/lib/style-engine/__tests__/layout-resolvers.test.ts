@@ -1,5 +1,8 @@
 import { spacing } from '../resolvers/spacing';
 import { gap } from '../resolvers/gap';
+import { backgroundColor } from '../resolvers/background-color';
+import { radius } from '../resolvers/radius';
+import { flow } from '../resolvers/flow';
 import type { ThemeContextValue } from '@/shared/theme';
 
 // spacing/gap read the token scale directly (aliased import), not theme — a stub theme is fine.
@@ -74,5 +77,39 @@ describe('gap resolver', () => {
     expect(gap.resolve({ gap: 5 }, theme)).toEqual({ gap: 5 });
     expect(gap.resolve({}, theme)).toEqual({});
     expect(gap.props).toEqual(['gap']);
+  });
+});
+
+const themeWithColors = {
+  colors: { background: { surface: '#ffffff', inset: '#f4f4f4' } },
+  radius: { md: 8, xl: 99 },
+} as unknown as ThemeContextValue;
+
+describe('backgroundColor resolver', () => {
+  it('그룹키를 backgroundColor로 매핑', () => {
+    expect(backgroundColor.resolve({ color: 'surface' }, themeWithColors)).toEqual({ backgroundColor: '#ffffff' });
+    expect(backgroundColor.resolve({ color: 'inset' }, themeWithColors)).toEqual({ backgroundColor: '#f4f4f4' });
+  });
+  it('미지정 무방출, props', () => {
+    expect(backgroundColor.resolve({}, themeWithColors)).toEqual({});
+    expect(backgroundColor.props).toEqual(['color']);
+  });
+});
+
+describe('radius resolver', () => {
+  it('토큰 매핑 + 미지정 무방출', () => {
+    expect(radius.resolve({ radius: 'md' }, themeWithColors)).toEqual({ borderRadius: 8 });
+    expect(radius.resolve({}, themeWithColors)).toEqual({});
+  });
+});
+
+describe('flow resolver', () => {
+  it('justify/align 통과, 미지정 무방출', () => {
+    expect(flow.resolve({ justify: 'center', align: 'flex-end' }, themeWithColors)).toEqual({
+      justifyContent: 'center', alignItems: 'flex-end',
+    });
+    expect(flow.resolve({ justify: 'space-between' }, themeWithColors)).toEqual({ justifyContent: 'space-between' });
+    expect(flow.resolve({}, themeWithColors)).toEqual({});
+    expect(flow.props).toEqual(['justify', 'align']);
   });
 });
