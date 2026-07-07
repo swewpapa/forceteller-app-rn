@@ -654,6 +654,151 @@ Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
 
 ---
 
+## Task 1.5: 성능 — composed memoization + ColorPath 플랫 테이블 (서브에이전트, 별도 커밋)
+
+Task 1 랜딩 후 진행. 스펙 §4.1(A+B, Martin 승인). 동작 불변 — identity/할당 최적화만.
+
+**Files:**
+- Modify: `src/shared/lib/style-engine/with-style-props.tsx` (A)
+- Modify: `src/shared/lib/style-engine/color-path.ts` (B)
+- Test: `src/shared/lib/style-engine/__tests__/color-path.test.ts` 확장
+
+- [ ] **Step 1: `color-path.ts` — WeakMap 플랫 테이블 (B)**
+
+```ts
+import type { ModeColors, ThemeContextValue } from '@/shared/theme';
+
+/** 'text.default' | 'background.surface' | … — ModeColors에서 유도(수기 유니온 아님). */
+export type ColorPath = {
+  [G in keyof ModeColors]: `${G & string}.${keyof ModeColors[G] & string}`;
+}[keyof ModeColors];
+
+/** 모드별 colors 객체 → 플랫 테이블 캐시. day/night colors는 모듈 상수라 모드당 1회 구축. */
+const flatCache = new WeakMap<ModeColors, Record<string, string>>();
+
+function buildFlatTable(colors: ModeColors): Record<string, string> {
+  const flat: Record<string, string> = {};
+  for (const group of Object.keys(colors)) {
+    const entries = (colors as Record<string, Record<string, string>>)[group];
+    for (const key of Object.keys(entries)) flat[`${group}.${key}`] = entries[key];
+  }
+  return flat;
+}
+
+/** 시맨틱 색 경로 → 색 문자열. cdk palette.get(path) 선례. 구축 후엔 split/할당 0, 단일 lookup. */
+export function resolveColorPath(path: ColorPath, theme: ThemeContextValue): string {
+  let flat = flatCache.get(theme.colors);
+  if (flat === undefined) {
+    flat = buildFlatTable(theme.colors);
+    flatCache.set(theme.colors, flat);
+  }
+  return flat[path];
+}
+```
+
+- [ ] **Step 2: `color-path.test.ts` 확장** — 기존 케이스 그린 유지 + 반복 호출 일관성/교차 그룹 케이스 추가
+
+- [ ] **Step 3: `with-style-props.tsx` — composed/styleValue identity 안정화 (A)**
+
+`useMemo`+spread deps 대신 ref 기반 shallow-compare 프라이빗 훅(deps 길이 가변 허용 + exhaustive-deps 억제 불필요 + 캐시 안 잊음):
+
+```tsx
+import { useMemo, useRef, type ComponentType } from 'react';
+import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
+import { useTheme } from '@/shared/theme';
+import { composeStyles } from './compose-styles';
+import type { ResolversMap, TokenPropsOf } from './resolver';
+
+type AnyStyle = ViewStyle | TextStyle;
+
+type WithStyleOptions<R extends ResolversMap> = {
+  base?: AnyStyle;
+  /**
+   * Pressable 계열 base 전용. 설정 시 style이 함수형(`({pressed}) => ...`)으로 전달되므로,
+   * 함수형 style을 호출하지 않는 base(Text/View 등)에 쓰면 스타일이 조용히 사라진다.
+   * 타입 레벨 가드(별도 팩토리)는 로드맵.
+   */
+  pressedStyle?: ViewStyle;
+  resolvers: R;
+};
+
+function depsEqual(a: readonly unknown[], b: readonly unknown[]): boolean {
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i += 1) {
+    if (!Object.is(a[i], b[i])) return false;
+  }
+  return true;
+}
+
+/** deps shallow-compare memo. 소비 키는 팩토리 시점 고정이라 deps 길이 불변 — 렌더 간 비교 안전. */
+function useStableValue<T>(compute: () => T, deps: readonly unknown[]): T {
+  const ref = useRef<{ deps: readonly unknown[]; value: T } | null>(null);
+  if (ref.current === null || !depsEqual(ref.current.deps, deps)) {
+    ref.current = { deps, value: compute() };
+  }
+  return ref.current.value;
+}
+
+/** 베이스 컴포넌트에 토큰 인지 스타일 prop 부여. TokenProps는 resolvers 맵에서 추론. */
+export function withStyleProps<
+  R extends ResolversMap,
+  BaseProps extends { style?: StyleProp<any> },
+>(Component: ComponentType<BaseProps>, { base, pressedStyle, resolvers }: WithStyleOptions<R>) {
+  const orderedKeys = Object.keys(resolvers);
+  const consumed = new Set(orderedKeys);
+
+  function StyledComponent(
+    props: TokenPropsOf<R> & Omit<BaseProps, 'style'> & { style?: StyleProp<AnyStyle> },
+  ) {
+    const theme = useTheme();
+    const record = props as Record<string, unknown>;
+
+    // 토큰 값 불변 + 같은 theme(모드)이면 composed identity 유지 → 스타일 재계산/재-diff 스킵.
+    // 한계: 인라인 배열 shorthand(padding={['100', 14]})는 렌더마다 새 identity라 memo 미스(현행과 동일 비용).
+    const composed = useStableValue(
+      () => composeStyles(record, base, resolvers, theme),
+      [theme, ...orderedKeys.map((key) => record[key])],
+    );
+
+    const forward: Record<string, unknown> = {};
+    for (const key in props) {
+      if (!consumed.has(key)) forward[key] = record[key];
+    }
+    const { style, ...rest } = forward as { style?: StyleProp<AnyStyle> } & Record<string, unknown>;
+
+    const styleValue = useMemo(
+      () =>
+        pressedStyle
+          ? ({ pressed }: { pressed: boolean }) => [composed, pressed && pressedStyle, style]
+          : [composed, style],
+      [composed, style],
+    );
+
+    return <Component {...(rest as BaseProps)} style={styleValue as StyleProp<AnyStyle>} />;
+  }
+
+  StyledComponent.displayName = `withStyleProps(${Component.displayName ?? Component.name ?? 'Component'})`;
+  return StyledComponent;
+}
+```
+
+- [ ] **Step 4: 게이트** — `pnpm test` PASS / `pnpm exec tsc --noEmit` 0 / `pnpm exec eslint . --max-warnings=0` clean
+
+- [ ] **Step 5: 커밋** (scoped add)
+
+```bash
+git add src/shared/lib/style-engine
+git commit -m "perf(style-engine): composed 스타일 memoization + ColorPath 플랫 테이블
+
+- 토큰 prop 불변 시 composed/styleValue identity 유지(ref 기반 shallow memo)
+- resolveColorPath를 WeakMap 모드별 플랫 테이블로 — split/할당 0, 단일 lookup
+- 동작 불변(스펙 §4.1)
+
+Co-Authored-By: Claude Opus 4.8 <noreply@anthropic.com>"
+```
+
+---
+
 ## Task 2: 규약 문서 §8 갱신 (컨트롤러 직접 수행)
 
 **Files:**

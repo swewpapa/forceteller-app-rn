@@ -93,6 +93,14 @@ export function withStyleProps<R extends ResolversMap, BaseProps extends { style
 - 리졸버 출력 간 스타일 키 충돌은 alias 외엔 정당한 케이스가 없음. 동시 지정 경고는 추가하지 않는다(현행 `??`도 조용히 우선순위 처리 — 패리티). alias 우선순위는 테스트로 고정(§7).
 - **구현 초기 검증 항목**: TS가 `View`/`Pressable`/`Text`에서 `BaseProps`를 추론하는지(부분 제네릭 명시는 TS에 없으므로 전부 추론이어야 함). 실패 시 폴백 = 커리드 API `withStyleProps(View)({...})` — 스펙 수준에선 추론 성공을 전제.
 
+### 4.1 성능 계약 (A+B, 2026-07-07 Martin 승인 — 바인딩 전환 커밋과 분리된 후속 커밋)
+
+배경: 토큰 prop이 불변이어도 매 렌더 `composed` 객체·`[composed, style]` 배열이 새 identity → RN이 커밋마다 스타일 re-flatten/diff. `resolveColorPath`는 호출마다 `split('.')` 배열 할당(절대 비용은 마이크로초 오더로 미미하나 상한 보장 차원).
+
+- **A. composed 스타일 memoization**: `withStyleProps` 내부에서 composed와 styleValue의 identity를 안정화. 소비 키 집합은 팩토리 시점 고정이므로 deps 길이 불변. **`useMemo` + spread deps 대신 ref 기반 shallow-compare 모듈 프라이빗 훅**을 쓴다(eslint exhaustive-deps 억제 불필요 + React의 "useMemo는 잊을 수 있다" 시맨틱 회피). theme identity는 provider의 `useMemo`가 보장(theme-provider.tsx 확인됨 — 모드 변경 시에만 변화). 한계(문서화): `padding={['100', 14]}` 인라인 배열 shorthand는 렌더마다 새 identity라 memo 미스 — 현행과 동일 비용, 회귀 아님.
+- **B. ColorPath 플랫 테이블**: `resolveColorPath`를 `WeakMap<ModeColors, Record<string, string>>` 캐시로 — 모드별 colors 객체당 1회 flatten(`'text.default'→'#191919'`) 구축 후 split/할당 0, 단일 lookup. 시그니처 불변(호출부 무변경). day/night colors는 모듈 레벨 상수라 WeakMap 키로 안정.
+- 측정 선행은 하지 않음(현 소비 규모에선 노이즈 수준 전망 + 두 항목 모두 이론적으로 명백·저비용). 실측은 리스트 스케일 소비자가 생기는 시점의 숙제.
+
 ## 5. 공유 변환 카탈로그 (`resolvers/`)
 
 전부 `Resolver<V>` 타입 어노테이션으로 선언(파라미터 타입은 어노테이션에서 추론):
