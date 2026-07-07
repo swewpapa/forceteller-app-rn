@@ -1,10 +1,12 @@
-import type { Theme, ThemeView } from '../types/theme-types';
+import type { Theme, ThemeKeyword, ThemeView } from '../types/theme-types';
+import { KeywordCloudWidget } from './keyword-cloud-widget';
 import { TextOnlyWidget } from './text-only-widget';
 
 export type ThemeWidgetProps = {
   theme: Theme;
   onPressView: (view: ThemeView) => void;
   onPressViewAll?: (theme: Theme) => void;
+  onPressKeyword?: (keyword: ThemeKeyword) => void;
 };
 
 /**
@@ -14,15 +16,23 @@ export type ThemeWidgetProps = {
  * default의 never 가드: 컴포넌트 반환 타입이 undefined를 허용해 fall-through가 컴파일되므로,
  * 새 위젯 타입이 union에 추가되면 여기서 컴파일 에러로 잡아 case 누락을 강제한다.
  */
-export function ThemeWidget({ theme, onPressView, onPressViewAll }: ThemeWidgetProps) {
+export function ThemeWidget({
+  theme,
+  onPressView,
+  onPressViewAll,
+  onPressKeyword,
+}: ThemeWidgetProps) {
   switch (theme.type) {
     case 'text_only':
       return (
         <TextOnlyWidget theme={theme} onPressView={onPressView} onPressViewAll={onPressViewAll} />
       );
+    case 'keyword_cloud':
+      return (
+        <KeywordCloudWidget theme={theme} onPressKeyword={onPressKeyword ?? (() => undefined)} />
+      );
     case 'thumbnail_carousel':
     case 'full_image_carousel':
-    case 'keyword_cloud':
       return null;
     default: {
       const _exhaustive: never = theme;
