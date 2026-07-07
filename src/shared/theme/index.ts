@@ -2,6 +2,7 @@ import { spacing } from './generated/spacing';
 import { radius } from './generated/radius';
 
 export { ThemeProvider } from './theme-provider';
+export type { ThemeContextValue } from './theme-provider';
 export { useTheme, useAppColors } from './use-theme';
 export type { ModeColors } from './generated/mode-colors';
 export type { ThemeMode, ResolvedTheme } from './resolve-theme';

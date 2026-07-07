@@ -8,11 +8,17 @@ import {
 import { useColorScheme } from 'react-native';
 import { createMMKV } from 'react-native-mmkv';
 import { dayColors, nightColors, type ModeColors } from './generated/mode-colors';
+import { spacing } from './generated/spacing';
+import { radius } from './generated/radius';
+import { typographyStyles } from './generated/typography';
 import { resolveTheme, type ResolvedTheme, type ThemeMode } from './resolve-theme';
 import { createThemeStorage } from './theme-storage';
 
 export type ThemeContextValue = {
   colors: ModeColors;
+  spacing: typeof spacing;
+  radius: typeof radius;
+  typography: typeof typographyStyles;
   mode: ThemeMode;
   resolvedTheme: ResolvedTheme;
   setMode: (mode: ThemeMode) => void;
@@ -36,6 +42,9 @@ export function ThemeProvider({ children }: PropsWithChildren) {
   const value = useMemo<ThemeContextValue>(
     () => ({
       colors: resolvedTheme === 'night' ? nightColors : dayColors,
+      spacing,
+      radius,
+      typography: typographyStyles,
       mode,
       resolvedTheme,
       setMode,
