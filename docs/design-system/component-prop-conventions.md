@@ -84,9 +84,12 @@ Chip에서 확립. 닫힌 DS 컴포넌트(시각 정체성이 고정된 것 — 
 
 ### 스타일 엔진 (`src/shared/lib/style-engine/`)
 
-- 토큰 인지 스타일 prop 팩토리 **`withStyleProps(Component, { base?, pressedStyle?, resolvers })`** + 순수 리졸버(`color` / `textColor` / `font`) + `composeStyles`(base→리졸버 순 병합, 순수함수).
-- 리졸버는 `useTheme()`(전체 토큰 묶음)을 소비해 토큰 참조 → 스타일값으로 변환. 소비한 prop은 네이티브로 forward하지 않는다.
+- 토큰 인지 스타일 prop 팩토리 **`withStyleProps(Component, { base?, pressedStyle?, resolvers })`**. `resolvers`는 **prop 이름 → 리졸버 바인딩 맵**이다: `{ color: background, radius, p: padding, padding }`.
+- **리졸버 = 순수 변환 `(value, theme) => style`** — prop 이름을 모른다. 이름의 거처는 컴포넌트의 바인딩 맵: 같은 `color`가 Box에선 배경(`background`), 텍스트 아톰에선 글자색(`textColor`)에 붙는 게 정상 상태다. 공유 리졸버 9종: `background`(그룹키)/`textColor`/`font`/`padding`/`margin`/`gap`/`radius`/`justify`/`align`.
+- **alias = 이중 키**: `{ p: padding, padding }` — 같은 리졸버를 두 키에 바인딩. **뒤 선언이 이김**(CSS cascade 동일), 컨벤션은 축약 먼저·풀네임 나중.
+- 미지정 prop 무방출은 `composeStyles`가 중앙 강제(리졸버는 항상 정의된 값만 받는다). TokenProps는 바인딩 맵에서 **타입 추론**(명시 제네릭 없음 — `<Box color=` 자동완성이 바인딩에서 나옴). 소비한 prop은 네이티브로 forward하지 않는다.
 - `pressedStyle`은 Pressable 계열 base 전용(style이 함수형으로 전달되므로).
+- 성능: 토큰 prop 불변 시 composed 스타일 identity 유지(ref 기반 memo), `resolveColorPath`는 모드별 플랫 테이블 캐시(스펙 §4.1).
 
 ### 아토믹 조합 모델
 
@@ -118,22 +121,31 @@ Chip에서 확립. 닫힌 DS 컴포넌트(시각 정체성이 고정된 것 — 
 ### 키 → 아톰 prop 유도
 
 - variant 키에서 슬롯 접두사를 떼면 아톰 prop명이 된다: `textLabelFont`→`font`, `textLabelColor`→`color`.
-- 특례 하나: **`containerColor`→`background`**(엔진 `color` 리졸버의 기존 Box 어휘 유지).
+- 특례 하나: **`containerColor`→`background`**(Chip 컨테이너의 로컬 ColorPath 바인딩 prop명 — 무채색 chip 토큰 통일 시 재검토).
 
-### 색은 시맨틱 경로
+### 색은 시맨틱 경로 vs 그룹키
 
-- 엔진 색 prop은 **`ColorPath`**(`'group.key'`, `ModeColors`에서 유도). 그룹 한정(`keyof ModeColors['text']`)이 아닌 경로 방식인 이유: on-color가 그룹을 넘나드는 조합(예: solid 라벨 = `'background.surface'`)을 표현해야 하기 때문.
+- 텍스트 계열 색 값은 **`ColorPath`**(`'group.key'`, `ModeColors`에서 유도). 그룹 한정이 아닌 경로 방식인 이유: on-color가 그룹을 넘나드는 조합(예: solid 라벨 = `'background.surface'`)을 표현해야 하기 때문.
+- 컨테이너 배경의 공유 리졸버 `background`는 **그룹키**(`keyof ModeColors['background']`) — 레이아웃 배경은 background 시맨틱 그룹에서만(의미적 정합).
+- **잔존 이원화(문서화)**: Chip 컨테이너 배경/보더만 ColorPath — 무채색 chip 토큰 부재의 임시 우회라 **chip.tsx 로컬 바인딩으로 격리**되어 있다. 토큰 신설 시 공유 `background`로 재바인딩해 통일. (과거의 리졸버 export명↔prop명 X자 교차는 바인딩 맵 재설계 — 2026-07-07 스펙 — 로 해소됨.)
 
 ### 열린 레이아웃(Box/Row/Column)의 색 prop
 
-- Box/Row/Column은 **`color`** prop(값 = `keyof ModeColors['background']` 자기 그룹키, 예 `color="surface"`)으로 배경색을 받는다. View엔 텍스트색 개념이 없어 `color`=배경 혼동이 없고, 컨테이너 슬롯이 하나뿐이라 접두사가 불필요.
-- **전환기 불일치(문서화)**: 레이아웃은 `color`(그룹키), Chip 아톰은 `background`(ColorPath). 같은 개념(컨테이너 배경)인데 prop명·값 타입이 갈리고, 엔진 리졸버도 `color` 리졸버(prop `background`)와 `backgroundColor` 리졸버(prop `color`)가 엇갈린다. 근본 원인은 Chip의 ColorPath가 무채색 chip 토큰 부재의 임시 우회라는 것 — **무채색 chip 시맨틱 토큰 신설 후속에서 양쪽 통일**(리졸버 네임 정리 포함). 각 아톰은 하나만 쓰므로 런타임 충돌은 없다.
+- Box/Row/Column은 **`color`** prop(값 = 그룹키, 예 `color="surface"`)으로 배경색을 받는다 — 바인딩 `{ color: background }`. View엔 텍스트색 개념이 없어 `color`=배경 혼동이 없고, 컨테이너 슬롯이 하나뿐이라 접두사가 불필요.
 
 ### 예시 (Chip)
 
 ```tsx
-// ── 아톰(비공개) ─────────────────────────────
-const ChipContainer = withStyleProps<ColorProps, PressableProps>(Pressable, {
+// ── Chip 로컬 색 리졸버(ColorPath 우회의 거처 — 무채색 토큰 신설 시 공유 background로 재바인딩) ──
+const chipBackground: Resolver<ColorPath> = (value, theme) => ({
+  backgroundColor: resolveColorPath(value, theme),
+});
+const chipBorderColor: Resolver<ColorPath> = (value, theme) => ({
+  borderColor: resolveColorPath(value, theme),
+});
+
+// ── 아톰(비공개) — 제네릭 없음: TokenProps는 바인딩 맵에서 추론 ──
+const ChipContainer = withStyleProps(Pressable, {
   base: {
     height: 32,
     paddingHorizontal: 14, // Figma 실측(스케일 밖 — 원시 px)
@@ -145,11 +157,11 @@ const ChipContainer = withStyleProps<ColorProps, PressableProps>(Pressable, {
     borderColor: 'transparent', // solid도 1px 투명 보더 → outline과 박스 크기 동일
   },
   pressedStyle: { opacity: 0.85 },
-  resolvers: [color],
+  resolvers: { background: chipBackground, borderColor: chipBorderColor },
 });
 
-const ChipTextLabel = withStyleProps<FontProps & TextColorProps, ComponentProps<typeof Text>>(Text, {
-  resolvers: [font, textColor],
+const ChipTextLabel = withStyleProps(Text, {
+  resolvers: { color: textColor, font },
 });
 
 // ── variant = 토큰 경로 데이터 ────────────────
