@@ -1,12 +1,12 @@
 import type { ComponentType } from 'react';
 import type { StyleProp, TextStyle, ViewStyle } from 'react-native';
 import { useTheme } from '@/shared/theme';
-import { collectResolverProps, composeStyles } from './compose-styles';
-import type { Resolver } from './resolver';
+import { composeStyles } from './compose-styles';
+import type { ResolversMap, TokenPropsOf } from './resolver';
 
 type AnyStyle = ViewStyle | TextStyle;
 
-type WithStyleOptions = {
+type WithStyleOptions<R extends ResolversMap> = {
   base?: AnyStyle;
   /**
    * Pressable 계열 base 전용. 설정 시 style이 함수형(`({pressed}) => ...`)으로 전달되므로,
@@ -14,18 +14,18 @@ type WithStyleOptions = {
    * 타입 레벨 가드(별도 팩토리)는 로드맵.
    */
   pressedStyle?: ViewStyle;
-  resolvers: Resolver<any>[];
+  resolvers: R;
 };
 
-/** 베이스 컴포넌트에 토큰 인지 스타일 prop 부여. TokenProps는 명시적 제네릭(리졸버와 일치시킴). */
+/** 베이스 컴포넌트에 토큰 인지 스타일 prop 부여. TokenProps는 resolvers 맵에서 추론. */
 export function withStyleProps<
-  TokenProps extends object,
+  R extends ResolversMap,
   BaseProps extends { style?: StyleProp<any> },
->(Component: ComponentType<BaseProps>, { base, pressedStyle, resolvers }: WithStyleOptions) {
-  const consumed = collectResolverProps(resolvers);
+>(Component: ComponentType<BaseProps>, { base, pressedStyle, resolvers }: WithStyleOptions<R>) {
+  const consumed = new Set(Object.keys(resolvers));
 
   function StyledComponent(
-    props: TokenProps & Omit<BaseProps, 'style'> & { style?: StyleProp<AnyStyle> },
+    props: TokenPropsOf<R> & Omit<BaseProps, 'style'> & { style?: StyleProp<AnyStyle> },
   ) {
     const theme = useTheme();
     const composed = composeStyles(props as Record<string, unknown>, base, resolvers, theme);

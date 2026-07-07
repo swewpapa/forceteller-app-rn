@@ -1,27 +1,29 @@
-import { composeStyles, collectResolverProps } from '../compose-styles';
-import { color } from '../resolvers/color';
+import { composeStyles } from '../compose-styles';
+import { background } from '../resolvers/background';
+import { padding } from '../resolvers/spacing';
 import type { ThemeContextValue } from '@/shared/theme';
 
-const theme = {
-  colors: { background: { surface: '#fff' }, text: { default: '#191919' } },
-} as unknown as ThemeContextValue;
-
-describe('collectResolverProps', () => {
-  it('리졸버 소비 prop 합집합', () => {
-    expect(collectResolverProps([color])).toEqual(new Set(['background', 'borderColor']));
-  });
-});
+const theme = { colors: { background: { surface: '#fff' } } } as unknown as ThemeContextValue;
 
 describe('composeStyles', () => {
-  it('base → 리졸버 순 병합', () => {
-    expect(composeStyles({ background: 'background.surface' }, { height: 32, borderColor: 'transparent' }, [color], theme))
-      .toEqual({ height: 32, borderColor: 'transparent', backgroundColor: '#fff' });
+  it('base → 바인딩 순 병합', () => {
+    expect(composeStyles({ color: 'surface' }, { height: 32 }, { color: background }, theme))
+      .toEqual({ height: 32, backgroundColor: '#fff' });
   });
-  it('리졸버가 base를 덮는다', () => {
-    expect(composeStyles({ borderColor: 'text.default' }, { borderColor: 'transparent' }, [color], theme).borderColor)
-      .toBe('#191919');
+  it('미지정 prop은 변환 미호출(무방출 중앙 가드)', () => {
+    expect(composeStyles({}, undefined, { color: background }, theme)).toEqual({});
   });
-  it('base 없으면 리졸버 결과만', () => {
-    expect(composeStyles({ background: 'background.surface' }, undefined, [color], theme)).toEqual({ backgroundColor: '#fff' });
+  it('alias — 풀네임(뒤 선언)이 축약을 덮음', () => {
+    const out = composeStyles({ p: '100', padding: '300' }, undefined, { p: padding, padding }, theme);
+    expect(out.paddingTop).toBe(24);
+  });
+  it('축약만 지정 시 축약 적용', () => {
+    const out = composeStyles({ p: '100' }, undefined, { p: padding, padding }, theme);
+    expect(out.paddingTop).toBe(8);
+  });
+  it('base 객체를 변형하지 않음(신선 accumulator)', () => {
+    const base = { height: 10 };
+    composeStyles({ color: 'surface' }, base, { color: background }, theme);
+    expect(base).toEqual({ height: 10 });
   });
 });

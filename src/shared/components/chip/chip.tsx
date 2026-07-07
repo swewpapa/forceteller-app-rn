@@ -1,19 +1,25 @@
-import { type ComponentProps } from 'react';
 import { Pressable, Text, type PressableProps, type StyleProp, type ViewStyle } from 'react-native';
 import { radius, type TypographyVariant } from '@/shared/theme';
 import {
-  color,
   font,
+  resolveColorPath,
   textColor,
   withStyleProps,
   type ColorPath,
-  type ColorProps,
-  type FontProps,
-  type TextColorProps,
+  type Resolver,
 } from '@/shared/lib/style-engine';
 
+// ── Chip 로컬 색 변환 ─────────────────────────
+// ColorPath 기반. 무채색 chip 시맨틱 토큰 신설 전까지의 우회라 chip에 콜로케이션(공유 background는 그룹키 기반).
+const chipBackground: Resolver<ColorPath> = (value, theme) => ({
+  backgroundColor: resolveColorPath(value, theme),
+});
+const chipBorderColor: Resolver<ColorPath> = (value, theme) => ({
+  borderColor: resolveColorPath(value, theme),
+});
+
 // ── 아톰(비공개) ─────────────────────────────
-const ChipContainer = withStyleProps<ColorProps, PressableProps>(Pressable, {
+const ChipContainer = withStyleProps(Pressable, {
   base: {
     height: 32,
     paddingHorizontal: 14, // Figma 실측(스케일 밖 — 원시 px)
@@ -25,11 +31,11 @@ const ChipContainer = withStyleProps<ColorProps, PressableProps>(Pressable, {
     borderColor: 'transparent', // solid도 1px 투명 보더 → outline과 박스 크기 동일
   },
   pressedStyle: { opacity: 0.85 },
-  resolvers: [color],
+  resolvers: { background: chipBackground, borderColor: chipBorderColor },
 });
 
-const ChipTextLabel = withStyleProps<FontProps & TextColorProps, ComponentProps<typeof Text>>(Text, {
-  resolvers: [font, textColor],
+const ChipTextLabel = withStyleProps(Text, {
+  resolvers: { color: textColor, font },
 });
 
 // ── variant = 토큰 경로 데이터 ────────────────
