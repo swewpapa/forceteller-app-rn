@@ -124,6 +124,11 @@ Chip에서 확립. 닫힌 DS 컴포넌트(시각 정체성이 고정된 것 — 
 
 - 엔진 색 prop은 **`ColorPath`**(`'group.key'`, `ModeColors`에서 유도). 그룹 한정(`keyof ModeColors['text']`)이 아닌 경로 방식인 이유: on-color가 그룹을 넘나드는 조합(예: solid 라벨 = `'background.surface'`)을 표현해야 하기 때문.
 
+### 열린 레이아웃(Box/Row/Column)의 색 prop
+
+- Box/Row/Column은 **`color`** prop(값 = `keyof ModeColors['background']` 자기 그룹키, 예 `color="surface"`)으로 배경색을 받는다. View엔 텍스트색 개념이 없어 `color`=배경 혼동이 없고, 컨테이너 슬롯이 하나뿐이라 접두사가 불필요.
+- **전환기 불일치(문서화)**: 레이아웃은 `color`(그룹키), Chip 아톰은 `background`(ColorPath). 같은 개념(컨테이너 배경)인데 prop명·값 타입이 갈리고, 엔진 리졸버도 `color` 리졸버(prop `background`)와 `backgroundColor` 리졸버(prop `color`)가 엇갈린다. 근본 원인은 Chip의 ColorPath가 무채색 chip 토큰 부재의 임시 우회라는 것 — **무채색 chip 시맨틱 토큰 신설 후속에서 양쪽 통일**(리졸버 네임 정리 포함). 각 아톰은 하나만 쓰므로 런타임 충돌은 없다.
+
 ### 예시 (Chip)
 
 ```tsx
@@ -187,7 +192,7 @@ export function Chip({ label, onPress, appearance = 'outline', style, ...rest }:
 | 컴포넌트 | 시각 정체성 | 콘텐츠 | 탈출구 | 패스스루 |
 |---|---|---|---|---|
 | Typography | `variant`(타입 스케일), `color`(text 키·글자색 직접) | `children` | `style`(레이아웃) | `Omit<TextProps,'style'\|'children'>` |
-| Box/Row/Column | `padding`/`p`/`gap`(토큰\|px), `background`, `radius`, `justify`/`align` | `children` | `style`(레이아웃) | `Omit<ViewProps,'style'\|'children'>` |
+| Box/Row/Column | `padding`/`p`·`margin`/`m`(토큰\|px shorthand), `color`(배경 그룹키), `radius`; Row/Column만 `gap`·`justify`/`align` | `children` | `style`(레이아웃) | `ViewProps` 패스스루(withStyleProps 엔진 기반 §8, buildLayoutStyle 폐지) |
 | Button | `color`(on-color), `appearance`, `size`, `shape` | `label`, `leading`/`trailing` | `style`(레이아웃) | `Omit<PressableProps,'style'\|'children'>` |
 | Chip | `appearance`(variant 데이터로 값 고정 — §8) | `label` | `style`(레이아웃) | `Omit<PressableProps,'style'\|'children'\|'accessibilityRole'>` |
 
