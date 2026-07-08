@@ -2,11 +2,7 @@ import type { ViewStyle } from 'react-native';
 import type { RadiusKey } from '@/shared/theme';
 import type { Resolver } from '../resolver';
 
-export type RadiusProps = { radius?: RadiusKey };
-
-export const radius: Resolver<RadiusProps> = {
-  props: ['radius'],
-  resolve(values, theme): ViewStyle {
-    return values.radius ? { borderRadius: theme.radius[values.radius] } : {};
-  },
-};
+/** radius 토큰 키 → borderRadius. */
+export const radius: Resolver<RadiusKey> = (value, theme): ViewStyle => ({
+  borderRadius: theme.radius[value],
+});
