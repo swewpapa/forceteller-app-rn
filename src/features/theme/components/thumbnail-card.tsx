@@ -18,7 +18,7 @@ export function ThumbnailCard({ view, onPress }: ThumbnailCardProps) {
       </AspectRatio>
       <Column gap="50">
         {view.label ? (
-          <Text style={[typographyStyles['label-sm'], { color: view.label.color ?? colors.text.subtle }]}>
+          <Text style={[typographyStyles['label-sm'], { color: view.label.color }]}>
             {view.label.text}
           </Text>
         ) : null}
