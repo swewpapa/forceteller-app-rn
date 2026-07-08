@@ -8,3 +8,4 @@ export { padding, margin, type SpaceValue, type PaddingValue } from './resolvers
 export { gap } from './resolvers/gap';
 export { radius } from './resolvers/radius';
 export { justify, align } from './resolvers/alignment';
+export { aspectRatio } from './resolvers/aspect-ratio';
