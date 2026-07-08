@@ -27,7 +27,7 @@
 - `spacing.ts` — `padding` + `margin` 두 변환(shorthand 정규화 유지) + `SpaceValue`/`PaddingValue`.
 - `gap.ts` — `gap: Resolver<SpaceValue>`.
 - `radius.ts` — `radius: Resolver<RadiusKey>`.
-- `flow.ts` — `justify` + `align` 두 변환.
+- `alignment.ts` — `justify` + `align` 두 변환. (구현 후 `flow.ts`에서 리네임)
 - `color.ts` — **삭제**(ColorPath 배경/보더 변환은 chip.tsx로 콜로케이션).
 
 **컴포넌트**:
@@ -66,7 +66,7 @@ Expected: 2 files changed. (OTA 문서 등 untracked는 건드리지 않음 — 
 
 **Files:**
 - Modify: `src/shared/lib/style-engine/resolver.ts`, `compose-styles.ts`, `with-style-props.tsx`, `index.ts`
-- Modify: `src/shared/lib/style-engine/resolvers/{text-color,font,spacing,gap,radius,flow}.ts`
+- Modify: `src/shared/lib/style-engine/resolvers/{text-color,font,spacing,gap,radius,alignment}.ts`
 - Rename: `src/shared/lib/style-engine/resolvers/background-color.ts` → `background.ts`
 - Delete: `src/shared/lib/style-engine/resolvers/color.ts`
 - Modify: `src/shared/components/layout/{box,row,column}.tsx`, `src/shared/components/chip/chip.tsx`
@@ -112,7 +112,7 @@ describe('font resolver', () => {
 import { padding, margin } from '../resolvers/spacing';
 import { gap } from '../resolvers/gap';
 import { radius } from '../resolvers/radius';
-import { justify, align } from '../resolvers/flow';
+import { justify, align } from '../resolvers/alignment';
 import type { ThemeContextValue } from '@/shared/theme';
 
 const theme = {} as unknown as ThemeContextValue; // padding/gap은 spacing 스케일 직접 참조
@@ -162,7 +162,7 @@ describe('radius resolver', () => {
   });
 });
 
-describe('flow resolvers', () => {
+describe('alignment resolvers', () => {
   it('justify/align 통과', () => {
     expect(justify('center', themeWithColors)).toEqual({ justifyContent: 'center' });
     expect(align('flex-end', themeWithColors)).toEqual({ alignItems: 'flex-end' });
@@ -436,7 +436,7 @@ export const radius: Resolver<RadiusKey> = (value, theme): ViewStyle => ({
 });
 ```
 
-`resolvers/flow.ts` (justify/align 두 변환으로 분해. `NonNullable`로 값 타입 정밀화 — TokenPropsOf가 `?`를 붙여 optional 유지):
+`resolvers/alignment.ts` (justify/align 두 변환으로 분해. `NonNullable`로 값 타입 정밀화 — TokenPropsOf가 `?`를 붙여 optional 유지):
 
 ```ts
 import type { ViewStyle } from 'react-native';
@@ -469,7 +469,7 @@ export { font } from './resolvers/font';
 export { padding, margin, type SpaceValue, type PaddingValue } from './resolvers/spacing';
 export { gap } from './resolvers/gap';
 export { radius } from './resolvers/radius';
-export { justify, align } from './resolvers/flow';
+export { justify, align } from './resolvers/alignment';
 ```
 
 - [ ] **Step 8: 컴포넌트 바인딩 맵 전환**

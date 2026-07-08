@@ -114,10 +114,10 @@ export function withStyleProps<R extends ResolversMap, BaseProps extends { style
 | `margin` | `PaddingValue` | marginTop/Right/Bottom/Left | spacing.ts |
 | `gap` | `SpaceValue` | gap | gap.ts |
 | `radius` | `RadiusKey` | borderRadius | radius.ts |
-| `justify` | `ViewStyle['justifyContent']` | justifyContent | flow.ts |
-| `align` | `ViewStyle['alignItems']` | alignItems | flow.ts |
+| `justify` | `ViewStyle['justifyContent']` | justifyContent | alignment.ts |
+| `align` | `ViewStyle['alignItems']` | alignItems | alignment.ts |
 
-- `spacing`(4 prop 복합)·`flow`(2 prop 복합) 리졸버는 **분해되어 소멸** — alias 병합은 바인딩 이중 키가, 독립 prop은 개별 변환이 담당.
+- `spacing`(4 prop 복합)·`flow`(2 prop 복합) 리졸버는 **분해되어 소멸** — alias 병합은 바인딩 이중 키가, 독립 prop은 개별 변환이 담당. justify/align 두 변환은 `alignment.ts`에 콜로케이션(구현 후 `flow.ts`→`alignment.ts` 리네임 — `flex`는 item 속성/방향과, `flow`는 CSS flow layout(비-flex 흐름)과 혼동되어 정렬 개념을 정확히 담는 `alignment` 채택).
 - 삭제: `resolvers/color.ts`(chip 콜로케이션), `collectResolverProps`.
 - 배럴: 변환 9종 + `Resolver`/`ColorPath`/`resolveColorPath` + 값 타입(`SpaceValue`/`PaddingValue`/`BackgroundKey`). 리졸버별 `*Props` 타입 export(`SpacingProps` 등)는 TokenProps 추론으로 존재 이유 소멸 — 외부 사용처 grep 후 제거(플랜에서 확정).
 - 네임충돌 주의(기존 관례 재사용): 변환 `radius`/`gap` vs 토큰 스케일 import — 소비 파일에서 `radius as radiusScale` 식 alias.
