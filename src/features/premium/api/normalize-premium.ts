@@ -64,10 +64,12 @@ function emptyToNull(value: string | null | undefined): string | null {
   return value ? value : null;
 }
 
+// carousel 치수(thumbnailWidth/Height) 파서. 치수는 양수여야 유효 —
+// 빈 문자열('')은 Number('')===0이라 통과하면 ratio=NaN·width=0으로 깨지므로 0/음수/파싱불가는 null.
 function toFiniteNumber(value: string | undefined): number | null {
-  if (value === undefined) return null;
+  if (!value) return null; // undefined/빈 문자열
   const n = Number(value);
-  return Number.isFinite(n) ? n : null;
+  return Number.isFinite(n) && n > 0 ? n : null;
 }
 
 function normalizeLink(link: RawPremiumLink | undefined): PremiumLink | null {

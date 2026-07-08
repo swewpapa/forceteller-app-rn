@@ -77,9 +77,9 @@ Figma "Premium List"(node 5:1325 아님 — `997:7359`) variant ↔ 서버 type.
 | `general` | Large (997:7358) | `GeneralWidget` — 큰 카드 + price | AspectRatio/Image, ListHeader |
 | `rank` | Rank (997:7360) | `RankWidget` — 순위 행 | ListHeader, (순위 배지) |
 | `carousel` | Carousel (997:7886) + Type6 (997:10296) | `CarouselWidget` — 세로 포스터 가로 스크롤 | **shared Carousel** + AspectRatio/Image |
-| `button` | Button (997:9157) | `ButtonWidget` | Button, ListHeader |
+| `button` | Button (997:9157) | `ButtonWidget` — 이미지 타일(2개 flex 균등, ratio 154/164) | AspectRatio/Image, ListHeader (DS Button 아님 — Figma/Angular 실측 결과 이미지 타일) |
 | `tag` | Tag (997:9856) | `TagWidget` — 태그 그리드 | Chip, ListHeader |
-| `banner` | (Figma 확인) | `BannerWidget` — `bgColor` 배경 + `bannerImage` | Image, raw hex 배경 |
+| `banner` | Figma 없음 (Angular 220px 실측) | `BannerWidget` — `bgColor` 배경 + `bannerImage`(cover) + 배너 탭 `link` | Image, raw hex 배경, Pressable, 엣지투엣지 |
 
 - premium `carousel`은 서버 `thumbnail.width/height`로 `AspectRatio ratio={w/h}` 계산(theme는 고정, premium은 서버 드리븐). Carousel 셸(renderItem 주입)은 도메인 무관이라 공유, 카드(`PremiumCarouselCard`)는 premium 전용.
 - **Figma Carousel/Type6 두 variant 모두 이 `CarouselWidget` 하나로 흡수**(Martin 확정): Type6도 carousel이고 `thumbnail.width/height`로 그린다 — 별도 Type6 렌더러 없음.

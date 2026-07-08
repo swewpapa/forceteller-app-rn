@@ -31,8 +31,9 @@ export type PriceTagProps = Omit<ViewProps, 'style' | 'children'> & {
 
 const FONT_FAMILY = 'Noto Sans KR';
 const WHITE = '#ffffff';
-// inversed 포스(가격) 골드 — on-dark 고정값. text.force 토큰은 night 모드에 c38800으로 스왑되어
-// 흰 글자와 짝이 어긋나므로 inversed에는 토큰 대신 밝은 골드를 고정한다(비-inversed는 토큰 사용).
+// inversed 포스(가격) 골드 — on-dark(어두운 배경 + 흰 글자) 고정값. text.force는 day=#c38800(어두운 골드)라
+// 어두운 배경에 묻히므로, inversed엔 토큰 대신 밝은 골드 #db9f15를 고정한다(비-inversed는 text.force 토큰 사용).
+// (text.forceInversed 토큰은 day #db9f15지만 night에 #c38800으로 스왑되어 '항상 on-dark' 용도엔 부적합.)
 const GOLD_INVERSED = '#db9f15';
 const BUBBLE_RADIUS = 4; // Figma radius/sm — radius 토큰에 sm(4)이 없어 원시 px.
 

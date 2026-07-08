@@ -251,6 +251,13 @@ describe('normalizePremiumList', () => {
     expect(normalizePremiumList([noImage])).toEqual([]);
   });
 
+  it('치수가 빈 문자열/0/음수인 carousel은 드롭한다 (파싱 불가 → NaN/0 렌더 방지)', () => {
+    const emptyW = { ...rawCarousel, extra: { ...rawCarousel.extra, thumbnailWidth: '' } };
+    const zeroH = { ...rawCarousel, extra: { ...rawCarousel.extra, thumbnailHeight: '0' } };
+    const negW = { ...rawCarousel, extra: { ...rawCarousel.extra, thumbnailWidth: '-10' } };
+    expect(normalizePremiumList([emptyW, zeroH, negW])).toEqual([]);
+  });
+
   it('link 없는 banner는 드롭한다 (배너는 탭 타깃이 존재 이유)', () => {
     const noLink = {
       id: 175,
