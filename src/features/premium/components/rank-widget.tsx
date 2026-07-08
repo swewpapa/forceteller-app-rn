@@ -1,5 +1,13 @@
 import { Pressable, StyleSheet, Text } from 'react-native';
-import { AspectRatio, Column, Image, ListHeader, Row, Typography } from '@/shared/components';
+import {
+  AspectRatio,
+  Column,
+  Image,
+  ListHeader,
+  PriceTag,
+  Row,
+  Typography,
+} from '@/shared/components';
 import { spacing, typographyStyles, useAppColors } from '@/shared/theme';
 import type { Premium, PremiumItem, PremiumLink } from '../types/premium-types';
 
@@ -73,35 +81,14 @@ function RankItemRow({
             <Typography variant="headline-xs" numberOfLines={2}>
               {item.title}
             </Typography>
-            {/* price 0/null → 태그 없음. Angular rank는 hidePrice=true로 가격을 숨겼으나,
-                RN 도메인 모델은 rank도 price 보유(주석 "general/rank만 non-null")라 데이터 주도로 표기(Figma도 표기). */}
-            {item.price ? <PriceTag price={item.price} /> : null}
+            {/* rank도 price 노출(Martin 확정, Figma 기준). Angular는 hidePrice=true였으나 최신 디자인은 표기.
+                price 0/null이면 태그 없음. 서버 데이터엔 원가/할인율 없어 discount는 off(F {price}만). */}
+            {item.price ? <PriceTag price={item.price} size="12" style={styles.price} /> : null}
           </Column>
         </Row>
       </Row>
     </Pressable>
   );
-}
-
-/**
- * 포스(force) 가격 표기: 골드 "F" 마크 + 천단위 콤마 가격.
- * 브랜드 포스 코인 SVG는 아직 shared 에셋/프리미티브로 없어(Figma상 "개편 예정") 토큰 색(text.force)의
- * "F" 텍스트를 코인 자리표시자로 사용 — 실제 코인 컴포넌트로 손쉽게 교체 가능.
- */
-function PriceTag({ price }: { price: number }) {
-  return (
-    <Row gap="50" align="center" style={styles.price}>
-      <Typography variant="label-sm" color="force">
-        F
-      </Typography>
-      <Typography variant="label-sm">{formatPrice(price)}</Typography>
-    </Row>
-  );
-}
-
-/** 천 단위 콤마 — Hermes Intl 의존 없이 결정적으로 포맷(toLocaleString 회피). */
-function formatPrice(value: number): string {
-  return String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
 const styles = StyleSheet.create({

@@ -1,5 +1,13 @@
 import { Pressable, StyleSheet } from 'react-native';
-import { AspectRatio, Column, Image, ListHeader, Row, Typography } from '@/shared/components';
+import {
+  AspectRatio,
+  Column,
+  Image,
+  ListHeader,
+  PriceTag,
+  Row,
+  Typography,
+} from '@/shared/components';
 import { spacing } from '@/shared/theme';
 import type { Premium, PremiumItem, PremiumLink } from '../types/premium-types';
 
@@ -48,33 +56,12 @@ function GeneralItemRow({ item, onPress }: { item: PremiumItem; onPress: () => v
           <Typography variant="headline-xs" numberOfLines={2}>
             {item.title}
           </Typography>
-          {/* price 0/null → 태그 없음(Angular의 price>0 가드 계승). 단일 price만 표기(sale/원가는 도메인 미보유). */}
-          {item.price ? <PriceTag price={item.price} /> : null}
+          {/* price 0/null → 태그 없음. 서버 데이터엔 원가/할인율 없어 discount off(F {price}만). */}
+          {item.price ? <PriceTag price={item.price} size="12" style={styles.price} /> : null}
         </Column>
       </Row>
     </Pressable>
   );
-}
-
-/**
- * 포스(force) 가격 표기: 골드 "F" 마크 + 천단위 콤마 가격.
- * Figma의 브랜드 포스 코인 SVG는 아직 shared 에셋/프리미티브로 없어(그 영역은 Figma상 "개편 예정"),
- * 토큰 색(text.force)으로 칠한 "F" 텍스트를 코인 자리표시자로 쓴다 — 실제 코인 컴포넌트로 손쉽게 교체 가능.
- */
-function PriceTag({ price }: { price: number }) {
-  return (
-    <Row gap="50" align="center" style={styles.price}>
-      <Typography variant="label-sm" color="force">
-        F
-      </Typography>
-      <Typography variant="label-sm">{formatPrice(price)}</Typography>
-    </Row>
-  );
-}
-
-/** 천 단위 콤마 — Hermes Intl 의존 없이 결정적으로 포맷(toLocaleString 회피). */
-function formatPrice(value: number): string {
-  return String(value).replace(/\B(?=(\d{3})+(?!\d))/g, ',');
 }
 
 const styles = StyleSheet.create({
