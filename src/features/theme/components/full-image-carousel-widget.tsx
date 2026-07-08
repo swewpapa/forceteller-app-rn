@@ -1,4 +1,4 @@
-import { CarouselFrame } from './carousel-frame';
+import { Carousel } from '@/shared/components';
 import { FullImageCard } from './full-image-card';
 import type { Theme, ThemeView } from '../types/theme-types';
 
@@ -9,13 +9,13 @@ export type FullImageCarouselWidgetProps = {
   onPressView: (view: ThemeView) => void;
 };
 
-/** full_image_carousel 위젯: CarouselFrame + FullImageCard(240px). */
+/** full_image_carousel 위젯: Carousel + FullImageCard(240px). */
 export function FullImageCarouselWidget({
   theme,
   onPressView,
 }: FullImageCarouselWidgetProps) {
   return (
-    <CarouselFrame
+    <Carousel
       title={theme.title}
       subtitle={theme.subtitle ?? undefined}
       data={theme.views}
