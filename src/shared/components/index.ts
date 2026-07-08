@@ -2,6 +2,8 @@ export { ScreenContainer } from './screen-container';
 export { PlaceholderScreen } from './placeholder-screen';
 export { Typography, type TypographyProps } from './typography';
 export { Box, Row, Column, type BoxProps, type RowProps, type ColumnProps } from './layout';
+export { AspectRatio, type AspectRatioProps } from './aspect-ratio/aspect-ratio';
+export { Image, type ImageProps } from './image/image';
 export {
   Button,
   type ButtonProps,
