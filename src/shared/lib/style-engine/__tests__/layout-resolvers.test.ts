@@ -1,7 +1,7 @@
 import { padding, margin } from '../resolvers/spacing';
 import { gap } from '../resolvers/gap';
 import { radius } from '../resolvers/radius';
-import { justify, align } from '../resolvers/flow';
+import { justify, align } from '../resolvers/alignment';
 import type { ThemeContextValue } from '@/shared/theme';
 
 const theme = {} as unknown as ThemeContextValue; // padding/gap은 spacing 스케일 직접 참조
@@ -51,7 +51,7 @@ describe('radius resolver', () => {
   });
 });
 
-describe('flow resolvers', () => {
+describe('alignment resolvers', () => {
   it('justify/align 통과', () => {
     expect(justify('center', themeWithColors)).toEqual({ justifyContent: 'center' });
     expect(align('flex-end', themeWithColors)).toEqual({ alignItems: 'flex-end' });

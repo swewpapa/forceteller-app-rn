@@ -7,4 +7,4 @@ export { font } from './resolvers/font';
 export { padding, margin, type SpaceValue, type PaddingValue } from './resolvers/spacing';
 export { gap } from './resolvers/gap';
 export { radius } from './resolvers/radius';
-export { justify, align } from './resolvers/flow';
+export { justify, align } from './resolvers/alignment';
