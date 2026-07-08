@@ -1,4 +1,4 @@
-import { CarouselFrame } from './carousel-frame';
+import { Carousel } from '@/shared/components';
 import { ThumbnailCard } from './thumbnail-card';
 import type { Theme, ThemeView } from '../types/theme-types';
 
@@ -9,13 +9,13 @@ export type ThumbnailCarouselWidgetProps = {
   onPressView: (view: ThemeView) => void;
 };
 
-/** thumbnail_carousel 위젯: CarouselFrame + ThumbnailCard(144px). */
+/** thumbnail_carousel 위젯: Carousel + ThumbnailCard(144px). */
 export function ThumbnailCarouselWidget({
   theme,
   onPressView,
 }: ThumbnailCarouselWidgetProps) {
   return (
-    <CarouselFrame
+    <Carousel
       title={theme.title}
       subtitle={theme.subtitle ?? undefined}
       data={theme.views}

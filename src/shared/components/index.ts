@@ -17,4 +17,5 @@ export { Field, type FieldProps } from './field';
 export { FormTextField, type FormTextFieldProps } from './form';
 export { ListHeader, type ListHeaderProps } from './list-header';
 export { ListItem, type ListItemProps } from './list-item';
+export { Carousel, type CarouselProps } from './carousel/carousel';
 export { Chip, type ChipProps } from './chip';

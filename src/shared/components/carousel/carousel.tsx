@@ -1,9 +1,10 @@
 import { type ReactElement } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
-import { Column, ListHeader } from '@/shared/components';
 import { spacing } from '@/shared/theme';
+import { Column } from '../layout';
+import { ListHeader } from '../list-header';
 
-export type CarouselFrameProps<T> = {
+export type CarouselProps<T> = {
   title: string;
   subtitle?: string;
   data: T[];
@@ -17,13 +18,13 @@ export type CarouselFrameProps<T> = {
  * 상쇄해 화면 엣지까지 확장하고 contentContainerStyle로 재적용한다 → 첫 카드가 헤더와 좌측
  * 정렬되면서 엣지투엣지 스크롤 + 우측 peek.
  */
-export function CarouselFrame<T>({
+export function Carousel<T>({
   title,
   subtitle,
   data,
   keyExtractor,
   renderCard,
-}: CarouselFrameProps<T>) {
+}: CarouselProps<T>) {
   return (
     <Column gap="250">
       <ListHeader title={title} subtitle={subtitle} />
