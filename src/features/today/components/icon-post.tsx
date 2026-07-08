@@ -12,8 +12,6 @@ export type IconPostProps = {
 };
 
 const ICON_SIZE = 48; // Figma Portrait 48×48 원형(radius-xl)
-// 다크 포스트 구분선 — 레거시 Angular `.color-white` 실측(rgba white 0.1). POST_DARK와 같은 테마 독립 계열.
-const DARK_DIVIDER = 'rgba(255, 255, 255, 0.1)';
 
 type IconRowProps = {
   item: IconItem;
@@ -71,7 +69,7 @@ export function IconPost({ post, onPressLink }: IconPostProps) {
     styles.card,
     { backgroundColor: isDark ? POST_DARK.bg : colors.background.surface },
   ];
-  const dividerColor = isDark ? DARK_DIVIDER : colors.stroke.subtle;
+  const dividerColor = isDark ? POST_DARK.divider : colors.stroke.subtle;
 
   return (
     <View style={cardStyle}>

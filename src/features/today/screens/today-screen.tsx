@@ -1,7 +1,7 @@
 import { ActivityIndicator, ScrollView } from 'react-native';
 import { useAppNavigation } from '@/features/auth';
 import { Button, Column, ScreenContainer, Typography } from '@/shared/components';
-import { TodayPost } from '../components/today-post';
+import { TodayPostView } from '../components/today-post-view';
 import { useTodayPosts } from '../hooks/useTodayPosts';
 import type { TodayLink } from '../types/today-types';
 
@@ -53,7 +53,7 @@ export function TodayScreen() {
       <ScrollView>
         <Column padding="300" gap="300">
           {query.data.map(post => (
-            <TodayPost key={post.id} post={post} onPressLink={handlePressLink} />
+            <TodayPostView key={post.id} post={post} onPressLink={handlePressLink} />
           ))}
         </Column>
       </ScrollView>

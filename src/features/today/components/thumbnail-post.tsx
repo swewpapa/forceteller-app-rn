@@ -15,8 +15,6 @@ const THUMB_WIDTH = 74; // Figma _List Thumbnail 74×48
 const THUMB_RATIO = 74 / 48; // 74×48 (w/h)
 const ROW_HEIGHT = 72; // Figma Today Post Thumbnail List Item h-72
 const PRICE_TAG_SIZE = '14' as const; // Figma Price Tag slot 43×14 = 가로형 size '14'
-// 다크 포스트 구분선 — 레거시 Angular `.color-white` 실측(rgba white 0.1). POST_DARK와 같은 테마 독립 계열.
-const DARK_DIVIDER = 'rgba(255, 255, 255, 0.1)';
 
 type ThumbnailRowProps = {
   item: ThumbnailItem;
@@ -75,7 +73,7 @@ export function ThumbnailPost({ post, onPressLink }: ThumbnailPostProps) {
     styles.card,
     { backgroundColor: isDark ? POST_DARK.bg : colors.background.surface },
   ];
-  const dividerColor = isDark ? DARK_DIVIDER : colors.stroke.subtle;
+  const dividerColor = isDark ? POST_DARK.divider : colors.stroke.subtle;
 
   return (
     <View style={cardStyle}>

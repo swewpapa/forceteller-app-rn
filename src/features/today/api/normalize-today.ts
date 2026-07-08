@@ -88,14 +88,21 @@ function normalizeFullImage(items: RawTodayItem[] | undefined): FullImageItem | 
   return { image, link: normalizeLink(first?.link) };
 }
 
-// thumbnail: 아이템 image는 null 허용, price는 기본 0. 개별 드롭 없음(빈 배열이면 호출부에서 포스트 드롭).
+// thumbnail: 주 콘텐츠인 title이 빈 문자열/부재면 개별 드롭(icon의 image 가드와 대칭).
+// image는 null 허용, price는 기본 0. 결과가 비면 호출부에서 포스트 드롭.
 function normalizeThumbnailItems(items: RawTodayItem[] | undefined): ThumbnailItem[] {
-  return (items ?? []).map(item => ({
-    title: item.title ?? '',
-    image: emptyToNull(item.image),
-    price: item.price ?? 0,
-    link: normalizeLink(item.link),
-  }));
+  const result: ThumbnailItem[] = [];
+  for (const item of items ?? []) {
+    const title = item.title;
+    if (!title) continue;
+    result.push({
+      title,
+      image: emptyToNull(item.image),
+      price: item.price ?? 0,
+      link: normalizeLink(item.link),
+    });
+  }
+  return result;
 }
 
 // icon: IconItem.image는 필수 — image 없는 아이템은 렌더 불가라 개별 드롭.

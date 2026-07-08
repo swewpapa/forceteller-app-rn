@@ -16,6 +16,7 @@ export const POST_DARK = {
   bg: '#101926',
   text: '#ffffff',
   subtle: 'rgba(255, 255, 255, 0.6)',
+  divider: 'rgba(255, 255, 255, 0.1)', // 다크 포스트 구분선 — 레거시 Angular `.color-white` 실측
 } as const;
 
 // bgImage(밝은 날씨 이미지 등) 위 !isDark 헤더는 앱 테마 무관하게 어두운 텍스트 고정(Figma day 토큰 실측).

@@ -422,6 +422,36 @@ describe('normalizeTodayPosts', () => {
     expect(normalizeTodayPosts([allNoImg])).toEqual([]);
   });
 
+  it('title 없는 thumbnail item은 개별 드롭하고, 전부 없으면 포스트를 드롭한다', () => {
+    const [p] = normalizeTodayPosts([
+      {
+        ...rawThumbnail,
+        body: {
+          items: [
+            { title: '', image: 'https://x/a.png', price: 0, link: { type: 'url', value: '/a' } },
+            {
+              title: '유효 항목',
+              image: 'https://x/b.png',
+              price: 0,
+              link: { type: 'url', value: '/item/1' },
+            },
+          ],
+        },
+      },
+    ]);
+    if (p.type !== 'thumbnail') throw new Error('unreachable');
+    expect(p.items).toHaveLength(1);
+    expect(p.items[0].title).toBe('유효 항목');
+    // title 있는 item이 하나도 없으면 포스트 자체 드롭.
+    const allNoTitle = {
+      ...rawThumbnail,
+      body: {
+        items: [{ title: '', image: 'https://x/a.png', price: 0, link: { type: 'url', value: '/a' } }],
+      },
+    };
+    expect(normalizeTodayPosts([allNoTitle])).toEqual([]);
+  });
+
   it('url이 아닌 링크(api 등)는 null로 정규화한다', () => {
     const [p] = normalizeTodayPosts([
       {

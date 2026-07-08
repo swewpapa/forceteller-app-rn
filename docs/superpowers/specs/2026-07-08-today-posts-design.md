@@ -23,7 +23,7 @@
 |---|---|---|
 | `full_image` / item | 이미지 1장 + link. header. | 1 |
 | `thumbnail` / thumbnail | 썸네일 리스트(제목 + 이미지(null 가능) + price/promo + link). **빈 리스트 가능**. isDark 있음. | 1 |
-| `icon` / daily | 아이콘 그리드 4(점수 title + 아이콘 image + caption + link, `params.state{code,extra}`). isDark. | 1 |
+| `icon` / daily | 아이콘 세로 리스트 4(점수 title + 아이콘 image + caption + link, `params.state{code,extra}`). isDark. | 1 |
 | `icon` / daily_weather | 날씨(header.bgImage + 온도 title + 미세먼지 caption + 날씨아이콘 + 외부 링크). isDark. | 1 |
 | `gift` / multi_gift | 선물(amount(HTML) + 버튼[받기=api POST] + 상태). | 2 |
 | `chat` / tarot·tarot_cat·proverb | 대화(말풍선 + portrait) + (tarot: 카드 스와이프 + submit POST). | 3 |
@@ -69,7 +69,7 @@ export type TodayPost =
 |---|---|---|---|
 | `full_image` | 840:3100 | `FullImagePost` | AspectRatio/Image |
 | `thumbnail` | 839:229 (+840:2936 상세) | `ThumbnailPost` | **PriceTag**(shared), Image |
-| `icon` | 840:3101 | `IconPost` — 아이콘 그리드 | Image, (그리드 레이아웃) |
+| `icon` | 840:3101 | `IconPost` — 아이콘 세로 리스트 | Image, (세로 리스트 레이아웃) |
 | `weather` | 856:792 | `WeatherPost` — bgImage 배경 | Image, raw hex/이미지 배경 |
 + 공통 `TodayPostHeader`(title/subtitle/portrait?/bgImage?).
 

@@ -4,7 +4,7 @@ import { ThumbnailPost } from './thumbnail-post';
 import { WeatherPost } from './weather-post';
 import type { TodayLink, TodayPost } from '../types/today-types';
 
-export type TodayPostProps = {
+export type TodayPostViewProps = {
   post: TodayPost;
   onPressLink: (link: TodayLink) => void;
 };
@@ -15,7 +15,7 @@ export type TodayPostProps = {
  * default의 never 가드: 새 표시형이 union에 추가되면 여기서 컴파일 에러로 case 누락을
  * 강제한다.
  */
-export function TodayPost({ post, onPressLink }: TodayPostProps) {
+export function TodayPostView({ post, onPressLink }: TodayPostViewProps) {
   switch (post.type) {
     case 'full_image':
       return <FullImagePost post={post} onPressLink={onPressLink} />;
