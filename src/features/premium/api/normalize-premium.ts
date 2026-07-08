@@ -10,7 +10,7 @@ import type {
 export type RawPremiumLink = {
   type?: string;
   value?: string;
-  title?: string; // 위젯 레벨 "모두 보기" 등. 도메인 링크엔 미반영.
+  title?: string; // "모두 보기" 등 라벨. 도메인 PremiumLink는 type/value만 — title 미반영.
   params?: { queryParams?: Record<string, string> };
 };
 
@@ -45,7 +45,7 @@ export type RawPremium = {
   };
   items?: RawPremiumItem[]; // rank/general/carousel/button
   tags?: RawPremiumTag[]; // tag
-  link?: RawPremiumLink; // general(모두보기)/banner(탭 타깃). 도메인 타입엔 필드 없음.
+  link?: RawPremiumLink; // items 위젯→moreLink(헤더 "모두 보기"), banner→link(탭 타깃)
 };
 
 export type RawPremiumListResponse = { status: number; data: RawPremium[] };
@@ -113,8 +113,9 @@ function normalizeTag(tag: RawPremiumTag): PremiumTag | null {
  *   - unknown type(forward compat)
  *   - link 없는(또는 unknown link type) 아이템/태그, 결과 비면 위젯도 드롭
  *   - 빈 items(rank/general/carousel/button) / 빈 tags(tag)
- *   - image/bgColor 없는 banner, thumbnail 치수 파싱 불가한 carousel
- * 아이템의 raw type/status, 위젯 레벨 link는 도메인 무관이라 반영하지 않는다.
+ *   - image/bgColor/link 없는 banner, thumbnail 치수 파싱 불가한 carousel
+ * 위젯 레벨 link는 banner→link(탭 타깃, 필수), items 위젯→moreLink(헤더 "모두 보기", nullable).
+ * 아이템의 raw type/status는 도메인 무관이라 반영하지 않는다.
  */
 export function normalizePremiumList(raw: RawPremium[]): Premium[] {
   const premiums: Premium[] = [];
@@ -130,7 +131,9 @@ export function normalizePremiumList(raw: RawPremium[]): Premium[] {
       const image = emptyToNull(w.extra?.bannerImage);
       const bgColor = emptyToNull(w.extra?.bannerBgColor);
       if (!image || !bgColor) continue; // image가 1차 드롭 사유(스펙), bgColor는 도메인 필수
-      premiums.push({ ...base, type: 'banner', image, bgColor });
+      const link = normalizeLink(w.link);
+      if (!link) continue; // 배너는 탭 타깃(link)이 존재 이유 — 없으면 렌더 의미 없음
+      premiums.push({ ...base, type: 'banner', image, bgColor, link });
     } else if (w.type === 'tag') {
       const tags = (w.tags ?? [])
         .map(normalizeTag)
@@ -143,12 +146,18 @@ export function normalizePremiumList(raw: RawPremium[]): Premium[] {
       const width = toFiniteNumber(w.extra?.thumbnailWidth);
       const height = toFiniteNumber(w.extra?.thumbnailHeight);
       if (width === null || height === null) continue; // 치수 없으면 렌더 불가
-      premiums.push({ ...base, type: 'carousel', items, thumbnail: { width, height } });
+      premiums.push({
+        ...base,
+        type: 'carousel',
+        items,
+        thumbnail: { width, height },
+        moreLink: normalizeLink(w.link),
+      });
     } else if (isItemListType(w.type)) {
-      // rank / general / button — 동일 shape(items)
+      // rank / general / button — 동일 shape(items + 헤더 moreLink)
       const items = normalizeItems(w.items);
       if (items.length === 0) continue;
-      premiums.push({ ...base, type: w.type, items });
+      premiums.push({ ...base, type: w.type, items, moreLink: normalizeLink(w.link) });
     }
     // unknown type → drop
   }

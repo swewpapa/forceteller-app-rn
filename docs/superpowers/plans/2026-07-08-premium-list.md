@@ -12,7 +12,8 @@
 - 위젯: `{ id, type, title, status, items[]|tags[], extra }`. type: rank/general/banner/carousel/button/tag.
 - 아이템: `{ id, title, subtitle, thumbnailImage, price?, type, status, link }`. price=general/rank만.
 - link: `{type:'url', value}` (아이템) / `{type:'api', value, params.queryParams.keyword}` (tag).
-- banner: items 없음, `extra.bannerImage` + `extra.bannerBgColor`(#hex).
+- **위젯 레벨 link**: `banner`는 top-level `link`=탭 타깃(필수), items 위젯(rank/general/carousel/button)은 `link`(헤더 "모두 보기", raw엔 `title:'모두 보기'`)→도메인 `moreLink`(nullable).
+- banner: items 없음, `extra.bannerImage` + `extra.bannerBgColor`(#hex) + top-level `link`(탭).
 - carousel: `extra.thumbnailWidth/Height`(문자열 px, 세로 포스터). Figma Carousel+Type6 흡수.
 - tag: items 대신 `tags[]`(`{text, link:api}`, 22개).
 
@@ -72,13 +73,15 @@ export type PremiumTag = { text: string; link: PremiumLink };
 type PremiumBase = { id: number; title: string; subtitle: string | null };
 
 export type Premium =
-  | (PremiumBase & { type: 'rank'; items: PremiumItem[] })
-  | (PremiumBase & { type: 'general'; items: PremiumItem[] })
-  | (PremiumBase & { type: 'banner'; image: string; bgColor: string })
-  | (PremiumBase & { type: 'carousel'; items: PremiumItem[]; thumbnail: { width: number; height: number } })
-  | (PremiumBase & { type: 'button'; items: PremiumItem[] })
+  | (PremiumBase & { type: 'rank'; items: PremiumItem[]; moreLink: PremiumLink | null })
+  | (PremiumBase & { type: 'general'; items: PremiumItem[]; moreLink: PremiumLink | null })
+  | (PremiumBase & { type: 'banner'; image: string; bgColor: string; link: PremiumLink })
+  | (PremiumBase & { type: 'carousel'; items: PremiumItem[]; thumbnail: { width: number; height: number }; moreLink: PremiumLink | null })
+  | (PremiumBase & { type: 'button'; items: PremiumItem[]; moreLink: PremiumLink | null })
   | (PremiumBase & { type: 'tag'; tags: PremiumTag[] });
 ```
+
+> 위젯 레벨 link(실측): `banner.link`=배너 탭 타깃(필수, 없으면 드롭), items 위젯 `moreLink`=헤더 "모두 보기"(nullable). raw link `title`은 도메인 미반영.
 - [ ] **Step 2: 실패 테스트** — raw 픽스처(scratchpad `premium-list.json`에서 발췌: 각 type 1개 + 렌더불가 케이스)로 `normalizePremiumList(raw)` 검증: url/api link 변환, 문자열 px→number(thumbnail), banner image/bgColor 승격, price null 처리, unknown type·link 없음·image 없음 드롭.
 - [ ] **Step 3: 구현** `normalize-premium.ts` — raw→`Premium[]`. link: `params.queryParams.keyword`→평탄화. `extra.thumbnailWidth/Height`(string)→`{width,height}`(number). banner는 `extra.bannerImage`(없으면 드롭)+`bannerBgColor`. tag는 `tags[]`. raw 타입은 파일 안에서만(배럴 반출 금지).
 - [ ] **Step 4**: 게이트(jest/tsc/eslint) — 정확한 raw 필드는 이 단계에서 `scratchpad/premium-list.json` 재확인하며 매핑.
@@ -103,9 +106,9 @@ export type Premium =
 **Files:** Create `premium/components/{rank,general,banner}-widget.tsx`
 
 - [ ] **Step 1: Figma 실측** — `get_design_context`(forceCode)로 rank/general/banner variant 치수·레이아웃·타이포·price 표기 확정.
-- [ ] **Step 2: general-widget** — Large 카드(ListHeader + 큰 썸네일 + title/subtitle + **price**). AspectRatio/Image, Typography.
-- [ ] **Step 3: rank-widget** — 순위 리스트(ListHeader + 순위 배지 + 아이템). 실측 기반.
-- [ ] **Step 4: banner-widget** — `View`(배경 `bgColor` raw hex) + `Image`(bannerImage). ListHeader 유무 실측.
+- [ ] **Step 2: general-widget** — Large 카드(ListHeader + 큰 썸네일 + title/subtitle + **price**). AspectRatio/Image, Typography. `moreLink` 있으면 헤더 우측 "모두 보기"(onPress→상위 위임).
+- [ ] **Step 3: rank-widget** — 순위 리스트(ListHeader + 순위 배지 + 아이템). 실측 기반. `moreLink` 헤더 처리는 general과 동일.
+- [ ] **Step 4: banner-widget** — `Pressable`(배경 `bgColor` raw hex, `link` 탭 타깃 onPress→상위 위임) + `Image`(bannerImage). ListHeader 없음(통짜 배너) — 실측.
 - [ ] **Step 5**: 게이트 + 커밋 `feat(premium): rank/general/banner 위젯`
 
 ---
@@ -116,8 +119,8 @@ export type Premium =
 
 - [ ] **Step 1: Figma 실측** — Carousel(997:7886)/Type6(997:10296)/Button(997:9157) 치수·레이아웃.
 - [ ] **Step 2: premium-carousel-card** — `AspectRatio ratio={thumbnail.width/thumbnail.height}` + `Image`. 서버 크기(세로 포스터).
-- [ ] **Step 3: carousel-widget** — shared `Carousel`(renderItem=PremiumCarouselCard). Figma Carousel/Type6 흡수(thumbnail W/H로 크기).
-- [ ] **Step 4: button-widget** — Button/ListHeader 조합, 실측 기반.
+- [ ] **Step 3: carousel-widget** — shared `Carousel`(renderItem=PremiumCarouselCard). Figma Carousel/Type6 흡수(thumbnail W/H로 크기). `moreLink` 있으면 "모두 보기" — `Carousel`/`ListHeader`의 헤더 우측 슬롯 지원 여부 확인(미지원 시 optional `onPressViewAll` 슬롯 추가, theme도 혜택).
+- [ ] **Step 4: button-widget** — Button/ListHeader 조합, 실측 기반. `moreLink` 헤더 처리 동일.
 - [ ] **Step 5**: 게이트 + 커밋 `feat(premium): carousel/button 위젯`
 
 ---
@@ -128,7 +131,7 @@ export type Premium =
 
 - [ ] **Step 1: Figma 실측** — Tag(997:9856) 그리드 레이아웃.
 - [ ] **Step 2: tag-widget** — `Chip` 그리드(tags[], wrap). Chip 재사용. 태그 탭은 api link(keyword) — 네비 목적지 부재라 no-op 콜백(theme keyword 선례, 범위 밖).
-- [ ] **Step 3: premium-widget** — type 스위치(rank/general/banner/carousel/button/tag), `never` 가드. onPress 핸들러(url link → Web 네비).
+- [ ] **Step 3: premium-widget** — type 스위치(rank/general/banner/carousel/button/tag), `never` 가드. 통합 `onPressLink(link: PremiumLink)`: `url`→Web 네비, `api`(tag keyword)→no-op(목적지 부재, 범위 밖). 아이템 link·`banner.link`·`moreLink` 모두 이 핸들러로 위임.
 - [ ] **Step 4: 배럴** `premium/index.ts` — `PremiumScreen` + 필요 export.
 - [ ] **Step 5**: 게이트 + 커밋 `feat(premium): tag 위젯 + 위젯 스위치`
 

@@ -141,6 +141,7 @@ describe('normalizePremiumList', () => {
       subtitle: null, // extra.subTitle: '' → null
     });
     if (w.type !== 'rank') throw new Error('unreachable');
+    expect(w.moreLink).toBeNull(); // 위젯 레벨 link 없음 → null
     expect(w.items).toHaveLength(1);
     expect(w.items[0]).toEqual({
       id: 1446,
@@ -157,13 +158,14 @@ describe('normalizePremiumList', () => {
     expect(w.subtitle).toBe('쏟아지는 하트!');
     if (w.type !== 'general') throw new Error('unreachable');
     expect(w.items[0].price).toBe(1000);
-    // 위젯 레벨 link는 general 도메인에 필드가 없으므로 반출되지 않는다.
-    expect(w).not.toHaveProperty('link');
+    // 위젯 레벨 "모두 보기" 링크 → moreLink(title은 도메인 PremiumLink에 없어 드롭).
+    expect(w.moreLink).toEqual({ type: 'url', value: '/premium/theme/161' });
   });
 
   it('carousel: 문자열 px thumbnail을 number로 변환하고, price 없는 아이템은 null', () => {
     const [w] = normalizePremiumList([rawCarousel]);
     if (w.type !== 'carousel') throw new Error('unreachable');
+    expect(w.moreLink).toBeNull(); // 위젯 레벨 link 없음 → null
     expect(w.thumbnail).toEqual({ width: 180, height: 200 });
     expect(w.items[0].price).toBeNull(); // carousel 아이템엔 price 필드 없음
     expect(w.items[0].title).toBe(''); // 빈 title은 드롭하지 않고 '' 유지
@@ -174,10 +176,11 @@ describe('normalizePremiumList', () => {
     const [w] = normalizePremiumList([rawButton]);
     expect(w).toMatchObject({ id: 39, type: 'button', subtitle: '마담 그리샴의' });
     if (w.type !== 'button') throw new Error('unreachable');
+    expect(w.moreLink).toBeNull(); // 위젯 레벨 link 없음 → null
     expect(w.items[0].price).toBeNull();
   });
 
-  it('banner: extra.bannerImage→image, extra.bannerBgColor→bgColor', () => {
+  it('banner: extra.bannerImage→image, bannerBgColor→bgColor, top-level link→탭 타깃', () => {
     const [w] = normalizePremiumList([rawBanner]);
     expect(w).toEqual({
       id: 175,
@@ -186,6 +189,7 @@ describe('normalizePremiumList', () => {
       type: 'banner',
       image: 'https://static.example.com/banner.png',
       bgColor: '#ffffff',
+      link: { type: 'url', value: 'https://event.example.com/level' },
     });
   });
 
@@ -245,6 +249,22 @@ describe('normalizePremiumList', () => {
   it('image 없는 banner는 드롭한다', () => {
     const noImage = { ...rawBanner, extra: { subTitle: '', bannerBgColor: '#fff' } };
     expect(normalizePremiumList([noImage])).toEqual([]);
+  });
+
+  it('link 없는 banner는 드롭한다 (배너는 탭 타깃이 존재 이유)', () => {
+    const noLink = {
+      id: 175,
+      title: '포덕레벨 (공통노출)',
+      status: 'S3',
+      extra: {
+        subTitle: '',
+        bannerBgColor: '#ffffff',
+        bannerImage: 'https://static.example.com/banner.png',
+      },
+      type: 'banner',
+      // top-level link 없음
+    };
+    expect(normalizePremiumList([noLink])).toEqual([]);
   });
 
   it('tags가 전부 유효하지 않으면(text/link 결손) tag 위젯을 드롭한다', () => {

@@ -37,31 +37,36 @@
 theme 선례대로 discriminated union + 렌더 불가 드롭.
 
 ```ts
-export type PremiumLink = /* 구현 태스크에서 API 실측 (theme ThemeLink = url|tag_filter 대응 확인) */;
+export type PremiumLink =
+  | { type: 'url'; value: string }
+  | { type: 'api'; value: string; keyword: string };   // tag 필터. keyword는 params.queryParams에서 평탄화
 
-/** 위젯 아이템 공통. price는 general(상품) 전용. */
+/** 위젯 아이템 공통. price는 general/rank만 non-null. */
 export type PremiumItem = {
   id: number;
   title: string;
   subtitle: string | null;
   thumbnailImage: string | null;
+  price: number | null;
   link: PremiumLink;
-  price: number | null;        // general만 non-null (구현 시 형식 실측)
 };
+
+export type PremiumTag = { text: string; link: PremiumLink };
 
 type PremiumBase = { id: number; title: string; subtitle: string | null };
 
 export type Premium =
-  | (PremiumBase & { type: 'rank'; items: PremiumItem[] })
-  | (PremiumBase & { type: 'general'; items: PremiumItem[] })
-  | (PremiumBase & { type: 'banner'; image: string; bgColor: string })   // items 없음
-  | (PremiumBase & { type: 'carousel'; items: PremiumItem[]; thumbnail: { width: number; height: number } })
-  | (PremiumBase & { type: 'button'; items: PremiumItem[] })
-  | (PremiumBase & { type: 'tag'; items: PremiumItem[] });
+  | (PremiumBase & { type: 'rank'; items: PremiumItem[]; moreLink: PremiumLink | null })
+  | (PremiumBase & { type: 'general'; items: PremiumItem[]; moreLink: PremiumLink | null })
+  | (PremiumBase & { type: 'banner'; image: string; bgColor: string; link: PremiumLink })   // items 없음, link=탭 타깃
+  | (PremiumBase & { type: 'carousel'; items: PremiumItem[]; thumbnail: { width: number; height: number }; moreLink: PremiumLink | null })
+  | (PremiumBase & { type: 'button'; items: PremiumItem[]; moreLink: PremiumLink | null })
+  | (PremiumBase & { type: 'tag'; tags: PremiumTag[] });
 ```
 
-- `normalize-premium.ts`: raw(문자열 px, extra 중첩) → 도메인 union. `thumbnailWidth/Height` 문자열→number, banner image/bgColor를 extra에서 승격, 렌더 불가(link 없음/이미지 없음/unknown type) 드롭. raw 타입은 배럴 반출 금지.
-- 정확한 raw 필드/형식(price 타입, link 구조, rank 순위 필드, tag 구조)은 **구현 Task에서 API JSON 재실측** 후 확정.
+- **위젯 레벨 link** (실측 반영): `banner`는 top-level `link`가 배너 **탭 타깃**(배너 존재 이유 — 필수, 없으면 드롭). items 위젯(rank/general/carousel/button)은 헤더 우측 **"모두 보기"** 링크를 `moreLink`(nullable, 없으면 `null`)로 담는다. raw의 link `title`("모두 보기" 라벨)은 도메인 `PremiumLink`엔 미반영(type/value만).
+- `normalize-premium.ts`: raw(문자열 px, extra 중첩) → 도메인 union. `thumbnailWidth/Height` 문자열→number, banner image/bgColor/link를 extra·top-level에서 승격, 위젯 link → moreLink/banner.link, 렌더 불가(link 없음/이미지 없음/unknown type/banner link 없음) 드롭. raw 타입은 배럴 반출 금지.
+- price는 number(원 단위), general/rank만 non-null. tag는 `tags[]`(item 아님).
 
 ## 4. 위젯 6종 + Figma 매핑
 
@@ -78,7 +83,8 @@ Figma "Premium List"(node 5:1325 아님 — `997:7359`) variant ↔ 서버 type.
 
 - premium `carousel`은 서버 `thumbnail.width/height`로 `AspectRatio ratio={w/h}` 계산(theme는 고정, premium은 서버 드리븐). Carousel 셸(renderItem 주입)은 도메인 무관이라 공유, 카드(`PremiumCarouselCard`)는 premium 전용.
 - **Figma Carousel/Type6 두 variant 모두 이 `CarouselWidget` 하나로 흡수**(Martin 확정): Type6도 carousel이고 `thumbnail.width/height`로 그린다 — 별도 Type6 렌더러 없음.
-- `banner`: `extra.bannerImage`를 `Image`로 그리고, `extra.bannerBgColor`(서버 hex)를 배경색으로. bgColor는 토큰 아닌 raw hex라 `View style={{ backgroundColor }}` 탈출구(ListItem `labelColor` 선례). 정밀 레이아웃(이미지 fit/배경 관계)은 구현 Task Figma 실측.
+- `banner`: `extra.bannerImage`를 `Image`로 그리고, `extra.bannerBgColor`(서버 hex)를 배경색으로. bgColor는 토큰 아닌 raw hex라 `View style={{ backgroundColor }}` 탈출구(ListItem `labelColor` 선례). 배너 전체가 `link`(탭 타깃)를 갖는 `Pressable` — 탭 시 url 네비. 정밀 레이아웃(이미지 fit/배경 관계)은 구현 Task Figma 실측.
+- **"모두 보기"**: items 위젯(rank/general/carousel/button)은 `moreLink`(nullable)가 있으면 헤더 우측에 "모두 보기"를 노출하고 탭 시 url 네비. `ListHeader`가 이 슬롯을 지원하는지 구현 Task에서 확인(theme `onPressViewAll` 선례) — 미지원 시 슬롯 추가 or 위젯 로컬 처리.
 
 ## 5. 구조 (파일)
 
@@ -131,4 +137,4 @@ src/features/premium/
 
 ## 10. 범위 밖 (로드맵)
 
-Type6 자동 carousel(데이터 생기면), price 포맷팅/통화 정책, tag_filter 네비게이션, premium 세로 가상화(FlashList — 위젯 늘면), rank 순위 애니메이션, banner 링크 동작.
+Type6 자동 carousel(데이터 생기면), price 포맷팅/통화 정책, tag_filter 네비게이션, premium 세로 가상화(FlashList — 위젯 늘면), rank 순위 애니메이션.
