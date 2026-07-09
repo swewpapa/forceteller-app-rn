@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 13B07FB51A68108700A75B9A /* Images.xcassets */; };
+		3127FCA0D8ED9FBDC18D918D /* Expo.plist in Resources */ = {isa = PBXBuildFile; fileRef = 704525738DFC0259246CECCC /* Expo.plist */; };
 		761780ED2CA45674006654EE /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 761780EC2CA45674006654EE /* AppDelegate.swift */; };
 		79C4A1F0A1B5F1213085D9F7 /* Pods_Forceteller.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = EE3728EE9D0D4D77A7E622E4 /* Pods_Forceteller.framework */; };
 		81AB9BB82411601600AC10FF /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */; };
@@ -25,6 +26,7 @@
 		13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = PrivacyInfo.xcprivacy; path = Forceteller/PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		4478A9A521415C72BB0911F9 /* ExpoModulesProvider.swift */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = sourcecode.swift; name = ExpoModulesProvider.swift; path = "Pods/Target Support Files/Pods-Forceteller/ExpoModulesProvider.swift"; sourceTree = "<group>"; };
 		6565442E7AF4BB422E135F75 /* Pods-Forceteller.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Forceteller.release.xcconfig"; path = "Target Support Files/Pods-Forceteller/Pods-Forceteller.release.xcconfig"; sourceTree = "<group>"; };
+		704525738DFC0259246CECCC /* Expo.plist */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.plist.xml; path = Expo.plist; sourceTree = "<group>"; };
 		761780EC2CA45674006654EE /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = AppDelegate.swift; path = Forceteller/AppDelegate.swift; sourceTree = "<group>"; };
 		7832B0EED81EF7D2D539E762 /* Pods-Forceteller.release-dev.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Forceteller.release-dev.xcconfig"; path = "Target Support Files/Pods-Forceteller/Pods-Forceteller.release-dev.xcconfig"; sourceTree = "<group>"; };
 		81AB9BB72411601600AC10FF /* LaunchScreen.storyboard */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.storyboard; name = LaunchScreen.storyboard; path = Forceteller/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -59,6 +61,7 @@
 				13B07FB81A68108700A75B9A /* PrivacyInfo.xcprivacy */,
 				950BC5414BC947BBAA0DB53F /* BootSplash.storyboard */,
 				9864EEFC821349F79E9FE328 /* Colors.xcassets */,
+				4DD2C7B8FA931B33C36D280D /* Supporting */,
 			);
 			name = Forceteller;
 			sourceTree = "<group>";
@@ -78,6 +81,15 @@
 				4478A9A521415C72BB0911F9 /* ExpoModulesProvider.swift */,
 			);
 			name = Forceteller;
+			sourceTree = "<group>";
+		};
+		4DD2C7B8FA931B33C36D280D /* Supporting */ = {
+			isa = PBXGroup;
+			children = (
+				704525738DFC0259246CECCC /* Expo.plist */,
+			);
+			name = Supporting;
+			path = Forceteller/Supporting;
 			sourceTree = "<group>";
 		};
 		62A82B445AC9B084FE224C0B /* ExpoModulesProviders */ = {
@@ -199,6 +211,7 @@
 				DA62E791ADF2CC2C77B95434 /* PrivacyInfo.xcprivacy in Resources */,
 				C7EF723E2E784E1FAA8A19D8 /* BootSplash.storyboard in Resources */,
 				EB083038CF6C4804A1939BF3 /* Colors.xcassets in Resources */,
+				3127FCA0D8ED9FBDC18D918D /* Expo.plist in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
