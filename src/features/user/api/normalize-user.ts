@@ -12,7 +12,7 @@ type RawMe = {
   // active/admin/userKey/analytics 등 나머지 서버 필드는 도메인 미반영.
 };
 
-export type RawMeResponse = { status: number; data: RawMe };
+export type UserMeResponse = { status: number; data: RawMe };
 
 // 출생지. 서버는 geonameId/lat/lng/state/country 등도 주지만 도메인은 3필드만 사용.
 type RawCity = {
@@ -34,7 +34,7 @@ type RawProfile = {
   // a/e/h/i/s/z(사주 간지)·avatarURL·editable 등은 도메인 미반영.
 };
 
-export type RawProfileResponse = { status: number; data: RawProfile };
+export type UserProfileResponse = { status: number; data: RawProfile };
 
 // ─── 정규화 ───
 
@@ -43,7 +43,7 @@ function emptyToNull(value: string | null | undefined): string | null {
 }
 
 /** {status, data} 봉투를 언랩해 로그인 사용자 도메인으로 매핑. 빈 문자열 email/avatarURL은 null. */
-export function normalizeMe(raw: RawMeResponse): AuthUser {
+export function normalizeMe(raw: UserMeResponse): AuthUser {
   const d = raw.data;
   return {
     id: d.id,
@@ -55,7 +55,7 @@ export function normalizeMe(raw: RawMeResponse): AuthUser {
 }
 
 /** {status, data} 봉투를 언랩. city는 존재 시 name/fullName/timeZoneId만 추리고, 없으면 null. */
-export function normalizeProfile(raw: RawProfileResponse): UserProfile {
+export function normalizeProfile(raw: UserProfileResponse): UserProfile {
   const d = raw.data;
   return {
     name: d.name,
