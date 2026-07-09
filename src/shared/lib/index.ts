@@ -8,3 +8,5 @@ export {
   AUTH_HEADER,
 } from './auth-token';
 export type { AuthTokenStore } from './auth-token';
+export { checkAndApplyUpdate } from './updates';
+export type { UpdateResult } from './updates';
