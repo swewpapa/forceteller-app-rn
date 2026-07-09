@@ -59,6 +59,12 @@ module.exports = {
             from: './src/features',
             except: ['./more', './auth'],
           },
+          // `user`(계정/프로필 도메인)는 auth(foundation)만 소비 — 다른 feature import 금지.
+          {
+            target: './src/features/user',
+            from: './src/features',
+            except: ['./user', './auth'],
+          },
         ],
       },
     ],
