@@ -42,7 +42,7 @@ export type RawTheme = {
   themeViews?: RawThemeView[];
 };
 
-export type RawThemeListResponse = { status: number; data: RawTheme[] };
+export type ThemeListResponse = { status: number; data: RawTheme[] };
 
 // ─── 정규화 ───
 
