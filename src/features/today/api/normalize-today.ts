@@ -52,7 +52,7 @@ export type RawTodayPost = {
   isDark?: boolean;
 };
 
-export type RawTodayResponse = { status: number; data: RawTodayPost[] };
+export type TodayResponse = { status: number; data: RawTodayPost[] };
 
 // ─── 정규화 ───
 

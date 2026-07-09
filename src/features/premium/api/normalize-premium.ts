@@ -48,7 +48,7 @@ export type RawPremium = {
   link?: RawPremiumLink; // items 위젯→moreLink(헤더 "모두 보기"), banner→link(탭 타깃)
 };
 
-export type RawPremiumListResponse = { status: number; data: RawPremium[] };
+export type PremiumListResponse = { status: number; data: RawPremium[] };
 
 // ─── 정규화 ───
 

@@ -96,6 +96,7 @@ ESLint `import/no-restricted-paths`로 **강제**한다 (`.eslintrc.js`):
 
 - feature API는 **팩토리 + 싱글턴**으로 만든다: `createThemeApi(client: HttpClient)` → `export const themeApi = createThemeApi(http)`. `createHttpClient` 선례와 일관되고, 테스트에서 가짜 client를 생성자 주입할 수 있다. (인스턴스 상태가 없는 API 서비스에 class는 네임스페이스 역할뿐이므로 팩토리를 표준으로 한다.)
 - **정규화 경계**: raw 응답 타입은 `api/` 폴더 밖으로 내보내지 않는다. `api/normalize-*.ts` 순수함수가 raw → 도메인 타입(discriminated union)으로 변환하며, 이 함수가 TDD 대상이다.
+- **응답 봉투 네이밍**: normalize 내부의 raw **데이터** 타입은 `Raw*`(파일-private, `api/` 밖 반출 금지). 단 api가 `client.get<T>`로 소비하려고 **export하는 서버 응답 봉투**는 `Response` 접미사가 이미 '정규화 전 서버 응답'을 함의하므로 `Raw`를 빼고 `<Domain>Response`로 명명한다(예: `PremiumListResponse`, `TodayResponse`, `UserMeResponse`). 즉 raw '데이터'(`RawPremium`)와 '응답 봉투'(`PremiumListResponse`)를 이름으로 구분한다.
 - **서버 드리븐 type 방어**: unknown type 값은 드롭(forward compat — 서버가 새 타입을 추가해도 구버전 앱이 깨지지 않는다). 렌더 불가능한 단위(빈 아이템 목록, link 없는 아이템)도 이 경계에서 드롭.
 - **데이터 페칭 위치**: 스크린이 훅을 호출(컨테이너)하고, 하위 컴포넌트는 props만 받는 presentational로 유지한다. TanStack Query가 같은 queryKey를 dedup하므로 컴포넌트 레벨 페칭도 가능하지만, 한 응답이 화면 전체를 채우는 구조에서는 스크린 레벨이 표준.
 
