@@ -3,12 +3,12 @@ import type { HttpClient } from '@/shared/lib';
 
 describe('auth-api', () => {
   it('exchanges firebase id token for service token', async () => {
-    const post = jest.fn().mockResolvedValue({ serviceToken: 'svc', user: { id: '1' } });
+    const post = jest.fn().mockResolvedValue({ serviceToken: 'svc' });
     const authApi = createAuthApi({ post } as unknown as HttpClient);
 
     const result = await authApi.exchangeFirebaseToken('fb-id-token', 'uid-1', 'Tester');
 
-    expect(result).toEqual({ serviceToken: 'svc', user: { id: '1' } });
+    expect(result).toEqual({ serviceToken: 'svc' });
     expect(post).toHaveBeenCalledWith('/api/auth/firebase', {
       provider: 'google',
       id: 'uid-1',
