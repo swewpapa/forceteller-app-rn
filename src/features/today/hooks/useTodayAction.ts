@@ -10,8 +10,16 @@ import type { TodayApiLink, TodayPost } from '../types/today-types';
 export function useTodayAction() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: async ({ postId, action }: { postId: number; action: TodayApiLink }) => {
-      await todayApi.runAction(action);
+    mutationFn: async ({
+      postId,
+      action,
+      payload,
+    }: {
+      postId: number;
+      action: TodayApiLink;
+      payload?: Record<string, unknown>;
+    }) => {
+      await todayApi.runAction(action, payload);
       return todayApi.getPost(postId);
     },
     onSuccess: (updated) => {

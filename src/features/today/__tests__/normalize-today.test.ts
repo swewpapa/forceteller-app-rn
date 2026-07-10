@@ -263,8 +263,8 @@ describe('normalizeTodayPosts', () => {
   it('full_image: 링크 value가 빈 문자열이면 link는 null (포스트는 유지)', () => {
     const [p] = normalizeTodayPosts([rawFullImageEmptyLink]);
     if (p.type !== 'full_image') throw new Error('unreachable');
-    expect(p.item.link).toBeNull();
-    expect(p.item.image).toContain('e33880fc7574ea7952a28c9f89f32ef3c.png');
+    expect(p.item?.link).toBeNull();
+    expect(p.item?.image).toContain('e33880fc7574ea7952a28c9f89f32ef3c.png');
   });
 
   it('thumbnail: items[] 매핑, image null 허용, price(0) 보존, analytics 드롭', () => {
@@ -336,16 +336,8 @@ describe('normalizeTodayPosts', () => {
     });
   });
 
-  it('지원 4타입을 한 번에 정규화하며 순서를 보존하고 미지원은 드롭한다', () => {
-    const result = normalizeTodayPosts([
-      rawChat, // drop
-      rawFullImage,
-      rawThumbnailEmpty, // drop
-      rawThumbnail,
-      rawGift, // drop
-      rawIcon,
-      rawWeather,
-    ]);
+  it('여러 타입을 순서 보존하며 정규화한다', () => {
+    const result = normalizeTodayPosts([rawFullImage, rawThumbnail, rawIcon, rawWeather]);
     expect(result.map(p => `${p.id}:${p.type}`)).toEqual([
       '1:full_image',
       '400:thumbnail',
@@ -354,9 +346,9 @@ describe('normalizeTodayPosts', () => {
     ]);
   });
 
-  // ─── 드롭 정책 (렌더 불가/미지원만 드롭, forward-compat) ───
+  // ─── 드롭 정책: header(title) 없으면만 드롭. 컨텐츠(이미지/아이템)는 옵션 → 헤더 전용 렌더 허용. ───
 
-  it('gift/chat 타입은 드롭한다 (Phase1 미지원)', () => {
+  it('gift(유효 아이템 없음)·chat(피커 없음)은 드롭한다', () => {
     expect(normalizeTodayPosts([rawChat, rawGift])).toEqual([]);
   });
 
@@ -369,32 +361,38 @@ describe('normalizeTodayPosts', () => {
   });
 
   it('title 없는 header 포스트는 드롭한다', () => {
-    expect(
-      normalizeTodayPosts([{ ...rawFullImage, header: { subtitle: 'x' } }]),
-    ).toEqual([]);
+    expect(normalizeTodayPosts([{ ...rawFullImage, header: { subtitle: 'x' } }])).toEqual([]);
   });
 
-  it('이미지 없는 full_image는 드롭한다', () => {
-    expect(normalizeTodayPosts([rawFullImageNoImage])).toEqual([]);
+  it('이미지 없는 full_image는 헤더만 렌더한다(item null)', () => {
+    const [p] = normalizeTodayPosts([rawFullImageNoImage]);
+    if (p.type !== 'full_image') throw new Error('unreachable');
+    expect(p.item).toBeNull();
   });
 
-  it('이미지 없는 weather는 드롭한다', () => {
+  it('이미지 없는 weather는 헤더만 렌더한다(item null)', () => {
     const noImage = {
       ...rawWeather,
       body: { items: [{ title: '25º 비', caption: 'c', image: '', link: { type: 'url', value: '' } }] },
     };
-    expect(normalizeTodayPosts([noImage])).toEqual([]);
+    const [p] = normalizeTodayPosts([noImage]);
+    if (p.type !== 'weather') throw new Error('unreachable');
+    expect(p.item).toBeNull();
   });
 
-  it('빈 items thumbnail은 드롭한다', () => {
-    expect(normalizeTodayPosts([rawThumbnailEmpty])).toEqual([]);
+  it('빈 items thumbnail은 헤더만 렌더한다(items [])', () => {
+    const [p] = normalizeTodayPosts([rawThumbnailEmpty]);
+    if (p.type !== 'thumbnail') throw new Error('unreachable');
+    expect(p.items).toEqual([]);
   });
 
-  it('빈 items icon은 드롭한다', () => {
-    expect(normalizeTodayPosts([{ ...rawIcon, body: { items: [] } }])).toEqual([]);
+  it('빈 items icon은 헤더만 렌더한다(items [])', () => {
+    const [p] = normalizeTodayPosts([{ ...rawIcon, body: { items: [] } }]);
+    if (p.type !== 'icon') throw new Error('unreachable');
+    expect(p.items).toEqual([]);
   });
 
-  it('이미지 없는 icon item은 개별 드롭하고, 전부 없으면 포스트를 드롭한다', () => {
+  it('이미지 없는 icon item은 개별 드롭하고, 전부 없으면 빈 items로 렌더한다', () => {
     const [p] = normalizeTodayPosts([
       {
         ...rawIcon,
@@ -414,15 +412,15 @@ describe('normalizeTodayPosts', () => {
     if (p.type !== 'icon') throw new Error('unreachable');
     expect(p.items).toHaveLength(1);
     expect(p.items[0].title).toBe('88점');
-    // 이미지 있는 item이 하나도 없으면 포스트 자체 드롭.
-    const allNoImg = {
-      ...rawIcon,
-      body: { items: [{ title: 'x', caption: 'c', link: { type: 'url', value: '/x' } }] },
-    };
-    expect(normalizeTodayPosts([allNoImg])).toEqual([]);
+    // 이미지 있는 item이 없으면 빈 items로 렌더(포스트 유지).
+    const [q] = normalizeTodayPosts([
+      { ...rawIcon, body: { items: [{ title: 'x', caption: 'c', link: { type: 'url', value: '/x' } }] } },
+    ]);
+    if (q.type !== 'icon') throw new Error('unreachable');
+    expect(q.items).toEqual([]);
   });
 
-  it('title 없는 thumbnail item은 개별 드롭하고, 전부 없으면 포스트를 드롭한다', () => {
+  it('title 없는 thumbnail item은 개별 드롭하고, 전부 없으면 빈 items로 렌더한다', () => {
     const [p] = normalizeTodayPosts([
       {
         ...rawThumbnail,
@@ -442,14 +440,12 @@ describe('normalizeTodayPosts', () => {
     if (p.type !== 'thumbnail') throw new Error('unreachable');
     expect(p.items).toHaveLength(1);
     expect(p.items[0].title).toBe('유효 항목');
-    // title 있는 item이 하나도 없으면 포스트 자체 드롭.
-    const allNoTitle = {
-      ...rawThumbnail,
-      body: {
-        items: [{ title: '', image: 'https://x/a.png', price: 0, link: { type: 'url', value: '/a' } }],
-      },
-    };
-    expect(normalizeTodayPosts([allNoTitle])).toEqual([]);
+    // title 있는 item이 없으면 빈 items로 렌더(포스트 유지).
+    const [q] = normalizeTodayPosts([
+      { ...rawThumbnail, body: { items: [{ title: '', image: 'https://x/a.png', price: 0, link: { type: 'url', value: '/a' } }] } },
+    ]);
+    if (q.type !== 'thumbnail') throw new Error('unreachable');
+    expect(q.items).toEqual([]);
   });
 
   it('api 링크는 {type:api, endpoint, method}로 보존한다 (포스트 타입 무관 공통)', () => {
@@ -467,7 +463,7 @@ describe('normalizeTodayPosts', () => {
       },
     ]);
     if (p.type !== 'full_image') throw new Error('unreachable');
-    expect(p.item.link).toEqual({ type: 'api', endpoint: '/api/x', method: 'POST' });
+    expect(p.item?.link).toEqual({ type: 'api', endpoint: '/api/x', method: 'POST' });
   });
 
   it('api 링크에 method 없으면 POST 기본값', () => {
@@ -478,7 +474,7 @@ describe('normalizeTodayPosts', () => {
       },
     ]);
     if (p.type !== 'full_image') throw new Error('unreachable');
-    expect(p.item.link).toEqual({ type: 'api', endpoint: '/api/x', method: 'POST' });
+    expect(p.item?.link).toEqual({ type: 'api', endpoint: '/api/x', method: 'POST' });
   });
 
   it('미지 type 링크나 value 없으면 null', () => {
@@ -489,7 +485,7 @@ describe('normalizeTodayPosts', () => {
       },
     ]);
     if (p.type !== 'full_image') throw new Error('unreachable');
-    expect(p.item.link).toBeNull();
+    expect(p.item?.link).toBeNull();
   });
 
   it('gift: 티켓 아이템 + 버튼(api action 보존, amount HTML 스트립)', () => {

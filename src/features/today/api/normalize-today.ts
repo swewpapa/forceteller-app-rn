@@ -270,26 +270,20 @@ export function normalizeTodayPosts(raw: RawTodayPost[]): TodayPost[] {
   for (const p of raw) {
     if (p.id === undefined) continue;
     const header = normalizeHeader(p.header);
-    if (!header) continue;
+    if (!header) continue; // header(title) 없으면만 드롭. 컨텐츠는 옵션.
     const base = { id: p.id, header, isDark: p.isDark ?? false };
     const items = p.body?.items;
 
     if (p.type === 'full_image') {
-      const item = normalizeFullImage(items);
-      if (!item) continue;
-      posts.push({ ...base, type: 'full_image', item });
+      // 이미지 없으면 item=null(헤더 전용). 드롭하지 않음.
+      posts.push({ ...base, type: 'full_image', item: normalizeFullImage(items) });
     } else if (p.type === 'thumbnail') {
-      const mapped = normalizeThumbnailItems(items);
-      if (mapped.length === 0) continue;
-      posts.push({ ...base, type: 'thumbnail', items: mapped });
+      // 아이템 없어도 헤더만으로 렌더(빈 리스트 허용).
+      posts.push({ ...base, type: 'thumbnail', items: normalizeThumbnailItems(items) });
     } else if (p.type === 'icon' && p.subtype === 'daily') {
-      const mapped = normalizeIconItems(items);
-      if (mapped.length === 0) continue;
-      posts.push({ ...base, type: 'icon', items: mapped });
+      posts.push({ ...base, type: 'icon', items: normalizeIconItems(items) });
     } else if (p.type === 'icon' && p.subtype === 'daily_weather') {
-      const item = normalizeWeather(items);
-      if (!item) continue;
-      posts.push({ ...base, type: 'weather', item });
+      posts.push({ ...base, type: 'weather', item: normalizeWeather(items) });
     } else if (p.type === 'gift') {
       const giftItems = normalizeGiftItems(p.body?.items as unknown as RawGiftItem[] | undefined);
       if (giftItems.length === 0) continue;

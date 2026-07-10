@@ -25,22 +25,33 @@ export function createTodayApi(client: HttpClient) {
      * 아이템/버튼의 api 링크 실행(gift 클레임·chat 선택 등). method에 맞는 HTTP 메서드로 endpoint 호출.
      * 응답 본문은 쓰지 않고, 호출부가 getPost로 갱신 상태를 다시 받는다(Martin 확정 플로우).
      */
-    runAction: async (action: TodayApiLink): Promise<void> => {
+    runAction: async (
+      action: TodayApiLink,
+      payload?: Record<string, unknown>,
+    ): Promise<void> => {
       switch (action.method.toUpperCase()) {
-        case 'GET':
-          await client.get(action.endpoint);
+        case 'GET': {
+          // GET은 payload를 쿼리로, POST/PUT/PATCH는 body로.
+          const qs = payload
+            ? '?' +
+              Object.entries(payload)
+                .map(([k, v]) => `${k}=${encodeURIComponent(String(v))}`)
+                .join('&')
+            : '';
+          await client.get(action.endpoint + qs);
           break;
+        }
         case 'PUT':
-          await client.put(action.endpoint);
+          await client.put(action.endpoint, payload);
           break;
         case 'PATCH':
-          await client.patch(action.endpoint);
+          await client.patch(action.endpoint, payload);
           break;
         case 'DELETE':
           await client.delete(action.endpoint);
           break;
-        default: // POST 및 기타 — 관측된 액션은 전부 POST
-          await client.post(action.endpoint);
+        default: // POST 및 기타 — body에 payload(예: { selectedIndex })
+          await client.post(action.endpoint, payload);
       }
     },
   };

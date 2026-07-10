@@ -71,21 +71,24 @@ describe('today-api', () => {
     expect(await todayApi.getPost(9)).toBeNull();
   });
 
-  it('runAction: POST 액션 → client.post(endpoint)', async () => {
+  it('runAction: POST 액션 → client.post(endpoint, payload) body', async () => {
     const post = jest.fn().mockResolvedValue(undefined);
     const todayApi = createTodayApi({ post } as unknown as HttpClient);
 
-    await todayApi.runAction({ type: 'api', endpoint: '/api/daily/calc/d_tarot', method: 'POST' });
+    await todayApi.runAction(
+      { type: 'api', endpoint: '/api/daily/calc/d_tarot', method: 'POST' },
+      { selectedIndex: 3 },
+    );
 
-    expect(post).toHaveBeenCalledWith('/api/daily/calc/d_tarot');
+    expect(post).toHaveBeenCalledWith('/api/daily/calc/d_tarot', { selectedIndex: 3 });
   });
 
-  it('runAction: GET 액션 → client.get(endpoint)', async () => {
+  it('runAction: GET 액션 → payload를 query로', async () => {
     const get = jest.fn().mockResolvedValue(undefined);
     const todayApi = createTodayApi({ get } as unknown as HttpClient);
 
-    await todayApi.runAction({ type: 'api', endpoint: '/api/x', method: 'GET' });
+    await todayApi.runAction({ type: 'api', endpoint: '/api/x', method: 'GET' }, { selectedIndex: 2 });
 
-    expect(get).toHaveBeenCalledWith('/api/x');
+    expect(get).toHaveBeenCalledWith('/api/x?selectedIndex=2');
   });
 });

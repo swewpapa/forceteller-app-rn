@@ -88,10 +88,11 @@ export type ChatPicker =
   | { kind: 'carousel'; caption: string; cards: ChatCard[] };
 
 export type TodayPost =
-  | (TodayPostBase & { type: 'full_image'; item: FullImageItem })
+  // 컨텐츠(item/items)는 옵션 — header만 있으면 렌더(헤더 전용 카드 허용).
+  | (TodayPostBase & { type: 'full_image'; item: FullImageItem | null })
   | (TodayPostBase & { type: 'thumbnail'; items: ThumbnailItem[] })
   | (TodayPostBase & { type: 'icon'; items: IconItem[] })
-  | (TodayPostBase & { type: 'weather'; item: WeatherItem })
+  | (TodayPostBase & { type: 'weather'; item: WeatherItem | null })
   | (TodayPostBase & { type: 'gift'; items: GiftItem[] })
   | (TodayPostBase & {
       type: 'chat';

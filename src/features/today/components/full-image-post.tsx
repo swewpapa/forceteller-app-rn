@@ -20,7 +20,6 @@ const FULL_IMAGE_RATIO = 320 / 168; // Figma _Full Image aspect(1.9047) = Angula
 export function FullImagePost({ post, onPressLink }: FullImagePostProps) {
   const colors = useAppColors();
   const { header, isDark, item } = post;
-  const { image, link } = item;
 
   const cardStyle = [
     styles.card,
@@ -30,12 +29,15 @@ export function FullImagePost({ post, onPressLink }: FullImagePostProps) {
   const body = (
     <>
       <TodayPostHeader header={header} isDark={isDark} />
-      <AspectRatio ratio={FULL_IMAGE_RATIO}>
-        <Image source={image} contentFit="cover" accessibilityLabel={header.title} />
-      </AspectRatio>
+      {item ? (
+        <AspectRatio ratio={FULL_IMAGE_RATIO}>
+          <Image source={item.image} contentFit="cover" accessibilityLabel={header.title} />
+        </AspectRatio>
+      ) : null}
     </>
   );
 
+  const link = item?.link ?? null;
   if (!link) return <View style={cardStyle}>{body}</View>;
   return (
     <Pressable accessibilityRole="button" onPress={() => onPressLink(link)} style={cardStyle}>

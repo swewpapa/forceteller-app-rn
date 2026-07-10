@@ -1,9 +1,10 @@
+import { useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet } from 'react-native';
-import { Button, Column, Typography } from '@/shared/components';
+import { Button, Column, Row, Typography } from '@/shared/components';
 import { radius, useAppColors } from '@/shared/theme';
 import { TodayPostHeader } from './today-post-header';
 import { useTodayAction } from '../hooks/useTodayAction';
-import type { ChatMessage, TodayApiLink, TodayLink, TodayPost } from '../types/today-types';
+import type { ChatMessage, TodayLink, TodayPost } from '../types/today-types';
 
 type ChatPostData = Extract<TodayPost, { type: 'chat' }>;
 
@@ -13,13 +14,15 @@ export type ChatPostProps = {
   onPressLink?: (link: TodayLink) => void;
 };
 
-/** chat 포스트 — 아바타 헤더 + 말풍선 + 피커(tarot 단일카드+확정 / carousel 이미지 탭선택). */
+// 타로 덱: 동일 카드백을 76장 반복(레거시 today-post-chat-message-tarot 실측). 겹쳐서 부채꼴로.
+const TAROT_DECK_SIZE = 76;
+
+/** chat 포스트 — 아바타 헤더 + 말풍선 + 피커(tarot 덱 스와이퍼+확정 / carousel 이미지 탭선택). */
 export function ChatPost({ post }: ChatPostProps) {
   const colors = useAppColors();
   const action = useTodayAction();
   const { picker } = post;
-
-  const select = (link: TodayApiLink) => action.mutate({ postId: post.id, action: link });
+  const [selectedIndex, setSelectedIndex] = useState<number | null>(null);
 
   return (
     <Column style={[styles.card, { backgroundColor: post.bgColor ?? colors.background.surface }]}>
@@ -29,42 +32,78 @@ export function ChatPost({ post }: ChatPostProps) {
           <ChatBubble key={i} message={message} bubbleColor={colors.background.inset} />
         ))}
 
-        {picker.caption ? (
-          <Typography variant="body-sm" color="muted" style={styles.caption}>
-            {picker.caption}
-          </Typography>
-        ) : null}
-
         {picker.kind === 'tarot' ? (
-          <Column align="center" gap="150">
-            <Image source={{ uri: picker.cardSrc }} style={styles.tarotCard} resizeMode="contain" />
-            <Button
-              label={picker.submitText}
-              color="secondary"
-              appearance="solid"
-              shape="pill"
-              size="md"
-              loading={action.isPending}
-              onPress={() => select(picker.submit)}
-            />
-          </Column>
+          <>
+            {/* 76장 덱: 탭하면 선택(토글)되고 그 카드만 아래로 내려온다. z-index로 겹침 순서. */}
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.deck}
+            >
+              {Array.from({ length: TAROT_DECK_SIZE }).map((_, i) => {
+                const picked = selectedIndex === i;
+                return (
+                  <Pressable
+                    key={i}
+                    accessibilityRole="button"
+                    accessibilityState={{ selected: picked }}
+                    onPress={() => setSelectedIndex(picked ? null : i)}
+                    style={[
+                      styles.cardWrap,
+                      picked && styles.cardPicked,
+                      { zIndex: picked ? TAROT_DECK_SIZE + 1 : i },
+                    ]}
+                  >
+                    <Image source={{ uri: picker.cardSrc }} style={styles.tarotCard} resizeMode="contain" />
+                  </Pressable>
+                );
+              })}
+            </ScrollView>
+            {picker.caption && selectedIndex === null ? (
+              <Typography variant="body-sm" color="muted" style={styles.caption}>
+                {picker.caption}
+              </Typography>
+            ) : null}
+            <Row justify="flex-end">
+              <Button
+                label={picker.submitText}
+                color="secondary"
+                appearance="solid"
+                shape="pill"
+                size="md"
+                disabled={selectedIndex === null}
+                loading={action.isPending}
+                onPress={() => {
+                  if (selectedIndex === null) return;
+                  action.mutate({ postId: post.id, action: picker.submit, payload: { selectedIndex } });
+                }}
+              />
+            </Row>
+          </>
         ) : (
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={styles.carousel}
-          >
-            {picker.cards.map((card, i) => (
-              <Pressable
-                key={i}
-                accessibilityRole="button"
-                disabled={action.isPending}
-                onPress={() => select(card.action)}
-              >
-                <Image source={{ uri: card.src }} style={styles.carouselCard} resizeMode="contain" />
-              </Pressable>
-            ))}
-          </ScrollView>
+          <>
+            {picker.caption ? (
+              <Typography variant="body-sm" color="muted" style={styles.caption}>
+                {picker.caption}
+              </Typography>
+            ) : null}
+            <ScrollView
+              horizontal
+              showsHorizontalScrollIndicator={false}
+              contentContainerStyle={styles.carousel}
+            >
+              {picker.cards.map((card, i) => (
+                <Pressable
+                  key={i}
+                  accessibilityRole="button"
+                  disabled={action.isPending}
+                  onPress={() => action.mutate({ postId: post.id, action: card.action })}
+                >
+                  <Image source={{ uri: card.src }} style={styles.carouselCard} resizeMode="contain" />
+                </Pressable>
+              ))}
+            </ScrollView>
+          </>
         )}
       </Column>
     </Column>
@@ -94,8 +133,11 @@ const styles = StyleSheet.create({
   },
   bubbleImage: { alignSelf: 'flex-start', width: '70%', aspectRatio: 1, borderRadius: radius.md },
   caption: { textAlign: 'center', marginTop: 4 },
-  // TODO(디자인): Figma는 tarot 카드 덱(가로 스와이프) — 1차는 단일 카드. carousel 카드 크기 실측 후 정밀화.
-  tarotCard: { width: 120, height: 180 },
+  // tarot 덱(레거시 실측): 카드 height 90, margin-right -32(겹침), 선택 시 translateY 16.
+  deck: { flexDirection: 'row', alignItems: 'flex-start', paddingHorizontal: 20, paddingTop: 4, paddingBottom: 20 },
+  cardWrap: { marginRight: -32 },
+  cardPicked: { transform: [{ translateY: 16 }] },
+  tarotCard: { width: 60, height: 90 },
   carousel: { gap: 8, paddingVertical: 4 },
   carouselCard: { width: 80, height: 80 },
 });

@@ -25,7 +25,6 @@ const ARROW_SIZE = 12; // Figma arrow-right 12×12
 export function WeatherPost({ post, onPressLink }: WeatherPostProps) {
   const colors = useAppColors();
   const { header, isDark, item } = post;
-  const { temp, caption, image, link } = item;
 
   const cardStyle = [
     styles.card,
@@ -34,30 +33,33 @@ export function WeatherPost({ post, onPressLink }: WeatherPostProps) {
   const tempStyle = isDark ? styles.darkText : undefined;
   const captionStyle = isDark ? styles.darkMuted : undefined;
   const arrowColor = isDark ? POST_DARK.subtle : colors.text.muted;
+  const link = item?.link ?? null;
 
   const body = (
     <>
       <TodayPostHeader header={header} isDark={isDark} />
-      <Row align="center" gap="200" style={styles.body}>
-        <AspectRatio ratio={1} style={styles.icon}>
-          <Image source={image} contentFit="contain" accessibilityLabel={temp} />
-        </AspectRatio>
-        <Row align="center" gap="200" style={styles.itemContent}>
-          <Column style={styles.text}>
-            <Typography variant="headline-xs" numberOfLines={1} style={tempStyle}>
-              {temp}
-            </Typography>
-            {caption ? (
-              <Typography variant="body-sm" color="muted" numberOfLines={1} style={captionStyle}>
-                {caption}
+      {item ? (
+        <Row align="center" gap="200" style={styles.body}>
+          <AspectRatio ratio={1} style={styles.icon}>
+            <Image source={item.image} contentFit="contain" accessibilityLabel={item.temp} />
+          </AspectRatio>
+          <Row align="center" gap="200" style={styles.itemContent}>
+            <Column style={styles.text}>
+              <Typography variant="headline-xs" numberOfLines={1} style={tempStyle}>
+                {item.temp}
               </Typography>
+              {item.caption ? (
+                <Typography variant="body-sm" color="muted" numberOfLines={1} style={captionStyle}>
+                  {item.caption}
+                </Typography>
+              ) : null}
+            </Column>
+            {item.link ? (
+              <FontAwesomeIcon icon={faArrowRight} size={ARROW_SIZE} color={arrowColor} />
             ) : null}
-          </Column>
-          {link ? (
-            <FontAwesomeIcon icon={faArrowRight} size={ARROW_SIZE} color={arrowColor} />
-          ) : null}
+          </Row>
         </Row>
-      </Row>
+      ) : null}
     </>
   );
 
