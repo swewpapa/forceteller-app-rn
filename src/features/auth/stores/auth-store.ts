@@ -16,11 +16,8 @@ export const useAuthStore = create<AuthState>((set) => ({
   status: 'loading',
   restore: () => set({ status: authTokenStore.get() ? 'authenticated' : 'guest' }),
   signIn: async () => {
-    console.log('[auth] signIn 시작'); // [DEBUG] 제거 예정
     const { firebaseIdToken, uid, name } = await googleProvider.signIn();
-    console.log('[auth] exchangeToken 호출 (서버 교환)'); // [DEBUG] 제거 예정
     const { serviceToken } = await authApi.exchangeFirebaseToken(firebaseIdToken, uid, name);
-    console.log('[auth] serviceToken 받음:', !!serviceToken); // [DEBUG] 제거 예정
     authTokenStore.set(serviceToken);
     set({ status: 'authenticated' });
     // 로그인 직후 전 탭 서버 데이터(me/profile/today/home 등)를 재조회한다.

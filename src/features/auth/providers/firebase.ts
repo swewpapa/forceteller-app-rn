@@ -13,7 +13,6 @@ export async function firebaseSignInWithGoogle(
   const auth = getAuth();
   const credential = GoogleAuthProvider.credential(googleIdToken, accessToken);
   const userCred = await signInWithCredential(auth, credential);
-  console.log('[auth] Firebase signInWithCredential 성공, uid:', userCred.user.uid); // [DEBUG] 제거 예정
   const idToken = await userCred.user.getIdToken();
   return { idToken, uid: userCred.user.uid, name: userCred.user.displayName };
 }
