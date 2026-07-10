@@ -57,7 +57,8 @@ module.exports = {
           {
             target: './src/features/more',
             from: './src/features',
-            except: ['./more', './auth'],
+            // `user`(me/profile) 소비: 마이페이지가 프로필 실데이터를 읽는다(home→theme 선례와 동일).
+            except: ['./more', './auth', './user'],
           },
           // `user`(계정/프로필 도메인)는 auth(foundation)만 소비 — 다른 feature import 금지.
           {

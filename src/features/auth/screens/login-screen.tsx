@@ -25,8 +25,7 @@ export function LoginScreen() {
          
         (navigation as any).navigate(redirect.screen, redirect.params);
       else navigation.goBack();
-    } catch (e) {
-      console.log('[login] signIn 실패:', e); // [DEBUG] 제거 예정
+    } catch {
       // 로그인 실패/취소: 모달 유지 (Task 12에서 에러 토스트 검토)
     } finally {
       setLoading(false);
