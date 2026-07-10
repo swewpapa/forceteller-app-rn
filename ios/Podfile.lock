@@ -11,7 +11,12 @@ PODS:
     - PromisesObjC (~> 2.4)
     - PromisesSwift (~> 2.4)
     - RecaptchaInterop (~> 101.0)
+  - EASClient (56.0.1):
+    - ExpoModulesCore
   - EXConstants (56.0.18):
+    - ExpoModulesCore
+  - EXJSONUtils (56.0.0)
+  - EXManifests (56.0.4):
     - ExpoModulesCore
   - Expo (56.0.12):
     - ExpoModulesCore
@@ -92,6 +97,37 @@ PODS:
   - ExpoModulesWorklets (56.0.17):
     - ExpoModulesCore
     - ExpoModulesJSI
+  - EXStructuredHeaders (56.0.0)
+  - EXUpdates (56.0.21):
+    - EASClient
+    - EXManifests
+    - ExpoModulesCore
+    - EXStructuredHeaders
+    - EXUpdatesInterface
+    - hermes-engine
+    - RCTRequired
+    - RCTTypeSafety
+    - ReachabilitySwift
+    - React-Core
+    - React-Core-prebuilt
+    - React-debug
+    - React-Fabric
+    - React-featureflags
+    - React-graphics
+    - React-ImageManager
+    - React-jsi
+    - React-NativeModulesApple
+    - React-RCTFabric
+    - React-renderercss
+    - React-rendererdebug
+    - React-utils
+    - ReactCodegen
+    - ReactCommon/turbomodule/bridging
+    - ReactCommon/turbomodule/core
+    - ReactNativeDependencies
+    - Yoga
+  - EXUpdatesInterface (56.0.2):
+    - ExpoModulesCore
   - FBLazyVector (0.85.3)
   - Firebase/Auth (12.15.0):
     - Firebase/CoreOnly
@@ -231,6 +267,7 @@ PODS:
     - FBLazyVector (= 0.85.3)
     - RCTRequired (= 0.85.3)
     - React-Core (= 0.85.3)
+  - ReachabilitySwift (5.2.4)
   - React (0.85.3):
     - React-Core (= 0.85.3)
     - React-Core/DevSupport (= 0.85.3)
@@ -2320,7 +2357,10 @@ PODS:
   - Yoga (0.0.0)
 
 DEPENDENCIES:
+  - EASClient (from `../node_modules/expo-eas-client/ios`)
   - EXConstants (from `../node_modules/expo-constants/ios`)
+  - EXJSONUtils (from `../node_modules/expo-json-utils/ios`)
+  - EXManifests (from `../node_modules/expo-manifests/ios`)
   - Expo (from `../node_modules/expo`)
   - "ExpoAdapterGoogleSignIn (from `../node_modules/@react-native-google-signin/google-signin/expo/ios`)"
   - ExpoAsset (from `../node_modules/expo-asset/ios`)
@@ -2333,6 +2373,9 @@ DEPENDENCIES:
   - ExpoModulesCore (from `../node_modules/expo-modules-core`)
   - ExpoModulesJSI (from `../node_modules/expo-modules-jsi/apple`)
   - ExpoModulesWorklets (from `../node_modules/expo-modules-core`)
+  - EXStructuredHeaders (from `../node_modules/expo-structured-headers/ios`)
+  - EXUpdates (from `../node_modules/expo-updates/ios`)
+  - EXUpdatesInterface (from `../node_modules/expo-updates-interface/ios`)
   - FBLazyVector (from `../node_modules/react-native/Libraries/FBLazyVector`)
   - hermes-engine (from `../node_modules/react-native/sdks/hermes-engine/hermes-engine.podspec`)
   - NitroMmkv (from `../node_modules/react-native-mmkv`)
@@ -2441,6 +2484,7 @@ SPEC REPOS:
     - MMKVCore
     - PromisesObjC
     - PromisesSwift
+    - ReachabilitySwift
     - RecaptchaInterop
     - SDWebImage
     - SDWebImageAVIFCoder
@@ -2448,8 +2492,14 @@ SPEC REPOS:
     - SDWebImageWebPCoder
 
 EXTERNAL SOURCES:
+  EASClient:
+    :path: "../node_modules/expo-eas-client/ios"
   EXConstants:
     :path: "../node_modules/expo-constants/ios"
+  EXJSONUtils:
+    :path: "../node_modules/expo-json-utils/ios"
+  EXManifests:
+    :path: "../node_modules/expo-manifests/ios"
   Expo:
     :path: "../node_modules/expo"
   ExpoAdapterGoogleSignIn:
@@ -2474,6 +2524,12 @@ EXTERNAL SOURCES:
     :path: "../node_modules/expo-modules-jsi/apple"
   ExpoModulesWorklets:
     :path: "../node_modules/expo-modules-core"
+  EXStructuredHeaders:
+    :path: "../node_modules/expo-structured-headers/ios"
+  EXUpdates:
+    :path: "../node_modules/expo-updates/ios"
+  EXUpdatesInterface:
+    :path: "../node_modules/expo-updates-interface/ios"
   FBLazyVector:
     :path: "../node_modules/react-native/Libraries/FBLazyVector"
   hermes-engine:
@@ -2649,7 +2705,10 @@ EXTERNAL SOURCES:
 SPEC CHECKSUMS:
   AppAuth: ef4da5a3fc2e10b90c09a0a94a9baeaedc0341d5
   AppCheckCore: 214137f5c378d1dec88a68425c467fe65aaff637
+  EASClient: 2321f8d99fa86c710a6f68e017f3b54366baed9f
   EXConstants: e836b478e4f5c835f3c77921d8162e1918e2c06e
+  EXJSONUtils: dba2755f4e24009eaf87a876b2d615ea06c16e42
+  EXManifests: 7e19be8df665a338493060a419847dae76ffcd43
   Expo: 57b3c2937eb9408ab6091fcfd1e7a888b4df5769
   ExpoAdapterGoogleSignIn: ab4d9fc38cb91077a4138d178395525ec65d0c2e
   ExpoAsset: 1e436e9aee7015d5c6d203c1ddfe1adbb521a623
@@ -2662,6 +2721,9 @@ SPEC CHECKSUMS:
   ExpoModulesCore: cff3a92c3db2f3210e215852429bb578e9a3e9bc
   ExpoModulesJSI: d3b992128160c749d9c1fd5c8d164286113832e5
   ExpoModulesWorklets: 25d712f4e0a4eb37397d46c0ff5b450eca897fd1
+  EXStructuredHeaders: 9e89bcdd636ae2ecb59995cfba3230f5d7547c08
+  EXUpdates: 77d7fa387efa693ace0d522755f141dd68df9923
+  EXUpdatesInterface: 25408a97d682355eb9fb37e5aa6e22caece1881f
   FBLazyVector: 24e62c765683b8d89006a88a2c8f5cf019f0074d
   Firebase: a8539b633d474fbeb654c7043f9c1649e274045b
   FirebaseAppCheckInterop: 5083c9acf65f206832fe659e1c676b7bc3d55e8a
@@ -2688,6 +2750,7 @@ SPEC CHECKSUMS:
   RCTSwiftUI: 239ed2eb9e73de5a6f518810630f0c95e01c8702
   RCTSwiftUIWrapper: 966ca7f5f22ac0b2b2255fb09cffc381f5440b03
   RCTTypeSafety: 2a6403ba3492c04510e7c15bd635461646c43bb2
+  ReachabilitySwift: 32793e867593cfc1177f5d16491e3a197d2fccda
   React: e2dc35338068bbd299c66f043ae0d7f25de8499e
   React-callinvoker: 28b25d21b124c26cebaea713ba7d801b9351dc48
   React-Core: 02ed7d2ffb70437bdf2aba074a13078a7b0b9ff0
