@@ -556,4 +556,84 @@ describe('normalizeTodayPosts', () => {
       ] as unknown as Parameters<typeof normalizeTodayPosts>[0]),
     ).toEqual([]);
   });
+
+  it('chat tarot: 말풍선 + 단일카드 + submit api', () => {
+    const [p] = normalizeTodayPosts([
+      {
+        id: 8,
+        type: 'chat',
+        subtype: 'tarot',
+        header: { title: '타로', subtitle: '아이샤', portrait: 'https://x/p.png' },
+        body: {
+          items: [
+            [{ v: '반가워요' }, { t: 'image', src: 'https://x/img.jpg', link: { type: 'url', value: '' } }],
+            [
+              {
+                v: '좌우로 스와이프',
+                a: [
+                  {
+                    t: 'button',
+                    button: {
+                      text: '이 카드로 할게요',
+                      type: 'submit',
+                      link: { type: 'api', value: '/api/daily/calc/d_tarot', method: 'POST' },
+                    },
+                  },
+                ],
+              },
+              { t: 'tarot', src: 'https://x/card.png' },
+            ],
+          ],
+        },
+        isDark: false,
+      },
+    ] as unknown as Parameters<typeof normalizeTodayPosts>[0]);
+    if (p.type !== 'chat') throw new Error('unreachable');
+    expect(p.messages).toEqual([
+      { kind: 'text', text: '반가워요' },
+      { kind: 'image', src: 'https://x/img.jpg' },
+    ]);
+    expect(p.picker).toEqual({
+      kind: 'tarot',
+      caption: '좌우로 스와이프',
+      cardSrc: 'https://x/card.png',
+      submitText: '이 카드로 할게요',
+      submit: { type: 'api', endpoint: '/api/daily/calc/d_tarot', method: 'POST' },
+    });
+  });
+
+  it('chat carousel: 캡션 a[]의 이미지들이 선택 카드 + bgColor 보존', () => {
+    const [p] = normalizeTodayPosts([
+      {
+        id: 7,
+        type: 'chat',
+        subtype: 'proverb',
+        header: { title: '띵언', subtitle: '까리나' },
+        body: {
+          bgColor: '#ACD9FF',
+          items: [
+            [{ v: '오늘도 안녕!' }],
+            [
+              {
+                v: '좌우로 스와이프',
+                a: [
+                  { t: 'image', src: 'https://x/t1.png', link: { type: 'api', value: '/api/daily/calc/d_proverb', method: 'POST' } },
+                  { t: 'image', src: 'https://x/t2.png', link: { type: 'api', value: '/api/daily/calc/d_proverb', method: 'POST' } },
+                ],
+              },
+              { t: 'carousel' },
+            ],
+          ],
+        },
+        isDark: false,
+      },
+    ] as unknown as Parameters<typeof normalizeTodayPosts>[0]);
+    if (p.type !== 'chat') throw new Error('unreachable');
+    expect(p.bgColor).toBe('#ACD9FF');
+    if (p.picker.kind !== 'carousel') throw new Error('expected carousel');
+    expect(p.picker.cards).toEqual([
+      { src: 'https://x/t1.png', action: { type: 'api', endpoint: '/api/daily/calc/d_proverb', method: 'POST' } },
+      { src: 'https://x/t2.png', action: { type: 'api', endpoint: '/api/daily/calc/d_proverb', method: 'POST' } },
+    ]);
+  });
 });

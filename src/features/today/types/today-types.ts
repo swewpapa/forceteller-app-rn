@@ -72,9 +72,30 @@ export type GiftItem = {
   buttons: GiftButton[];
 };
 
+/** chat 말풍선 — 텍스트 또는 이미지. */
+export type ChatMessage =
+  | { kind: 'text'; text: string }
+  | { kind: 'image'; src: string };
+/** carousel 선택 카드(탭 시 action api 호출). */
+export type ChatCard = { src: string; action: TodayApiLink };
+/**
+ * chat 피커.
+ * - tarot: 단일 카드(스와이프) + "이 카드로 할게요" 확정 버튼(submit).
+ * - carousel: 이미지 여러 장 — 탭 자체가 선택(각 카드에 action).
+ */
+export type ChatPicker =
+  | { kind: 'tarot'; caption: string; cardSrc: string; submitText: string; submit: TodayApiLink }
+  | { kind: 'carousel'; caption: string; cards: ChatCard[] };
+
 export type TodayPost =
   | (TodayPostBase & { type: 'full_image'; item: FullImageItem })
   | (TodayPostBase & { type: 'thumbnail'; items: ThumbnailItem[] })
   | (TodayPostBase & { type: 'icon'; items: IconItem[] })
   | (TodayPostBase & { type: 'weather'; item: WeatherItem })
-  | (TodayPostBase & { type: 'gift'; items: GiftItem[] });
+  | (TodayPostBase & { type: 'gift'; items: GiftItem[] })
+  | (TodayPostBase & {
+      type: 'chat';
+      bgColor: string | null;
+      messages: ChatMessage[];
+      picker: ChatPicker;
+    });
