@@ -1,5 +1,7 @@
 import type {
   FullImageItem,
+  GiftButton,
+  GiftItem,
   IconItem,
   ThumbnailItem,
   TodayHeader,
@@ -42,6 +44,21 @@ type RawTodayBody = {
   items?: RawTodayItem[];
 };
 
+// gift 아이템/버튼 raw(별도 shape — body.items를 이 타입으로 캐스팅해 접근).
+type RawGiftButton = {
+  text?: string;
+  icon?: string | null;
+  disabled?: boolean;
+  link?: RawTodayLink;
+};
+type RawGiftItem = {
+  title?: string;
+  amount?: string;
+  color?: string;
+  icon?: string | null;
+  buttons?: RawGiftButton[];
+};
+
 export type RawTodayPost = {
   id?: number;
   type?: string;
@@ -54,18 +71,34 @@ export type RawTodayPost = {
 
 export type TodayResponse = { status: number; data: RawTodayPost[] };
 
+// GET /api/today/post/{id} 단일 응답(액션 후 재조회용). 봉투는 posts와 동일 가정.
+// TODO(QA): 단일 엔드포인트 응답 형태가 다르면 여기서 교정.
+export type TodayPostResponse = { status: number; data: RawTodayPost };
+
 // ─── 정규화 ───
 
 function emptyToNull(value: string | null | undefined): string | null {
   return value ? value : null;
 }
 
-// Phase1 표시형 링크는 url만. api 등 다른 type이거나 value가 비면 null(→ 호출부에서 link 없음 처리).
+/** HTML 태그 제거("<b>X7</b>" → "X7"). gift amount 등. */
+function stripHtml(value: string | undefined): string {
+  return (value ?? '').replace(/<[^>]*>/g, '').trim();
+}
+
+// url=Web 네비, api=액션(method+endpoint). value 없거나 미지 type이면 null.
 function normalizeLink(link: RawTodayLink | undefined): TodayLink | null {
-  if (!link || link.type !== 'url' || !link.value) return null;
-  return link.params
-    ? { type: 'url', value: link.value, params: link.params }
-    : { type: 'url', value: link.value };
+  if (!link || !link.value) return null;
+  if (link.type === 'url') {
+    return link.params
+      ? { type: 'url', value: link.value, params: link.params }
+      : { type: 'url', value: link.value };
+  }
+  if (link.type === 'api') {
+    const api = { type: 'api' as const, endpoint: link.value, method: link.method ?? 'POST' };
+    return link.params ? { ...api, params: link.params } : api;
+  }
+  return null;
 }
 
 // title 없으면 null → 포스트 드롭. 빈 문자열/부재 subtitle·portrait·bgImage는 null.
@@ -134,6 +167,37 @@ function normalizeWeather(items: RawTodayItem[] | undefined): WeatherItem | null
   };
 }
 
+// gift 버튼: text 없으면 개별 드롭. link는 url/api 모두 보존(action). icon URL은 참고용.
+function normalizeGiftButtons(buttons: RawGiftButton[] | undefined): GiftButton[] {
+  const result: GiftButton[] = [];
+  for (const b of buttons ?? []) {
+    if (!b.text) continue;
+    result.push({
+      text: b.text,
+      iconUrl: emptyToNull(b.icon),
+      disabled: b.disabled ?? false,
+      action: normalizeLink(b.link),
+    });
+  }
+  return result;
+}
+
+// gift: 티켓 아이템. title 없으면 개별 드롭. amount는 HTML 스트립, color는 hex 그대로.
+function normalizeGiftItems(items: RawGiftItem[] | undefined): GiftItem[] {
+  const result: GiftItem[] = [];
+  for (const item of items ?? []) {
+    if (!item.title) continue;
+    result.push({
+      title: item.title,
+      amount: stripHtml(item.amount),
+      color: item.color ?? '',
+      iconUrl: emptyToNull(item.icon),
+      buttons: normalizeGiftButtons(item.buttons),
+    });
+  }
+  return result;
+}
+
 /**
  * raw today 포스트 목록 → 도메인 TodayPost[].
  * type(+icon subtype)으로 도메인 type을 정하고, 렌더 불가능/미지원 단위는 이 경계에서 드롭한다:
@@ -168,8 +232,17 @@ export function normalizeTodayPosts(raw: RawTodayPost[]): TodayPost[] {
       const item = normalizeWeather(items);
       if (!item) continue;
       posts.push({ ...base, type: 'weather', item });
+    } else if (p.type === 'gift') {
+      const giftItems = normalizeGiftItems(p.body?.items as unknown as RawGiftItem[] | undefined);
+      if (giftItems.length === 0) continue;
+      posts.push({ ...base, type: 'gift', items: giftItems });
     }
-    // 그 외(gift/chat/unknown type, unknown icon subtype) → drop
+    // 그 외(chat/unknown type, unknown icon subtype) → drop
   }
   return posts;
+}
+
+/** 단일 raw 포스트 → 도메인(액션 후 getPost 재조회용). 지원 안 되면 null. */
+export function normalizeTodayPost(raw: RawTodayPost): TodayPost | null {
+  return normalizeTodayPosts([raw])[0] ?? null;
 }

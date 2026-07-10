@@ -1,6 +1,11 @@
 import { http, type HttpClient } from '@/shared/lib';
-import type { TodayPost } from '../types/today-types';
-import { normalizeTodayPosts, type TodayResponse } from './normalize-today';
+import type { TodayApiLink, TodayPost } from '../types/today-types';
+import {
+  normalizeTodayPost,
+  normalizeTodayPosts,
+  type TodayPostResponse,
+  type TodayResponse,
+} from './normalize-today';
 
 export function createTodayApi(client: HttpClient) {
   return {
@@ -8,6 +13,35 @@ export function createTodayApi(client: HttpClient) {
     listPosts: async (): Promise<TodayPost[]> => {
       const res = await client.get<TodayResponse>('/api/today/posts');
       return normalizeTodayPosts(res.data);
+    },
+
+    /** GET /api/today/post/{id} — 단일 포스트 재조회(액션 후 갱신 상태 획득용). */
+    getPost: async (id: number): Promise<TodayPost | null> => {
+      const res = await client.get<TodayPostResponse>(`/api/today/post/${id}`);
+      return normalizeTodayPost(res.data);
+    },
+
+    /**
+     * 아이템/버튼의 api 링크 실행(gift 클레임·chat 선택 등). method에 맞는 HTTP 메서드로 endpoint 호출.
+     * 응답 본문은 쓰지 않고, 호출부가 getPost로 갱신 상태를 다시 받는다(Martin 확정 플로우).
+     */
+    runAction: async (action: TodayApiLink): Promise<void> => {
+      switch (action.method.toUpperCase()) {
+        case 'GET':
+          await client.get(action.endpoint);
+          break;
+        case 'PUT':
+          await client.put(action.endpoint);
+          break;
+        case 'PATCH':
+          await client.patch(action.endpoint);
+          break;
+        case 'DELETE':
+          await client.delete(action.endpoint);
+          break;
+        default: // POST 및 기타 — 관측된 액션은 전부 POST
+          await client.post(action.endpoint);
+      }
     },
   };
 }

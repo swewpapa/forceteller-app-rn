@@ -452,7 +452,7 @@ describe('normalizeTodayPosts', () => {
     expect(normalizeTodayPosts([allNoTitle])).toEqual([]);
   });
 
-  it('url이 아닌 링크(api 등)는 null로 정규화한다', () => {
+  it('api 링크는 {type:api, endpoint, method}로 보존한다 (포스트 타입 무관 공통)', () => {
     const [p] = normalizeTodayPosts([
       {
         ...rawFullImage,
@@ -467,6 +467,93 @@ describe('normalizeTodayPosts', () => {
       },
     ]);
     if (p.type !== 'full_image') throw new Error('unreachable');
+    expect(p.item.link).toEqual({ type: 'api', endpoint: '/api/x', method: 'POST' });
+  });
+
+  it('api 링크에 method 없으면 POST 기본값', () => {
+    const [p] = normalizeTodayPosts([
+      {
+        ...rawFullImage,
+        body: { items: [{ image: 'https://x/y.png', link: { type: 'api', value: '/api/x' } }] },
+      },
+    ]);
+    if (p.type !== 'full_image') throw new Error('unreachable');
+    expect(p.item.link).toEqual({ type: 'api', endpoint: '/api/x', method: 'POST' });
+  });
+
+  it('미지 type 링크나 value 없으면 null', () => {
+    const [p] = normalizeTodayPosts([
+      {
+        ...rawFullImage,
+        body: { items: [{ image: 'https://x/y.png', link: { type: 'weird', value: '/a' } }] },
+      },
+    ]);
+    if (p.type !== 'full_image') throw new Error('unreachable');
     expect(p.item.link).toBeNull();
+  });
+
+  it('gift: 티켓 아이템 + 버튼(api action 보존, amount HTML 스트립)', () => {
+    const [p] = normalizeTodayPosts([
+      {
+        id: 6536,
+        type: 'gift',
+        subtype: 'multi_gift',
+        header: { title: '선물', subtitle: '로즈' },
+        body: {
+          items: [
+            {
+              title: '선물 외 3개',
+              amount: '<b>X7</b>',
+              color: '#E85E5E',
+              icon: 'https://x/saletag.png',
+              buttons: [
+                {
+                  text: '쿠폰 받기',
+                  icon: 'https://x/ic_download.svg',
+                  disabled: false,
+                  link: { type: 'api', value: '/api/post/6536/gifts', method: 'POST' },
+                },
+                { text: '사용하기', icon: 'https://x/ic_arrow_right.svg', disabled: true },
+              ],
+            },
+          ],
+        },
+        isDark: false,
+      },
+    ] as unknown as Parameters<typeof normalizeTodayPosts>[0]);
+    if (p.type !== 'gift') throw new Error('unreachable');
+    expect(p.items[0]).toMatchObject({
+      title: '선물 외 3개',
+      amount: 'X7',
+      color: '#E85E5E',
+      iconUrl: 'https://x/saletag.png',
+    });
+    expect(p.items[0].buttons[0]).toEqual({
+      text: '쿠폰 받기',
+      iconUrl: 'https://x/ic_download.svg',
+      disabled: false,
+      action: { type: 'api', endpoint: '/api/post/6536/gifts', method: 'POST' },
+    });
+    expect(p.items[0].buttons[1]).toEqual({
+      text: '사용하기',
+      iconUrl: 'https://x/ic_arrow_right.svg',
+      disabled: true,
+      action: null,
+    });
+  });
+
+  it('gift: title 없는 아이템만 있으면 포스트 드롭', () => {
+    expect(
+      normalizeTodayPosts([
+        {
+          id: 1,
+          type: 'gift',
+          subtype: 'multi_gift',
+          header: { title: 't' },
+          body: { items: [{ amount: 'X1', buttons: [] }] },
+          isDark: false,
+        },
+      ] as unknown as Parameters<typeof normalizeTodayPosts>[0]),
+    ).toEqual([]);
   });
 });
