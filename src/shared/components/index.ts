@@ -20,3 +20,4 @@ export { ListItem, type ListItemProps } from './list-item';
 export { Carousel, type CarouselProps } from './carousel/carousel';
 export { Chip, type ChipProps } from './chip';
 export { PriceTag, type PriceTagProps } from './price-tag';
+export { ForceIcon, type ForceGlyph } from './price-tag/force-icon';

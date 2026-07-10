@@ -1,7 +1,7 @@
 import { Pressable, ScrollView, StyleSheet, Text } from 'react-native';
-import { useAppNavigation, useAuthStore } from '@/features/auth';
+import { useAppNavigation } from '@/features/auth';
 import { ThemeWidgetListByCode, type ThemeView } from '@/features/theme';
-import { Column, ScreenContainer, Typography } from '@/shared/components';
+import { Column, ScreenContainer } from '@/shared/components';
 import { radius, spacing, useAppColors } from '@/shared/theme';
 
 /** 홈 탭(RN). 테마 위젯 3개 리전(recommend_top/middle/bottom) + 예시 진입 버튼들. */
@@ -10,8 +10,6 @@ const THEME_CODES = ['recommend_top', 'recommend_middle', 'recommend_bottom'] as
 export function HomeScreen() {
   const navigation = useAppNavigation();
   const colors = useAppColors();
-  const status = useAuthStore(s => s.status);
-  const signOut = useAuthStore(s => s.signOut);
 
   const handlePressView = (view: ThemeView) => {
     // tag_filter 링크는 keyword_cloud 사이클에서 처리 (text_only에는 url만 관측됨)
@@ -25,30 +23,6 @@ export function HomeScreen() {
       <ScrollView>
         <Column padding="300" gap="300">
           <Text style={[styles.title, { color: colors.text.default }]}>홈</Text>
-
-          {status === 'authenticated' ? (
-            <Pressable
-              accessibilityRole="button"
-              onPress={() => {
-                // 로그아웃 실패는 무시(상태 유지)
-                signOut().catch(() => undefined);
-              }}
-              style={[styles.link, { borderColor: colors.stroke.subtle }]}
-            >
-              <Typography variant="body-md">로그아웃</Typography>
-            </Pressable>
-          ) : (
-            <Pressable
-              accessibilityRole="button"
-              disabled={status === 'loading'}
-              onPress={() => navigation.navigate('Login')}
-              style={[styles.link, { borderColor: colors.stroke.subtle }]}
-            >
-              <Typography variant="body-md">
-                {status === 'loading' ? '...' : '로그인'}
-              </Typography>
-            </Pressable>
-          )}
 
           <Pressable
             accessibilityRole="button"
