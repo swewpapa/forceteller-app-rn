@@ -1,7 +1,13 @@
 import type {
+  ChatCard,
+  ChatMessage,
+  ChatPicker,
   FullImageItem,
+  GiftButton,
+  GiftItem,
   IconItem,
   ThumbnailItem,
+  TodayApiLink,
   TodayHeader,
   TodayLink,
   TodayPost,
@@ -42,6 +48,36 @@ type RawTodayBody = {
   items?: RawTodayItem[];
 };
 
+// gift 아이템/버튼 raw(별도 shape — body.items를 이 타입으로 캐스팅해 접근).
+type RawGiftButton = {
+  text?: string;
+  icon?: string | null;
+  disabled?: boolean;
+  link?: RawTodayLink;
+};
+type RawGiftItem = {
+  title?: string;
+  amount?: string;
+  color?: string;
+  icon?: string | null;
+  buttons?: RawGiftButton[];
+};
+
+// chat 아이템 raw(중첩 배열 — body.items를 RawChatEl[][]로 캐스팅). [0]=말풍선, [1]=피커.
+type RawChatAction = {
+  t?: string; // 'button' | 'image'
+  src?: string;
+  link?: RawTodayLink;
+  button?: { text?: string; type?: string; link?: RawTodayLink };
+};
+type RawChatEl = {
+  v?: string; // 텍스트 버블 / 캡션
+  t?: string; // 'image' | 'tarot' | 'carousel'
+  src?: string; // 이미지/타로 src
+  link?: RawTodayLink; // 이미지 버블 링크
+  a?: RawChatAction[]; // 피커 액션(캡션 요소에 존재)
+};
+
 export type RawTodayPost = {
   id?: number;
   type?: string;
@@ -54,18 +90,34 @@ export type RawTodayPost = {
 
 export type TodayResponse = { status: number; data: RawTodayPost[] };
 
+// GET /api/today/post/{id} 단일 응답(액션 후 재조회용). 봉투는 posts와 동일 가정.
+// TODO(QA): 단일 엔드포인트 응답 형태가 다르면 여기서 교정.
+export type TodayPostResponse = { status: number; data: RawTodayPost };
+
 // ─── 정규화 ───
 
 function emptyToNull(value: string | null | undefined): string | null {
   return value ? value : null;
 }
 
-// Phase1 표시형 링크는 url만. api 등 다른 type이거나 value가 비면 null(→ 호출부에서 link 없음 처리).
+/** HTML 태그 제거("<b>X7</b>" → "X7"). gift amount 등. */
+function stripHtml(value: string | undefined): string {
+  return (value ?? '').replace(/<[^>]*>/g, '').trim();
+}
+
+// url=Web 네비, api=액션(method+endpoint). value 없거나 미지 type이면 null.
 function normalizeLink(link: RawTodayLink | undefined): TodayLink | null {
-  if (!link || link.type !== 'url' || !link.value) return null;
-  return link.params
-    ? { type: 'url', value: link.value, params: link.params }
-    : { type: 'url', value: link.value };
+  if (!link || !link.value) return null;
+  if (link.type === 'url') {
+    return link.params
+      ? { type: 'url', value: link.value, params: link.params }
+      : { type: 'url', value: link.value };
+  }
+  if (link.type === 'api') {
+    const api = { type: 'api' as const, endpoint: link.value, method: link.method ?? 'POST' };
+    return link.params ? { ...api, params: link.params } : api;
+  }
+  return null;
 }
 
 // title 없으면 null → 포스트 드롭. 빈 문자열/부재 subtitle·portrait·bgImage는 null.
@@ -134,6 +186,76 @@ function normalizeWeather(items: RawTodayItem[] | undefined): WeatherItem | null
   };
 }
 
+// gift 버튼: text 없으면 개별 드롭. link는 url/api 모두 보존(action). icon URL은 참고용.
+function normalizeGiftButtons(buttons: RawGiftButton[] | undefined): GiftButton[] {
+  const result: GiftButton[] = [];
+  for (const b of buttons ?? []) {
+    if (!b.text) continue;
+    result.push({
+      text: b.text,
+      iconUrl: emptyToNull(b.icon),
+      disabled: b.disabled ?? false,
+      action: normalizeLink(b.link),
+    });
+  }
+  return result;
+}
+
+// gift: 티켓 아이템. title 없으면 개별 드롭. amount는 HTML 스트립, color는 hex 그대로.
+function normalizeGiftItems(items: RawGiftItem[] | undefined): GiftItem[] {
+  const result: GiftItem[] = [];
+  for (const item of items ?? []) {
+    if (!item.title) continue;
+    result.push({
+      title: item.title,
+      amount: stripHtml(item.amount),
+      color: item.color ?? '',
+      iconUrl: emptyToNull(item.icon),
+      buttons: normalizeGiftButtons(item.buttons),
+    });
+  }
+  return result;
+}
+
+// chat 말풍선: 이미지 버블(t=image) 또는 텍스트 버블(v). 그 외 무시.
+function normalizeChatMessages(group: RawChatEl[] | undefined): ChatMessage[] {
+  const result: ChatMessage[] = [];
+  for (const el of group ?? []) {
+    if (el.t === 'image' && el.src) result.push({ kind: 'image', src: el.src });
+    else if (el.v) result.push({ kind: 'text', text: el.v });
+  }
+  return result;
+}
+
+// chat 액션은 api 링크만(선택/확정). url/미지/부재면 null.
+function toApiAction(link: RawTodayLink | undefined): TodayApiLink | null {
+  const l = normalizeLink(link);
+  return l && l.type === 'api' ? l : null;
+}
+
+// chat 피커: tarot(단일 카드 + submit 버튼) 또는 carousel(캡션 요소 a[]의 이미지 탭선택). 둘 다 아니면 null.
+function normalizeChatPicker(group: RawChatEl[] | undefined): ChatPicker | null {
+  if (!group) return null;
+  const captionEl = group.find((e) => e.v);
+  const caption = captionEl?.v ?? '';
+  const tarotEl = group.find((e) => e.t === 'tarot' && e.src);
+  if (tarotEl?.src) {
+    const button = captionEl?.a?.find((a) => a.t === 'button')?.button;
+    const submit = toApiAction(button?.link);
+    if (!submit) return null;
+    return { kind: 'tarot', caption, cardSrc: tarotEl.src, submitText: button?.text ?? '선택', submit };
+  }
+  const cards: ChatCard[] = [];
+  for (const a of captionEl?.a ?? []) {
+    if (a.t === 'image' && a.src) {
+      const action = toApiAction(a.link);
+      if (action) cards.push({ src: a.src, action });
+    }
+  }
+  if (cards.length === 0) return null;
+  return { kind: 'carousel', caption, cards };
+}
+
 /**
  * raw today 포스트 목록 → 도메인 TodayPost[].
  * type(+icon subtype)으로 도메인 type을 정하고, 렌더 불가능/미지원 단위는 이 경계에서 드롭한다:
@@ -148,28 +270,42 @@ export function normalizeTodayPosts(raw: RawTodayPost[]): TodayPost[] {
   for (const p of raw) {
     if (p.id === undefined) continue;
     const header = normalizeHeader(p.header);
-    if (!header) continue;
+    if (!header) continue; // header(title) 없으면만 드롭. 컨텐츠는 옵션.
     const base = { id: p.id, header, isDark: p.isDark ?? false };
     const items = p.body?.items;
 
     if (p.type === 'full_image') {
-      const item = normalizeFullImage(items);
-      if (!item) continue;
-      posts.push({ ...base, type: 'full_image', item });
+      // 이미지 없으면 item=null(헤더 전용). 드롭하지 않음.
+      posts.push({ ...base, type: 'full_image', item: normalizeFullImage(items) });
     } else if (p.type === 'thumbnail') {
-      const mapped = normalizeThumbnailItems(items);
-      if (mapped.length === 0) continue;
-      posts.push({ ...base, type: 'thumbnail', items: mapped });
+      // 아이템 없어도 헤더만으로 렌더(빈 리스트 허용).
+      posts.push({ ...base, type: 'thumbnail', items: normalizeThumbnailItems(items) });
     } else if (p.type === 'icon' && p.subtype === 'daily') {
-      const mapped = normalizeIconItems(items);
-      if (mapped.length === 0) continue;
-      posts.push({ ...base, type: 'icon', items: mapped });
+      posts.push({ ...base, type: 'icon', items: normalizeIconItems(items) });
     } else if (p.type === 'icon' && p.subtype === 'daily_weather') {
-      const item = normalizeWeather(items);
-      if (!item) continue;
-      posts.push({ ...base, type: 'weather', item });
+      posts.push({ ...base, type: 'weather', item: normalizeWeather(items) });
+    } else if (p.type === 'gift') {
+      const giftItems = normalizeGiftItems(p.body?.items as unknown as RawGiftItem[] | undefined);
+      if (giftItems.length === 0) continue;
+      posts.push({ ...base, type: 'gift', items: giftItems });
+    } else if (p.type === 'chat') {
+      const groups = p.body?.items as unknown as RawChatEl[][] | undefined;
+      const picker = normalizeChatPicker(groups?.[1]);
+      if (!picker) continue; // 피커 없으면 상호작용 불가 → 드롭
+      posts.push({
+        ...base,
+        type: 'chat',
+        bgColor: emptyToNull(p.body?.bgColor),
+        messages: normalizeChatMessages(groups?.[0]),
+        picker,
+      });
     }
-    // 그 외(gift/chat/unknown type, unknown icon subtype) → drop
+    // 그 외(unknown type, unknown icon subtype) → drop
   }
   return posts;
+}
+
+/** 단일 raw 포스트 → 도메인(액션 후 getPost 재조회용). 지원 안 되면 null. */
+export function normalizeTodayPost(raw: RawTodayPost): TodayPost | null {
+  return normalizeTodayPosts([raw])[0] ?? null;
 }

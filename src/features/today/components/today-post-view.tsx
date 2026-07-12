@@ -1,4 +1,6 @@
+import { ChatPost } from './chat-post';
 import { FullImagePost } from './full-image-post';
+import { GiftPost } from './gift-post';
 import { IconPost } from './icon-post';
 import { ThumbnailPost } from './thumbnail-post';
 import { WeatherPost } from './weather-post';
@@ -25,6 +27,10 @@ export function TodayPostView({ post, onPressLink }: TodayPostViewProps) {
       return <IconPost post={post} onPressLink={onPressLink} />;
     case 'weather':
       return <WeatherPost post={post} onPressLink={onPressLink} />;
+    case 'gift':
+      return <GiftPost post={post} onPressLink={onPressLink} />;
+    case 'chat':
+      return <ChatPost post={post} onPressLink={onPressLink} />;
     default: {
       const _exhaustive: never = post;
       return _exhaustive;
