@@ -19,5 +19,6 @@ export { ListHeader, type ListHeaderProps } from './list-header';
 export { ListItem, type ListItemProps } from './list-item';
 export { Carousel, type CarouselProps } from './carousel/carousel';
 export { Chip, type ChipProps } from './chip';
+export { LinkText, type LinkTextProps } from './link-text';
 export { PriceTag, type PriceTagProps } from './price-tag';
 export { ForceIcon, type ForceGlyph } from './price-tag/force-icon';
