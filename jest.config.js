@@ -6,4 +6,7 @@ module.exports = {
   transformIgnorePatterns: [
     'node_modules/(?!((jest-)?react-native|@react-native(-community)?|@react-navigation)/)',
   ],
+  // ota-poc/는 독립 실험 워크스페이스(gitignore) — 앱 테스트 러너·haste 맵을 오염시키지 않는다.
+  testPathIgnorePatterns: ['/node_modules/', '<rootDir>/ota-poc/'],
+  modulePathIgnorePatterns: ['<rootDir>/ota-poc/'],
 };

@@ -1,5 +1,7 @@
 module.exports = {
   root: true,
+  // ota-poc/는 독립 실험 워크스페이스(gitignore) — 앱 린트 대상에서 제외.
+  ignorePatterns: ['ota-poc/'],
   extends: '@react-native',
   plugins: ['import'],
   settings: {
