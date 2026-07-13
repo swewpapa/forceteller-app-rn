@@ -39,7 +39,7 @@ keyword / tag / tag-label을 한 `Chip`의 variant로 묶는 안을 검토했으
 ## 공통 규약
 
 - 위치: `shared/components/<kebab>/`. 파일 kebab-case, export 심볼 PascalCase. 배럴(`shared/components/index.ts`) 등록.
-- 상태 분기 있는 것은 순수 `build<X>Style(state, colors)` 리졸버 + 유닛테스트 → 컴포넌트 순(기존 Button/TextField 패턴).
+- 스타일은 **`withStyleProps` 엔진 + variant 데이터맵**(Chip 레퍼런스). `build<X>Style(state, colors)` 임퍼러티브 함수는 **지양** — 구 Button/TextField 홀드오버 패턴이라 답습하지 않는다(layout의 `buildLayoutStyle`은 폐지됨). 순수 로직(카운트 포맷·variant 주입 resolve 등)만 유닛테스트.
 - 색은 `ColorPath`(스타일 엔진) 또는 `useAppColors()` 경유 → day/night 자동 대응. Figma는 day 기준.
 - **onPress-optional 관례**: 상황에 따라 정적/인터랙션인 컴포넌트(`Checkbox`, `ActionButton`, `Likes`)는 `onPress?`/`onChange?` 옵셔널 — 있으면 `Pressable`, 없으면 `View`. 본질적 인터랙션(`LinkText`, `TagChip`)은 필수.
 - 레이아웃 탈출구 `style?: StyleProp<ViewStyle>`는 병합 마지막(기존 규약).
@@ -65,7 +65,7 @@ keyword / tag / tag-label을 한 `Chip`의 variant로 묶는 안을 검토했으
 - `View`(비인터랙션).
 
 ### 3. `TagChip` — `tag-chip/` (선택 토글 rect 칩)
-- `tag-chip-style.ts`: `buildTagChipStyle({ selected }, colors)`
+- Chip 패턴: `withStyleProps` 아톰(container/label) + `tagChipVariants` 데이터맵(컴포넌트 콜로케이션). `-style.ts` 없음.
 - props: `label`, `selected`, `onPress`
 - height 28, radius `md`(8), 폰트 `label-md`.
 - selected → bg `primary.primary` / text `primary.onPrimary`
@@ -73,7 +73,7 @@ keyword / tag / tag-label을 한 `Chip`의 variant로 묶는 안을 검토했으
 - `Pressable` + `accessibilityState={{ selected }}`. 패딩 실측.
 
 ### 4. `Checkbox` — `checkbox/` (단일 컴포넌트, label 옵셔널)
-- `checkbox-style.ts`: `buildCheckboxStyle({ checked, size }, colors)` → 박스 치수/색
+- LinkText식 인라인: 단일 FA 글리프 + Typography 라벨 + `SIZE` 데이터맵(box/label). `-style.ts` 없음.
 - props: `checked`, `onChange?(next)`, `label?`, `size?`('md' 기본 / 'sm'), `checkboxPosition?`('left' 기본 / 'right')
 - **label 없으면 박스만 렌더**(아이콘 온리). onChange 없으면 정적.
 - 박스: checked → bg `primary.primary` + `faCheck`(pro-solid) `primary.onPrimary` / unchecked → 투명 + 1px border `text.subtle`. radius `xs`. md=20 / sm=16.

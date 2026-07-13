@@ -1,2 +1,1 @@
-export { Checkbox, type CheckboxProps } from './checkbox';
-export { type CheckboxSize } from './checkbox-style';
+export { Checkbox, type CheckboxProps, type CheckboxSize } from './checkbox';
