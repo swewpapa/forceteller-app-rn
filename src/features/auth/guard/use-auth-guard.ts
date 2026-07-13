@@ -2,6 +2,7 @@ import { useEffect } from 'react';
 import type { NavigationContainerRef } from '@react-navigation/native';
 import { useAuthStore } from '../stores/auth-store';
 import { ROUTE_GUARDS } from './route-guards';
+import { shouldRedirectToLogin } from './evaluate-guard';
 
 /**
  * 딥링크/훅 밖 진입을 사후 감지해 미인증이면 Login 모달로 리다이렉트.
@@ -20,11 +21,8 @@ export function useAuthGuard(
       const route = navRef.getCurrentRoute();
       if (!route) return;
 
-      const routeName = route.name as keyof ReactNavigation.RootParamList;
-      if (
-        status !== 'authenticated' &&
-        ROUTE_GUARDS[routeName]?.requiresAuth
-      ) {
+      const routeName = route.name as keyof AppRoutes.GuardableParamList;
+      if (shouldRedirectToLogin(ROUTE_GUARDS[routeName], route.params, status)) {
         // navigate의 타입은 RootParamList가 ParamListBase를 만족하지 않아
         // 정적 오버로드 추론이 [never, never]로 수렴한다.
         // Task 7과 동일하게 navRef를 any로 캐스트해 호출한다.

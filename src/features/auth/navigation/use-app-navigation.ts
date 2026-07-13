@@ -3,6 +3,7 @@ import { useNavigation } from '@react-navigation/native'; // eslint-disable-line
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useAuthStore } from '../stores/auth-store';
 import { ROUTE_GUARDS } from '../guard/route-guards';
+import { shouldRedirectToLogin } from '../guard/evaluate-guard';
 
 // ReactNavigation.RootParamList는 전역 선언이라 index signature가 없어
 // ParamListBase constraint(Record<string, object|undefined>)를 바로 만족하지 않는다.
@@ -27,7 +28,7 @@ export function useAppNavigation() {
       screen: keyof ReactNavigation.RootParamList,
       params?: object,
     ): void => {
-      if (status !== 'authenticated' && ROUTE_GUARDS[screen]?.requiresAuth) {
+      if (shouldRedirectToLogin(ROUTE_GUARDS[screen], params, status)) {
         nav.navigate('Login', {
           redirect: { screen, params: params as Record<string, unknown> | undefined },
         });

@@ -33,4 +33,14 @@ declare global {
   namespace ReactNavigation {
     interface RootParamList extends RootStackParamList {}
   }
+
+  namespace AppRoutes {
+    /**
+     * 가드 선언 가능한 전체 라우트 키 공간(스택 + 탭 leaf).
+     * 백스톱의 getCurrentRoute()는 leaf 라우트('Home' 등)를 반환하므로
+     * ROUTE_GUARDS 키가 스택만 알면 탭을 가드로 선언할 수 없다 — 여기서 합집합을 노출한다.
+     * (ReactNavigation 네임스페이스는 라이브러리 소유라 커스텀 인터페이스는 별도 네임스페이스에.)
+     */
+    interface GuardableParamList extends RootStackParamList, RootTabParamList {}
+  }
 }

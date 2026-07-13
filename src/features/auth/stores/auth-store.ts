@@ -3,7 +3,8 @@ import { authTokenStore, queryClient } from '@/shared/lib';
 import { googleProvider } from '../providers/google-provider';
 import { authApi } from '../api/auth-api';
 
-type Status = 'loading' | 'guest' | 'authenticated';
+export type AuthStatus = 'loading' | 'guest' | 'authenticated';
+type Status = AuthStatus;
 
 type AuthState = {
   status: Status;
