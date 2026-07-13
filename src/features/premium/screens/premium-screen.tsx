@@ -1,17 +1,44 @@
 import { ActivityIndicator, ScrollView } from 'react-native';
 import { useAppNavigation } from '@/features/auth';
-import { Button, Column, ScreenContainer, Typography } from '@/shared/components';
+import {
+  Button,
+  Column,
+  ScreenContainer,
+  StandardAppBar,
+  Typography,
+  type StandardAppBarAction,
+} from '@/shared/components';
 import { PremiumWidget } from '../components/premium-widget';
+import { PremiumSubjects } from '../components/premium-subjects';
 import { usePremiumList } from '../hooks/usePremiumList';
-import type { PremiumLink } from '../types/premium-types';
+import { usePremiumSubjects } from '../hooks/usePremiumSubjects';
+import type { PremiumLink, PremiumSubjectLink } from '../types/premium-types';
 
 /**
- * 프리미엄 탭(RN). 서버드리븐 위젯 리스트를 단일 쿼리(usePremiumList)로 렌더한다.
- * theme 홈의 3-리전과 달리 한 쿼리라 로딩/에러도 화면 단위로 처리한다.
+ * 프리미엄 탭(RN). 상단 표준 앱 바 + 서버드리븐 위젯 리스트(usePremiumList).
+ * 앱 바는 로딩/에러/정상 모든 상태에서 유지되도록 body만 분기한다.
  */
 export function PremiumScreen() {
   const navigation = useAppNavigation();
   const query = usePremiumList();
+  const subjectsQuery = usePremiumSubjects();
+
+  // 카테고리 링크: value + queryParams(genre id / keyword)를 쿼리스트링으로 붙여 Web 네비.
+  const handleSubjectLink = (link: PremiumSubjectLink) => {
+    const qp = link.params?.queryParams as Record<string, unknown> | undefined;
+    const qs = qp
+      ? '?' +
+        Object.entries(qp)
+          .map(([k, v]) => `${k}=${encodeURIComponent(String(v))}`)
+          .join('&')
+      : '';
+    navigation.navigate('Web', { path: `${link.value}${qs}` });
+  };
+  const handleViewAll = (segment: 'genre' | 'subject') => {
+    navigation.navigate('Web', {
+      path: segment === 'genre' ? '/premium/subjects/genres' : '/premium/subjects/keywords',
+    });
+  };
 
   const handlePressLink = (link: PremiumLink) => {
     switch (link.type) {
@@ -30,16 +57,18 @@ export function PremiumScreen() {
     }
   };
 
-  if (query.isPending) {
-    return (
-      <ScreenContainer>
+  // 앱 바 액션 목적지(가드가 게스트 리다이렉트 처리). 검색·이벤트는 목적지 미정 → 후속.
+  const handleAppBarAction = (action: StandardAppBarAction) => {
+    if (action === 'freeForce') navigation.navigate('Web', { path: '/freeforce' });
+    else if (action === 'calendar') navigation.navigate('Web', { path: '/cal' });
+  };
+
+  return (
+    <ScreenContainer>
+      <StandardAppBar onPressAction={handleAppBarAction} />
+      {query.isPending ? (
         <ActivityIndicator />
-      </ScreenContainer>
-    );
-  }
-  if (query.isError) {
-    return (
-      <ScreenContainer>
+      ) : query.isError ? (
         <Column padding="300" gap="150">
           <Typography variant="body-md" color="subtle">
             프리미엄을 불러오지 못했어요.
@@ -52,23 +81,26 @@ export function PremiumScreen() {
             onPress={() => query.refetch()}
           />
         </Column>
-      </ScreenContainer>
-    );
-  }
-
-  return (
-    <ScreenContainer>
-      <ScrollView>
-        <Column padding="300" gap="300">
-          {query.data.map(premium => (
-            <PremiumWidget
-              key={premium.id}
-              premium={premium}
-              onPressLink={handlePressLink}
+      ) : (
+        <ScrollView>
+          {subjectsQuery.data ? (
+            <PremiumSubjects
+              subjects={subjectsQuery.data}
+              onPressItem={handleSubjectLink}
+              onPressViewAll={handleViewAll}
             />
-          ))}
-        </Column>
-      </ScrollView>
+          ) : null}
+          <Column padding="300" gap="300">
+            {query.data.map((premium) => (
+              <PremiumWidget
+                key={premium.id}
+                premium={premium}
+                onPressLink={handlePressLink}
+              />
+            ))}
+          </Column>
+        </ScrollView>
+      )}
     </ScreenContainer>
   );
 }
