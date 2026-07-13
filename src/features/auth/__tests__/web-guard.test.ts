@@ -20,7 +20,14 @@ describe('webPathRequiresAuth', () => {
     expect(webPathRequiresAuth('/fortune?from=/my', prefixes)).toBe(false);
   });
 
-  it('기본 목록(Phase B 전 빈 배열) → 전부 false', () => {
-    expect(webPathRequiresAuth('/my')).toBe(false);
+  it('기본 목록(계정 전용 세트) — 계정 경로 보호, 콘텐츠/미지정은 통과', () => {
+    expect(webPathRequiresAuth('/force')).toBe(true);
+    expect(webPathRequiresAuth('/force/charge')).toBe(true);
+    expect(webPathRequiresAuth('/giftbox')).toBe(true);
+    expect(webPathRequiresAuth('/profile/update')).toBe(true);
+    // 콘텐츠성/미지정 경로는 게스트 통과
+    expect(webPathRequiresAuth('/dream')).toBe(false);
+    expect(webPathRequiresAuth('/profile')).toBe(false); // 조회는 미보호(update만)
+    expect(webPathRequiresAuth('/item/4053')).toBe(false);
   });
 });
