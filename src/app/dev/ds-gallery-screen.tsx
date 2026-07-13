@@ -1,9 +1,14 @@
 import { useState, type ReactNode } from 'react';
-import { ScrollView, StyleSheet } from 'react-native';
+import { Image, ScrollView, StyleSheet } from 'react-native';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faCopy } from '@fortawesome/pro-light-svg-icons/faCopy';
 import { faShareNodes } from '@fortawesome/pro-light-svg-icons/faShareNodes';
+import { faMagnifyingGlass } from '@fortawesome/pro-light-svg-icons/faMagnifyingGlass';
+import { faCalendarDays } from '@fortawesome/pro-light-svg-icons/faCalendarDays';
 import {
   ActionButton,
+  AppBar,
+  AppBarButton,
   AspectRatio,
   Box,
   Button,
@@ -22,7 +27,9 @@ import {
   TextField,
   Typography,
 } from '@/shared/components';
-import { spacing, useTheme, type TypographyVariant } from '@/shared/theme';
+import { spacing, useAppColors, useTheme, type TypographyVariant } from '@/shared/theme';
+
+const LOGO = require('../../assets/forceteller-logo.png');
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -51,6 +58,7 @@ const TYPO_SAMPLES: TypographyVariant[] = [
  */
 export function DsGalleryScreen() {
   const { resolvedTheme, setMode } = useTheme();
+  const colors = useAppColors();
   const [text, setText] = useState('');
   const [checked, setChecked] = useState(true);
   const [selected, setSelected] = useState(true);
@@ -68,6 +76,30 @@ export function DsGalleryScreen() {
             onPress={() => setMode(resolvedTheme === 'night' ? 'day' : 'night')}
           />
         </Row>
+
+        <Section title="AppBar (Root) — leading BI + trailing(아이콘/badge)">
+          <AppBar
+            leading={
+              <AppBarButton accessibilityLabel="홈">
+                <Image source={LOGO} style={styles.appBarLogo} resizeMode="contain" />
+              </AppBarButton>
+            }
+            trailing={
+              <>
+                <AppBarButton accessibilityLabel="검색" onPress={() => {}}>
+                  <FontAwesomeIcon
+                    icon={faMagnifyingGlass}
+                    size={20}
+                    color={colors.text.default}
+                  />
+                </AppBarButton>
+                <AppBarButton badge accessibilityLabel="캘린더" onPress={() => {}}>
+                  <FontAwesomeIcon icon={faCalendarDays} size={20} color={colors.text.default} />
+                </AppBarButton>
+              </>
+            }
+          />
+        </Section>
 
         <Section title="Typography — 대표 variant">
           {TYPO_SAMPLES.map((v) => (
@@ -179,5 +211,6 @@ export function DsGalleryScreen() {
 const styles = StyleSheet.create({
   content: { padding: spacing[200], gap: spacing[300], paddingBottom: spacing[900] },
   inversedBox: { alignSelf: 'flex-start', backgroundColor: '#191919' },
+  appBarLogo: { width: 36, height: 36 },
   fill: { flex: 1 },
 });
