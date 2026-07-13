@@ -1,18 +1,6 @@
-import { ActivityIndicator, ScrollView, StyleSheet } from 'react-native';
-import { faTable } from '@fortawesome/pro-solid-svg-icons/faTable';
-import { faCalendarDays } from '@fortawesome/pro-solid-svg-icons/faCalendarDays';
-import { faBell } from '@fortawesome/pro-solid-svg-icons/faBell';
-import { faBook } from '@fortawesome/pro-solid-svg-icons/faBook';
-import { faBullhorn } from '@fortawesome/pro-solid-svg-icons/faBullhorn';
-import { faTicket } from '@fortawesome/pro-solid-svg-icons/faTicket';
-import { faSackDollar } from '@fortawesome/pro-solid-svg-icons/faSackDollar';
-import { faCreditCard } from '@fortawesome/pro-solid-svg-icons/faCreditCard';
-import { faCoins } from '@fortawesome/pro-solid-svg-icons/faCoins';
-import { faGift } from '@fortawesome/pro-solid-svg-icons/faGift';
-import { faHeadset } from '@fortawesome/pro-solid-svg-icons/faHeadset';
-import { faGear } from '@fortawesome/pro-solid-svg-icons/faGear';
-import { Column, ScreenContainer } from '@/shared/components';
-import { useAuthStore } from '@/features/auth';
+import { ActivityIndicator, Linking, ScrollView, StyleSheet } from 'react-native';
+import { Button, Column, ScreenContainer } from '@/shared/components';
+import { useAppNavigation, useAuthStore } from '@/features/auth';
 import { useMe, useProfile, getZodiacName, getConstellation, formatBirth } from '@/features/user';
 import { ProfileHeader } from '../components/profile-header';
 import { SajuPill } from '../components/saju-pill';
@@ -20,6 +8,8 @@ import { ForceCard } from '../components/force-card';
 import { ShortcutGrid, type Shortcut } from '../components/shortcut-grid';
 import { MoreFooter } from '../components/more-footer';
 import { MoreGuest } from '../components/more-guest';
+import { useMoreList } from '../hooks/useMoreList';
+import type { MoreShortcutLink } from '../types/more-types';
 
 // TODO(실데이터): 소스 부재로 placeholder 유지(Martin 합의) —
 //  · dayAnimal(일주동물): 서버 간지(a/e/h/i/s/z) normalize 확장 필요
@@ -32,12 +22,27 @@ const PLACEHOLDER = {
   bonusForce: 4749,
 };
 
+/** 숏컷 링크 열기: 내부 SPA path는 Web 라우트, 외부 절대 URL은 시스템 브라우저. */
+function openMoreLink(
+  navigation: ReturnType<typeof useAppNavigation>,
+  link: MoreShortcutLink,
+  title: string,
+) {
+  if (/^https?:\/\//i.test(link.value)) {
+    Linking.openURL(link.value).catch(() => undefined);
+  } else {
+    navigation.navigate('Web', { path: link.value, title });
+  }
+}
+
 /** 더 보기(마이페이지). 게스트=로그인 CTA / 로그인=프로필(useMe·useProfile 실데이터 + 일부 placeholder). */
 export function MoreScreen() {
   const status = useAuthStore((s) => s.status);
   const signOut = useAuthStore((s) => s.signOut);
+  const navigation = useAppNavigation();
   const me = useMe();
   const profile = useProfile();
+  const { data: moreItems } = useMoreList();
 
   if (status !== 'authenticated') {
     return <MoreGuest />;
@@ -54,28 +59,13 @@ export function MoreScreen() {
   }
 
   const p = profile.data;
-  const shortcuts: Shortcut[] = [
-    { key: 'saju', label: '내 사주명식', icon: faTable, disabled: true },
-    { key: 'calendar', label: '운세 캘린더', icon: faCalendarDays },
-    { key: 'noti', label: '알림함', icon: faBell },
-    { key: 'fatebook', label: '마이 페이트북', icon: faBook },
-    { key: 'notice', label: '공지사항', icon: faBullhorn },
-    { key: 'coupon', label: '쿠폰', icon: faTicket },
-    { key: 'paidFee', label: '내가 낸 복채', icon: faSackDollar },
-    { key: 'luckCard', label: '내 행운카드', icon: faCreditCard },
-    { key: 'freeCharge', label: '무료 충전', icon: faCoins },
-    { key: 'gift', label: '선물함', icon: faGift },
-    { key: 'support', label: '고객센터', icon: faHeadset },
-    // TODO: 앱 설정 화면 신설 시 그리로. 현재는 QA용 임시 로그아웃 진입.
-    {
-      key: 'settings',
-      label: '앱 설정',
-      icon: faGear,
-      onPress: () => {
-        signOut().catch(() => undefined);
-      },
-    },
-  ];
+  // 숏컷은 서버 드리븐(/api/more/list). 로그인 상태는 각 항목 링크로 네비.
+  const shortcuts: Shortcut[] = (moreItems ?? []).map((it) => ({
+    key: String(it.id),
+    label: it.name,
+    iconUrl: it.iconUrl,
+    onPress: () => openMoreLink(navigation, it.link, it.name),
+  }));
 
   return (
     <ScreenContainer>
@@ -95,6 +85,18 @@ export function MoreScreen() {
         <ForceCard force={PLACEHOLDER.force} bonusForce={PLACEHOLDER.bonusForce} style={styles.card} />
         <ShortcutGrid items={shortcuts} style={styles.grid} />
         <MoreFooter style={styles.footer} />
+        {/* dev 전용 QA 로그아웃(정식 로그아웃 UI 신설 전 임시). prod 번들 미포함. */}
+        {__DEV__ ? (
+          <Button
+            label="로그아웃 (dev QA)"
+            appearance="outline"
+            size="sm"
+            onPress={() => {
+              signOut().catch(() => undefined);
+            }}
+            style={styles.devLogout}
+          />
+        ) : null}
       </ScrollView>
     </ScreenContainer>
   );
@@ -107,4 +109,5 @@ const styles = StyleSheet.create({
   card: { marginTop: 12 },
   grid: { marginTop: 28 },
   footer: { marginTop: 40 },
+  devLogout: { marginTop: 24, alignSelf: 'center' },
 });

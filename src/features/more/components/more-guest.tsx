@@ -1,51 +1,43 @@
 import { Image, ScrollView, StyleSheet } from 'react-native';
-import { faTable } from '@fortawesome/pro-solid-svg-icons/faTable';
-import { faCalendarDays } from '@fortawesome/pro-solid-svg-icons/faCalendarDays';
-import { faBell } from '@fortawesome/pro-solid-svg-icons/faBell';
-import { faBook } from '@fortawesome/pro-solid-svg-icons/faBook';
-import { faFlask } from '@fortawesome/pro-solid-svg-icons/faFlask';
-import { faGift } from '@fortawesome/pro-solid-svg-icons/faGift';
-import { faTicket } from '@fortawesome/pro-solid-svg-icons/faTicket';
-import { faSackDollar } from '@fortawesome/pro-solid-svg-icons/faSackDollar';
-import { faCreditCard } from '@fortawesome/pro-solid-svg-icons/faCreditCard';
-import { faCoins } from '@fortawesome/pro-solid-svg-icons/faCoins';
-import { faHeadset } from '@fortawesome/pro-solid-svg-icons/faHeadset';
-import { faGear } from '@fortawesome/pro-solid-svg-icons/faGear';
-import { Button, Column, Row, ScreenContainer, Typography } from '@/shared/components';
+import {
+  Button,
+  Column,
+  Row,
+  ScreenContainer,
+  StandardAppBar,
+  Typography,
+} from '@/shared/components';
 import { spacing } from '@/shared/theme';
 import { useAppNavigation } from '@/features/auth';
+import { useMoreList } from '../hooks/useMoreList';
 import { ShortcutGrid, type Shortcut } from './shortcut-grid';
 
-// 포스텔러 BI 심볼(Figma Component Library 82:7107 "Button App Bar Slot" / bi_symbol, 768²).
+// 포스텔러 BI 심볼(Figma 82:7107 bi_symbol). 브랜드 워드마크용(앱 바 로고는 StandardAppBar 소유).
 const LOGO = require('../../../assets/forceteller-logo.png');
 
 /**
  * More 게스트 상태 — web /section/more 게스트 구성 반영:
- * 브랜드(로고+워드마크) + 로그인/회원가입 CTA + 숏컷 그리드(탭→로그인).
- * (상단 아이콘바=앱 전역 chrome, 하단 "충전 2배" 프로모 이미지 배너=원격 에셋 → 후속.)
+ * 앱 바(Root) + 브랜드(로고+워드마크) + 로그인/회원가입 CTA + 숏컷 그리드(탭→로그인).
+ * 앱 바/숏컷 모두 게스트는 로그인 유도(web 동일).
+ * (하단 "충전 2배" 프로모 이미지 배너=원격 에셋 → 후속.)
  */
 export function MoreGuest() {
   const navigation = useAppNavigation();
   const goLogin = () => navigation.navigate('Login');
 
-  // 게스트는 모든 항목이 로그인 유도(web 동일). 아이콘은 FA Pro 근사(실 에셋 교체 여지).
-  const shortcuts: Shortcut[] = [
-    { key: 'saju', label: '내 사주 명식', icon: faTable, onPress: goLogin },
-    { key: 'calendar', label: '운세 캘린더', icon: faCalendarDays, onPress: goLogin },
-    { key: 'noti', label: '알림함', icon: faBell, onPress: goLogin },
-    { key: 'fatebook', label: '마이 페이트북', icon: faBook, onPress: goLogin },
-    { key: 'test', label: '테스트', icon: faFlask, onPress: goLogin },
-    { key: 'gift', label: '선물함', icon: faGift, onPress: goLogin },
-    { key: 'coupon', label: '쿠폰 등록', icon: faTicket, onPress: goLogin },
-    { key: 'paidFee', label: '내가 낸 복채', icon: faSackDollar, onPress: goLogin },
-    { key: 'luckCard', label: '내 행운 카드', icon: faCreditCard, onPress: goLogin },
-    { key: 'freeCharge', label: '무료 충전', icon: faCoins, onPress: goLogin },
-    { key: 'support', label: '고객센터', icon: faHeadset, onPress: goLogin },
-    { key: 'settings', label: '앱 설정', icon: faGear, onPress: goLogin },
-  ];
+  // 숏컷은 서버 드리븐(/api/more/list). 게스트는 전 항목이 로그인 유도(web 동일).
+  const { data: moreItems } = useMoreList();
+  const shortcuts: Shortcut[] = (moreItems ?? []).map((it) => ({
+    key: String(it.id),
+    label: it.name,
+    iconUrl: it.iconUrl,
+    onPress: goLogin,
+  }));
 
   return (
     <ScreenContainer>
+      {/* 게스트: 앱 바 액션도 전부 로그인 유도. */}
+      <StandardAppBar onPressAction={goLogin} onPressLogo={goLogin} />
       <ScrollView contentContainerStyle={styles.content}>
         <Column align="center" gap="100" style={styles.brand}>
           <Row align="center" gap="100">
