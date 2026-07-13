@@ -212,3 +212,16 @@ export function Chip({ label, onPress, appearance = 'outline', style, ...rest }:
 
 - 이 문서는 **표준 참조 문서**(dated spec 아님) — 새 컴포넌트/규약 변경 시 갱신.
 - 색 축이 accent(오행: wood/fire/earth/metal/water)로 확장되면 `color`가 그대로 수용(범주색도 표면색 역할). accent는 현재 범위 밖.
+
+## 9. 새 컴포넌트 추가 절차 (체크리스트)
+
+여러 명이 같은 방식으로 추가하도록 절차를 고정한다. PR 리뷰 시 이 목록을 기준으로 본다.
+
+1. **Figma 실측** — Component Library 노드에서 `get_design_context`/`get_variable_defs`로 치수·토큰 확인. 추정 금지, 실측값을 코드 주석에 남긴다(예: `paddingHorizontal: 14 // Figma 실측`).
+2. **분리 판단** — variant가 **룩만** 다르면 한 컴포넌트 + variant. **행동/시맨틱**(인터랙션·a11y 역할·상태 축)이 다르면 별도 컴포넌트(Chip/TagChip/TagLabel 선례). 이름은 Figma 명칭(도메인 개념) 그대로 — 메커니즘명(SelectChip류) 지양.
+3. **스타일 구현 = `withStyleProps` 엔진** (§8) — 아톰(비공개) + variant 데이터맵 콜로케이션. `build<X>Style(state)→ViewStyle` 임퍼러티브 + 별도 `-style.ts`는 **금지**(구 패턴, 전부 이관 완료). 조합형 색 로직(color×appearance×disabled 등)은 순수 `pick<X>Colors(...) → ColorPath` 헬퍼로 콜로케이션. 아이콘+텍스트뿐이면 Typography+FontAwesome 인라인으로 충분.
+4. **관례 준수** — `onPress`/`onChange` 옵셔널이면 없을 때 정적 렌더(Pressable↔View 분기). 아웃라인 글리프는 `pro-light`(pro-regular 미설치). `style`은 레이아웃 전용 탈출구, 병합 마지막.
+5. **유닛테스트는 순수 로직만** — 포맷 함수·variant resolve 등. 색/스타일 결과는 테스트하지 않는다(시각검증으로 — FA ESM이라 컴포넌트 모듈은 jest에서 로드도 안 됨).
+6. **배럴 등록** — `shared/components/index.ts` 해당 카테고리 그룹 **끝**에 추가.
+7. **DS 갤러리 등록** — `src/app/dev/ds-gallery-screen.tsx`에 섹션 추가(변형 전부). 갤러리가 발견성 + 시각 회귀 기준 화면이다. 진입: dev 빌드에서 More 탭 long-press.
+8. **시각검증** — 시뮬레이터에서 갤러리 화면 light/dark 캡처 확인(`xcrun simctl ui booted appearance dark`).

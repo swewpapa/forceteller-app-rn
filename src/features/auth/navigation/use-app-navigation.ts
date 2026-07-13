@@ -3,6 +3,8 @@ import { useNavigation } from '@react-navigation/native'; // eslint-disable-line
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { useAuthStore } from '../stores/auth-store';
 import { ROUTE_GUARDS } from '../guard/route-guards';
+import { shouldRedirectToLogin } from '../guard/evaluate-guard';
+import { navigateUnsafe } from './navigate-unsafe';
 
 // ReactNavigation.RootParamList는 전역 선언이라 index signature가 없어
 // ParamListBase constraint(Record<string, object|undefined>)를 바로 만족하지 않는다.
@@ -27,16 +29,13 @@ export function useAppNavigation() {
       screen: keyof ReactNavigation.RootParamList,
       params?: object,
     ): void => {
-      if (status !== 'authenticated' && ROUTE_GUARDS[screen]?.requiresAuth) {
+      if (shouldRedirectToLogin(ROUTE_GUARDS[screen], params, status)) {
         nav.navigate('Login', {
           redirect: { screen, params: params as Record<string, unknown> | undefined },
         });
         return;
       }
-      // navigate의 rest-param 오버로드는 RouteName이 union일 때 두 인자를 [never,never]로 추론해
-      // 타입 안전 캐스트가 불가능하다. nav 자체를 any로 캐스트해 호출한다.
-       
-      (nav as any).navigate(screen, params);
+      navigateUnsafe(nav, screen, params);
     };
 
     return {

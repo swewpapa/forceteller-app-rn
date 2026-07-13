@@ -121,7 +121,11 @@ export function createHttpClient({ baseURL, timeout }: HttpClientConfig) {
           method: config.method,
           headers: config.headers,
           body: config.body !== undefined ? JSON.stringify(config.body) : undefined,
-          signal: controller.signal,
+          // AbortSignal 이중 선언 충돌 우회: 의존성이 주입한 lib.dom AbortSignal(onabort null 허용)과
+          // RN 타입의 global.AbortSignal(null 불허)이 fetch 경계에서만 불일치. 런타임은 동일 객체.
+          signal: controller.signal as unknown as NonNullable<
+            Parameters<typeof fetch>[1]
+          >['signal'],
         });
       } catch (e) {
         if (timedOut) throw new ApiError('timeout', null, null);

@@ -49,4 +49,25 @@ describe('auth-store', () => {
     expect(useAuthStore.getState().status).toBe('guest');
     expect(mockQueryClient.invalidateQueries).toHaveBeenCalled();
   });
+
+  it('expireSession(authenticated) → clears + guest + invalidates (로컬 세션만, 구글 signOut 없음)', () => {
+    useAuthStore.setState({ status: 'authenticated' });
+    mockTokenStore.clear.mockClear();
+    useAuthStore.getState().expireSession();
+    expect(mockTokenStore.clear).toHaveBeenCalled();
+    expect(useAuthStore.getState().status).toBe('guest');
+    expect(mockQueryClient.invalidateQueries).toHaveBeenCalled();
+  });
+
+  it('expireSession(guest/loading) → noop (동시 401 dedupe)', () => {
+    useAuthStore.setState({ status: 'guest' });
+    mockTokenStore.clear.mockClear();
+    mockQueryClient.invalidateQueries.mockClear();
+    useAuthStore.getState().expireSession();
+    useAuthStore.setState({ status: 'loading' });
+    useAuthStore.getState().expireSession();
+    expect(mockTokenStore.clear).not.toHaveBeenCalled();
+    expect(mockQueryClient.invalidateQueries).not.toHaveBeenCalled();
+    expect(useAuthStore.getState().status).toBe('loading');
+  });
 });

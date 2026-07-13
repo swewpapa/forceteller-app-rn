@@ -9,7 +9,10 @@ export async function fetchSplashConfig(
   const controller = new AbortController();
   const timer = setTimeout(() => controller.abort(), timeoutMs);
   try {
-    const res = await fetch(url, { signal: controller.signal });
+    // AbortSignal 이중 선언 충돌 우회(http.ts 동일 주석 참조): lib.dom vs RN global 타입 불일치.
+    const res = await fetch(url, {
+      signal: controller.signal as unknown as NonNullable<Parameters<typeof fetch>[1]>['signal'],
+    });
     if (!res.ok) return null;
     return (await res.json()) as SplashConfig;
   } catch {
