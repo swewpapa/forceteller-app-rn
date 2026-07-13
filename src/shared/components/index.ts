@@ -22,6 +22,7 @@ export { Carousel, type CarouselProps } from './carousel/carousel';
 export { Chip, type ChipProps } from './chip';
 export { TagChip, type TagChipProps } from './tag-chip';
 export { LinkText, type LinkTextProps } from './link-text';
+export { ActionButton, type ActionButtonProps } from './action-button';
 export {
   TagLabel,
   type TagLabelProps,
