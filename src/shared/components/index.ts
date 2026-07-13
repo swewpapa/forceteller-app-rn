@@ -23,6 +23,7 @@ export { Chip, type ChipProps } from './chip';
 export { TagChip, type TagChipProps } from './tag-chip';
 export { LinkText, type LinkTextProps } from './link-text';
 export { ActionButton, type ActionButtonProps } from './action-button';
+export { Likes, type LikesProps, type LikesSize } from './likes';
 export {
   TagLabel,
   type TagLabelProps,
