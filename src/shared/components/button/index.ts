@@ -1,7 +1,8 @@
-export { Button, type ButtonProps } from './button';
-export type {
-  ButtonAppearance,
-  ButtonColor,
-  ButtonShape,
-  ButtonSize,
-} from './button-style';
+export {
+  Button,
+  type ButtonProps,
+  type ButtonAppearance,
+  type ButtonColor,
+  type ButtonShape,
+  type ButtonSize,
+} from './button';
