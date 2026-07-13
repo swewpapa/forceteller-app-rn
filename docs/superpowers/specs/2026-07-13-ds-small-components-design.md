@@ -39,7 +39,7 @@ keyword / tag / tag-label을 한 `Chip`의 variant로 묶는 안을 검토했으
 ## 공통 규약
 
 - 위치: `shared/components/<kebab>/`. 파일 kebab-case, export 심볼 PascalCase. 배럴(`shared/components/index.ts`) 등록.
-- 스타일은 **`withStyleProps` 엔진 + variant 데이터맵**(Chip 레퍼런스). `build<X>Style(state, colors)` 임퍼러티브 함수는 **지양** — 구 Button/TextField 홀드오버 패턴이라 답습하지 않는다(layout의 `buildLayoutStyle`은 폐지됨). 순수 로직(카운트 포맷·variant 주입 resolve 등)만 유닛테스트.
+- 스타일은 **`withStyleProps` 엔진 + variant 데이터맵**(Chip 레퍼런스). `build<X>Style(state, colors)` 임퍼러티브 함수는 **지양**(layout `buildLayoutStyle` 폐지, Button/TextField도 이 브랜치에서 엔진 이관 → `shared/components` 전 컴포넌트 통일). 순수 로직(카운트 포맷·variant 주입 resolve 등)만 유닛테스트. 색 로직이 조합형(Button color×appearance×disabled 등)이면 순수 `pick<X>Colors(...) → ColorPath` 헬퍼로 콜로케이션(ViewStyle 빌드 금지).
 - 색은 `ColorPath`(스타일 엔진) 또는 `useAppColors()` 경유 → day/night 자동 대응. Figma는 day 기준.
 - **onPress-optional 관례**: 상황에 따라 정적/인터랙션인 컴포넌트(`Checkbox`, `ActionButton`, `Likes`)는 `onPress?`/`onChange?` 옵셔널 — 있으면 `Pressable`, 없으면 `View`. 본질적 인터랙션(`LinkText`, `TagChip`)은 필수.
 - 레이아웃 탈출구 `style?: StyleProp<ViewStyle>`는 병합 마지막(기존 규약).
