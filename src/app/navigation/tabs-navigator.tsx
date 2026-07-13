@@ -32,6 +32,14 @@ export function TabsNavigator() {
         name="More"
         component={MoreScreen}
         options={{ title: '더 보기' }}
+        // dev 전용: More 탭 long-press → DS 갤러리(커스텀 TabBar가 tabLongPress를 발신하는 계약 활용).
+        // 탭 네비의 navigate 타입엔 루트 스택 라우트가 없어 구조적 캐스트(런타임은 상위로 버블링).
+        listeners={({ navigation }) => ({
+          tabLongPress: () => {
+            if (__DEV__)
+              (navigation as { navigate: (screen: string) => void }).navigate('DsGallery');
+          },
+        })}
       />
     </Tab.Navigator>
   );

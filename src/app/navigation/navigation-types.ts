@@ -22,6 +22,8 @@ export type RootStackParamList = {
       params?: Record<string, unknown>;
     };
   };
+  /** DS 갤러리 — dev 빌드에서만 등록되는 상설 컴포넌트 카탈로그(진입: More 탭 long-press). */
+  DsGallery: undefined;
 };
 
 /**
