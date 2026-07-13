@@ -1,4 +1,4 @@
-import { normalizeTodayPosts } from '../api/normalize-today';
+import { normalizeTodayHero, normalizeTodayPosts } from '../api/normalize-today';
 
 // dev 실응답(today-posts-member.json {status, data:[]})에서 각 지원 타입 대표 + 엣지를 발췌한 픽스처.
 // weather의 temp는 raw item.title("25º 비")에서 온다(실측). link의 analytics/method는 도메인 미반영.
@@ -631,5 +631,57 @@ describe('normalizeTodayPosts', () => {
       { src: 'https://x/t1.png', action: { type: 'api', endpoint: '/api/daily/calc/d_proverb', method: 'POST' } },
       { src: 'https://x/t2.png', action: { type: 'api', endpoint: '/api/daily/calc/d_proverb', method: 'POST' } },
     ]);
+  });
+});
+
+describe('normalizeTodayHero', () => {
+  // dev 실응답(GET /api/today/hero, 게스트) 발췌.
+  const rawHero = {
+    todaySimple: '7/14 화',
+    caption: '지금 가입하시고',
+    sub: '매일 새로워지는\n오늘의 운세를 만나보세요.',
+    heroImage: 'data:image/svg+xml;base64,PHN2Zz48L3N2Zz4=',
+    backgroundImage: 'https://static.forceteller.com/images/today/hero_section_bg/v2/today_bg_summer_day.svg',
+    link: { type: 'url', value: '/calc/daily', params: { state: { code: 'd_sazoo' } } },
+    textColor: '#27484E',
+    iconColor: 'white',
+  };
+
+  it('raw 히어로를 도메인으로 매핑한다', () => {
+    expect(normalizeTodayHero(rawHero)).toEqual({
+      date: '7/14 화',
+      caption: '지금 가입하시고',
+      headline: '매일 새로워지는\n오늘의 운세를 만나보세요.',
+      backgroundImage: rawHero.backgroundImage,
+      animalImage: rawHero.heroImage,
+      link: { type: 'url', value: '/calc/daily', params: { state: { code: 'd_sazoo' } } },
+      textColor: '#27484E',
+      iconColor: 'white',
+    });
+  });
+
+  it('headline(sub) 없으면 null', () => {
+    expect(normalizeTodayHero({ ...rawHero, sub: undefined })).toBeNull();
+    expect(normalizeTodayHero({ ...rawHero, sub: '' })).toBeNull();
+  });
+
+  it('textColor/iconColor 미지정 시 폴백(#191919 / white)', () => {
+    const hero = normalizeTodayHero({ sub: '헤드라인' });
+    expect(hero?.textColor).toBe('#191919');
+    expect(hero?.iconColor).toBe('white');
+  });
+
+  it('date/caption/이미지 부재 시 빈 문자열, value 없는 link는 null', () => {
+    const hero = normalizeTodayHero({ sub: '헤드라인', link: { type: 'url' } });
+    expect(hero).toEqual({
+      date: '',
+      caption: '',
+      headline: '헤드라인',
+      backgroundImage: '',
+      animalImage: '',
+      link: null,
+      textColor: '#191919',
+      iconColor: 'white',
+    });
   });
 });

@@ -9,6 +9,7 @@ import type {
   ThumbnailItem,
   TodayApiLink,
   TodayHeader,
+  TodayHero,
   TodayLink,
   TodayPost,
   WeatherItem,
@@ -308,4 +309,41 @@ export function normalizeTodayPosts(raw: RawTodayPost[]): TodayPost[] {
 /** 단일 raw 포스트 → 도메인(액션 후 getPost 재조회용). 지원 안 되면 null. */
 export function normalizeTodayPost(raw: RawTodayPost): TodayPost | null {
   return normalizeTodayPosts([raw])[0] ?? null;
+}
+
+// ─── 투데이 히어로(GET /api/today/hero) ───
+
+type RawTodayHero = {
+  todaySimple?: string;
+  caption?: string;
+  sub?: string;
+  heroImage?: string; // 동물 이미지(SVG data-URI, 내부에 원격 PNG)
+  backgroundImage?: string; // 히어로 bg(원격 SVG URL)
+  link?: RawTodayLink;
+  textColor?: string;
+  iconColor?: string;
+};
+
+export type TodayHeroResponse = { status: number; data: RawTodayHero };
+
+// textColor 미지정 시 text/default(day) 폴백. iconColor 기본 white(히어로 위 대비).
+const HERO_TEXT_FALLBACK = '#191919';
+
+/**
+ * raw 히어로 → 도메인 TodayHero. headline(sub) 없으면 null(히어로 없이 피드만 렌더).
+ * date/caption/이미지/색은 부재 시 안전한 기본값으로 채운다(부분 렌더 허용).
+ */
+export function normalizeTodayHero(raw: RawTodayHero): TodayHero | null {
+  const headline = raw.sub;
+  if (!headline) return null;
+  return {
+    date: raw.todaySimple ?? '',
+    caption: raw.caption ?? '',
+    headline,
+    backgroundImage: raw.backgroundImage ?? '',
+    animalImage: raw.heroImage ?? '',
+    link: normalizeLink(raw.link),
+    textColor: raw.textColor || HERO_TEXT_FALLBACK,
+    iconColor: raw.iconColor || 'white',
+  };
 }
