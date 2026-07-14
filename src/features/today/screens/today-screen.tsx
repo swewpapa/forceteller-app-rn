@@ -3,12 +3,15 @@ import { ActivityIndicator, Animated, StyleSheet, Text, View } from 'react-nativ
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppNavigation } from '@/features/auth';
 import {
+  AppBar,
+  AppBarCalendarButton,
+  AppBarEventButton,
+  AppBarFreeForceButton,
+  AppBarSearchButton,
   Button,
   Column,
   ScreenContainer,
-  AppBar,
   Typography,
-  type AppBarAction,
 } from '@/shared/components';
 import { useAppColors } from '@/shared/theme';
 import { TodayHeroView } from '@/features/today/components/today-hero-view';
@@ -38,15 +41,21 @@ export function TodayScreen() {
       navigation.navigate('Web', { path: link.value });
     }
   };
-  const handleAppBarAction = (action: AppBarAction) => {
-    if (action === 'freeForce') navigation.navigate('Web', { path: '/freeforce' });
-    else if (action === 'calendar') navigation.navigate('Web', { path: '/cal' });
-  };
+  // 로딩/에러/히어로/오버레이 모든 상태가 같은 액션 세트를 쓴다. 색은 각 AppBar의
+  // iconColor(context)가 하위 named 버튼에 전파하므로 한 변수를 재사용한다.
+  const appBarTrailing = (
+    <>
+      <AppBarSearchButton onPress={() => {}} />
+      <AppBarFreeForceButton onPress={() => navigation.navigate('Web', { path: '/freeforce' })} />
+      <AppBarEventButton onPress={() => {}} />
+      <AppBarCalendarButton onPress={() => navigation.navigate('Web', { path: '/cal' })} />
+    </>
+  );
 
   if (postsQuery.isPending) {
     return (
       <ScreenContainer>
-        <AppBar onPressAction={handleAppBarAction} />
+        <AppBar trailing={appBarTrailing} />
         <ActivityIndicator />
       </ScreenContainer>
     );
@@ -54,7 +63,7 @@ export function TodayScreen() {
   if (postsQuery.isError) {
     return (
       <ScreenContainer>
-        <AppBar onPressAction={handleAppBarAction} />
+        <AppBar trailing={appBarTrailing} />
         <Column padding="300" gap="150">
           <Typography variant="body-md" color="subtle">
             투데이를 불러오지 못했어요.
@@ -84,7 +93,7 @@ export function TodayScreen() {
   if (!hero) {
     return (
       <ScreenContainer>
-        <AppBar onPressAction={handleAppBarAction} />
+        <AppBar trailing={appBarTrailing} />
         <Animated.ScrollView>{feed}</Animated.ScrollView>
       </ScreenContainer>
     );
@@ -125,7 +134,7 @@ export function TodayScreen() {
           pointerEvents="none"
         >
           <View style={{ paddingTop: insets.top, backgroundColor: colors.background.surface }}>
-            <AppBar background="transparent" onPressAction={handleAppBarAction} />
+            <AppBar background="transparent" trailing={appBarTrailing} />
           </View>
         </Animated.View>
         <Animated.View style={[StyleSheet.absoluteFill, { opacity: topOpacity }]}>
@@ -134,7 +143,7 @@ export function TodayScreen() {
               background="transparent"
               iconColor={hero.iconColor}
               leading={<Text style={[styles.date, { color: hero.iconColor }]}>{hero.date}</Text>}
-              onPressAction={handleAppBarAction}
+              trailing={appBarTrailing}
             />
           </View>
         </Animated.View>

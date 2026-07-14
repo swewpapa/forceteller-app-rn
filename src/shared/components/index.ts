@@ -2,13 +2,16 @@
 
 // ── 화면 셸 ─────────────────────────────────
 export { ScreenContainer } from './screen-container';
-// AppBar = 탭 chrome 전용(상세 화면은 react-navigation 헤더). AppBarButton은 내부 부품 — 미노출.
+// AppBar = 탭 chrome 전용(상세 화면은 react-navigation 헤더). leading/trailing 슬롯 조합.
+export { AppBar, type AppBarProps, type AppBarBackground } from './app-bar/app-bar';
+export { AppBarButton, type AppBarButtonProps } from './app-bar/app-bar-button';
+// 표준 액션 버튼(예약 4종) — 아이콘·badge·context 색 내장. 화면은 onPress만 준다.
 export {
-  AppBar,
-  type AppBarProps,
-  type AppBarAction,
-  type AppBarBackground,
-} from './app-bar/app-bar';
+  AppBarSearchButton,
+  AppBarFreeForceButton,
+  AppBarEventButton,
+  AppBarCalendarButton,
+} from './app-bar/app-bar-actions';
 
 // ── 레이아웃 ────────────────────────────────
 export { Box, Row, Column, type BoxProps, type RowProps, type ColumnProps } from './layout';

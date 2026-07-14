@@ -1,12 +1,15 @@
 import { ActivityIndicator, ScrollView } from 'react-native';
 import { useAppNavigation } from '@/features/auth';
 import {
+  AppBar,
+  AppBarCalendarButton,
+  AppBarEventButton,
+  AppBarFreeForceButton,
+  AppBarSearchButton,
   Button,
   Column,
   ScreenContainer,
-  AppBar,
   Typography,
-  type AppBarAction,
 } from '@/shared/components';
 import { PremiumWidget } from '@/features/premium/components/premium-widget';
 import { PremiumSubjects } from '@/features/premium/components/premium-subjects';
@@ -57,15 +60,20 @@ export function PremiumScreen() {
     }
   };
 
-  // 앱 바 액션 목적지(가드가 게스트 리다이렉트 처리). 검색·이벤트는 목적지 미정 → 후속.
-  const handleAppBarAction = (action: AppBarAction) => {
-    if (action === 'freeForce') navigation.navigate('Web', { path: '/freeforce' });
-    else if (action === 'calendar') navigation.navigate('Web', { path: '/cal' });
-  };
-
   return (
     <ScreenContainer>
-      <AppBar onPressAction={handleAppBarAction} />
+      <AppBar
+        trailing={
+          <>
+            <AppBarSearchButton onPress={() => {}} />
+            <AppBarFreeForceButton
+              onPress={() => navigation.navigate('Web', { path: '/freeforce' })}
+            />
+            <AppBarEventButton onPress={() => {}} />
+            <AppBarCalendarButton onPress={() => navigation.navigate('Web', { path: '/cal' })} />
+          </>
+        }
+      />
       {query.isPending ? (
         <ActivityIndicator />
       ) : query.isError ? (

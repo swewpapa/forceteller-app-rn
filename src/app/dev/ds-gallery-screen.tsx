@@ -6,6 +6,10 @@ import { faShareNodes } from '@fortawesome/pro-light-svg-icons/faShareNodes';
 import {
   ActionButton,
   AppBar,
+  AppBarCalendarButton,
+  AppBarEventButton,
+  AppBarFreeForceButton,
+  AppBarSearchButton,
   AspectRatio,
   Box,
   Button,
@@ -76,9 +80,26 @@ export function DsGalleryScreen() {
           />
         </Row>
 
-        <Section title="AppBar — 탭 chrome (BI + 표준 액션/badge · 홈 변형 event 제외)">
-          <AppBar onPressAction={() => {}} />
-          <AppBar actions={['search', 'freeForce', 'calendar']} onPressAction={() => {}} />
+        <Section title="AppBar — 탭 chrome (표준 액션 named 버튼 · 홈 변형 event 제외)">
+          <AppBar
+            trailing={
+              <>
+                <AppBarSearchButton onPress={() => {}} />
+                <AppBarFreeForceButton onPress={() => {}} />
+                <AppBarEventButton onPress={() => {}} />
+                <AppBarCalendarButton onPress={() => {}} />
+              </>
+            }
+          />
+          <AppBar
+            trailing={
+              <>
+                <AppBarSearchButton onPress={() => {}} />
+                <AppBarFreeForceButton onPress={() => {}} />
+                <AppBarCalendarButton onPress={() => {}} />
+              </>
+            }
+          />
         </Section>
 
         <Section title="Typography — 대표 variant">

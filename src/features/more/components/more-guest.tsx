@@ -1,5 +1,16 @@
 import { Image, ScrollView, StyleSheet } from 'react-native';
-import { Button, Column, Row, ScreenContainer, AppBar, Typography } from '@/shared/components';
+import {
+  AppBar,
+  AppBarCalendarButton,
+  AppBarEventButton,
+  AppBarFreeForceButton,
+  AppBarSearchButton,
+  Button,
+  Column,
+  Row,
+  ScreenContainer,
+  Typography,
+} from '@/shared/components';
 import { spacing } from '@/shared/theme';
 import { useAppNavigation } from '@/features/auth';
 import { useMoreList } from '@/features/more/hooks/useMoreList';
@@ -30,7 +41,17 @@ export function MoreGuest() {
   return (
     <ScreenContainer>
       {/* 게스트: 앱 바 액션도 전부 로그인 유도. */}
-      <AppBar onPressAction={goLogin} onPressLogo={goLogin} />
+      <AppBar
+        onPressLogo={goLogin}
+        trailing={
+          <>
+            <AppBarSearchButton onPress={goLogin} />
+            <AppBarFreeForceButton onPress={goLogin} />
+            <AppBarEventButton onPress={goLogin} />
+            <AppBarCalendarButton onPress={goLogin} />
+          </>
+        }
+      />
       <ScrollView contentContainerStyle={styles.content}>
         <Column align="center" gap="100" style={styles.brand}>
           <Row align="center" gap="100">
