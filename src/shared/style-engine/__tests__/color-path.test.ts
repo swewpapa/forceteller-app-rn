@@ -1,4 +1,4 @@
-import { resolveColorPath } from '@/shared/lib/style-engine/color-path';
+import { resolveColorPath } from '@/shared/style-engine/color-path';
 import type { ThemeContextValue } from '@/shared/theme';
 
 const theme = {

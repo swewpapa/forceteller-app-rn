@@ -1,4 +1,4 @@
-import { composeStyles } from '@/shared/lib/style-engine/compose-styles';
+import { composeStyles } from '@/shared/style-engine/compose-styles';
 import { boxResolvers, flexResolvers } from '@/shared/components/layout/bindings';
 import type { ThemeContextValue } from '@/shared/theme';
 

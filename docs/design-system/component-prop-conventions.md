@@ -82,7 +82,7 @@ Typography에서 확립, 전 컴포넌트 공통:
 
 Chip에서 확립. 닫힌 DS 컴포넌트(시각 정체성이 고정된 것 — Chip/Button 등)를 **열린 아톰 조합 + variant 데이터**로 조립하는 패턴이다. 사용자에겐 named prop(`label`/`appearance` 등)만 노출하고, 내부는 토큰 prop을 받는 재사용 아톰을 variant 데이터로 값 고정해 만든다.
 
-### 스타일 엔진 (`src/shared/lib/style-engine/`)
+### 스타일 엔진 (`src/shared/style-engine/`)
 
 - 토큰 인지 스타일 prop 팩토리 **`withStyleProps(Component, { base?, pressedStyle?, resolvers })`**. `resolvers`는 **prop 이름 → 리졸버 바인딩 맵**이다: `{ color: background, radius, p: padding, padding }`.
 - **리졸버 = 순수 변환 `(value, theme) => style`** — prop 이름을 모른다. 이름의 거처는 컴포넌트의 바인딩 맵: 같은 `color`가 Box에선 배경(`background`), 텍스트 아톰에선 글자색(`textColor`)에 붙는 게 정상 상태다. 공유 리졸버 9종: `background`(그룹키)/`textColor`/`font`/`padding`/`margin`/`gap`/`radius`/`justify`/`align`.

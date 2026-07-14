@@ -1,7 +1,7 @@
-import { padding, margin } from '@/shared/lib/style-engine/resolvers/spacing';
-import { gap } from '@/shared/lib/style-engine/resolvers/gap';
-import { radius } from '@/shared/lib/style-engine/resolvers/radius';
-import { justify, align } from '@/shared/lib/style-engine/resolvers/alignment';
+import { padding, margin } from '@/shared/style-engine/resolvers/spacing';
+import { gap } from '@/shared/style-engine/resolvers/gap';
+import { radius } from '@/shared/style-engine/resolvers/radius';
+import { justify, align } from '@/shared/style-engine/resolvers/alignment';
 import type { ThemeContextValue } from '@/shared/theme';
 
 const theme = {} as unknown as ThemeContextValue; // padding/gap은 spacing 스케일 직접 참조

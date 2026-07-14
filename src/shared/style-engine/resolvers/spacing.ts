@@ -1,6 +1,6 @@
 import type { ViewStyle } from 'react-native';
 import { spacing as spacingScale, type SpacingKey } from '@/shared/theme';
-import type { Resolver } from '@/shared/lib/style-engine/resolver';
+import type { Resolver } from '@/shared/style-engine/resolver';
 
 /** 문자열 = spacing 토큰 키('300'→24px), 숫자 = 원시 px(의도적 이탈 — 호출부 가시). */
 export type SpaceValue = SpacingKey | number;

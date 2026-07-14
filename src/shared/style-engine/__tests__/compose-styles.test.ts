@@ -1,6 +1,6 @@
-import { composeStyles } from '@/shared/lib/style-engine/compose-styles';
-import { background } from '@/shared/lib/style-engine/resolvers/background';
-import { padding } from '@/shared/lib/style-engine/resolvers/spacing';
+import { composeStyles } from '@/shared/style-engine/compose-styles';
+import { background } from '@/shared/style-engine/resolvers/background';
+import { padding } from '@/shared/style-engine/resolvers/spacing';
 import type { ThemeContextValue } from '@/shared/theme';
 
 const theme = { colors: { background: { surface: '#fff' } } } as unknown as ThemeContextValue;

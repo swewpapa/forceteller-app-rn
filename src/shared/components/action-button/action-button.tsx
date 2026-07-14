@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, Text, View, type StyleProp, type ViewStyle } fro
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { spacing, typographyStyles, useTheme, type TypographyVariant } from '@/shared/theme';
-import { resolveColorPath, type ColorPath } from '@/shared/lib/style-engine';
+import { resolveColorPath, type ColorPath } from '@/shared/style-engine';
 
 export type ActionButtonProps = {
   icon: IconDefinition;

@@ -18,7 +18,7 @@ import {
   withStyleProps,
   type ColorPath,
   type Resolver,
-} from '@/shared/lib/style-engine';
+} from '@/shared/style-engine';
 
 // ── 색 데이터(ColorPath) + 상태 선택 ───────────
 export type TextFieldColors = {

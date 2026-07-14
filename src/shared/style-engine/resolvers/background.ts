@@ -1,6 +1,6 @@
 import type { ViewStyle } from 'react-native';
 import type { ModeColors } from '@/shared/theme';
-import type { Resolver } from '@/shared/lib/style-engine/resolver';
+import type { Resolver } from '@/shared/style-engine/resolver';
 
 /** background 시맨틱 그룹 키(예: 'surface'). */
 export type BackgroundKey = keyof ModeColors['background'];

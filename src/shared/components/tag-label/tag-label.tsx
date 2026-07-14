@@ -7,7 +7,7 @@ import {
   withStyleProps,
   type ColorPath,
   type Resolver,
-} from '@/shared/lib/style-engine';
+} from '@/shared/style-engine';
 import {
   resolveTagLabelVariant,
   type TagLabelVariant,

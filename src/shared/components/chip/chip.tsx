@@ -7,7 +7,7 @@ import {
   withStyleProps,
   type ColorPath,
   type Resolver,
-} from '@/shared/lib/style-engine';
+} from '@/shared/style-engine';
 
 // ── Chip 로컬 색 변환 ─────────────────────────
 // ColorPath 기반. 무채색 chip 시맨틱 토큰 신설 전까지의 우회라 chip에 콜로케이션(공유 background는 그룹키 기반).

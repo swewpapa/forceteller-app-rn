@@ -15,7 +15,7 @@ import {
   withStyleProps,
   type ColorPath,
   type Resolver,
-} from '@/shared/lib/style-engine';
+} from '@/shared/style-engine';
 
 export type ButtonColor = 'primary' | 'secondary';
 export type ButtonAppearance = 'solid' | 'outline';

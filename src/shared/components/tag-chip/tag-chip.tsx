@@ -7,7 +7,7 @@ import {
   withStyleProps,
   type ColorPath,
   type Resolver,
-} from '@/shared/lib/style-engine';
+} from '@/shared/style-engine';
 
 // ── 로컬 색 리졸버(Chip 선례와 동일 결) ─────────
 const tagChipBackground: Resolver<ColorPath> = (value, theme) => ({
