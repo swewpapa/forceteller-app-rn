@@ -4,15 +4,15 @@ import {
   Button,
   Column,
   ScreenContainer,
-  StandardAppBar,
+  AppBar,
   Typography,
-  type StandardAppBarAction,
+  type AppBarAction,
 } from '@/shared/components';
-import { PremiumWidget } from '../components/premium-widget';
-import { PremiumSubjects } from '../components/premium-subjects';
-import { usePremiumList } from '../hooks/usePremiumList';
-import { usePremiumSubjects } from '../hooks/usePremiumSubjects';
-import type { PremiumLink, PremiumSubjectLink } from '../types/premium-types';
+import { PremiumWidget } from '@/features/premium/components/premium-widget';
+import { PremiumSubjects } from '@/features/premium/components/premium-subjects';
+import { usePremiumList } from '@/features/premium/hooks/usePremiumList';
+import { usePremiumSubjects } from '@/features/premium/hooks/usePremiumSubjects';
+import type { PremiumLink, PremiumSubjectLink } from '@/features/premium/types/premium-types';
 
 /**
  * 프리미엄 탭(RN). 상단 표준 앱 바 + 서버드리븐 위젯 리스트(usePremiumList).
@@ -58,14 +58,14 @@ export function PremiumScreen() {
   };
 
   // 앱 바 액션 목적지(가드가 게스트 리다이렉트 처리). 검색·이벤트는 목적지 미정 → 후속.
-  const handleAppBarAction = (action: StandardAppBarAction) => {
+  const handleAppBarAction = (action: AppBarAction) => {
     if (action === 'freeForce') navigation.navigate('Web', { path: '/freeforce' });
     else if (action === 'calendar') navigation.navigate('Web', { path: '/cal' });
   };
 
   return (
     <ScreenContainer>
-      <StandardAppBar onPressAction={handleAppBarAction} />
+      <AppBar onPressAction={handleAppBarAction} />
       {query.isPending ? (
         <ActivityIndicator />
       ) : query.isError ? (
@@ -92,11 +92,7 @@ export function PremiumScreen() {
           ) : null}
           <Column padding="300" gap="300">
             {query.data.map((premium) => (
-              <PremiumWidget
-                key={premium.id}
-                premium={premium}
-                onPressLink={handlePressLink}
-              />
+              <PremiumWidget key={premium.id} premium={premium} onPressLink={handlePressLink} />
             ))}
           </Column>
         </ScrollView>

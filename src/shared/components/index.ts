@@ -3,13 +3,13 @@
 // ── 화면 셸 ─────────────────────────────────
 export { ScreenContainer } from './screen-container';
 export { PlaceholderScreen } from './placeholder-screen';
-export { AppBar, type AppBarProps, type AppBarBackground } from './app-bar/app-bar';
-export { AppBarButton, type AppBarButtonProps } from './app-bar/app-bar-button';
+// AppBar = 탭 chrome 전용(상세 화면은 react-navigation 헤더). AppBarButton은 내부 부품 — 미노출.
 export {
-  StandardAppBar,
-  type StandardAppBarProps,
-  type StandardAppBarAction,
-} from './app-bar/standard-app-bar';
+  AppBar,
+  type AppBarProps,
+  type AppBarAction,
+  type AppBarBackground,
+} from './app-bar/app-bar';
 
 // ── 레이아웃 ────────────────────────────────
 export { Box, Row, Column, type BoxProps, type RowProps, type ColumnProps } from './layout';

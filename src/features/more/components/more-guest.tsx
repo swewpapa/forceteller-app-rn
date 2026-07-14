@@ -1,19 +1,12 @@
 import { Image, ScrollView, StyleSheet } from 'react-native';
-import {
-  Button,
-  Column,
-  Row,
-  ScreenContainer,
-  StandardAppBar,
-  Typography,
-} from '@/shared/components';
+import { Button, Column, Row, ScreenContainer, AppBar, Typography } from '@/shared/components';
 import { spacing } from '@/shared/theme';
 import { useAppNavigation } from '@/features/auth';
-import { useMoreList } from '../hooks/useMoreList';
+import { useMoreList } from '@/features/more/hooks/useMoreList';
 import { ShortcutGrid, type Shortcut } from './shortcut-grid';
 
-// 포스텔러 BI 심볼(Figma 82:7107 bi_symbol). 브랜드 워드마크용(앱 바 로고는 StandardAppBar 소유).
-const LOGO = require('../../../assets/forceteller-logo.png');
+// 포스텔러 BI 심볼(Figma 82:7107 bi_symbol). 브랜드 워드마크용(앱 바 로고는 AppBar 소유).
+const LOGO = require('@/assets/forceteller-logo.png');
 
 /**
  * More 게스트 상태 — web /section/more 게스트 구성 반영:
@@ -37,7 +30,7 @@ export function MoreGuest() {
   return (
     <ScreenContainer>
       {/* 게스트: 앱 바 액션도 전부 로그인 유도. */}
-      <StandardAppBar onPressAction={goLogin} onPressLogo={goLogin} />
+      <AppBar onPressAction={goLogin} onPressLogo={goLogin} />
       <ScrollView contentContainerStyle={styles.content}>
         <Column align="center" gap="100" style={styles.brand}>
           <Row align="center" gap="100">

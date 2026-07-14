@@ -6,16 +6,16 @@ import {
   Button,
   Column,
   ScreenContainer,
-  StandardAppBar,
+  AppBar,
   Typography,
-  type StandardAppBarAction,
+  type AppBarAction,
 } from '@/shared/components';
 import { useAppColors } from '@/shared/theme';
-import { TodayHeroView } from '../components/today-hero-view';
-import { TodayPostView } from '../components/today-post-view';
-import { useTodayHero } from '../hooks/useTodayHero';
-import { useTodayPosts } from '../hooks/useTodayPosts';
-import type { TodayLink } from '../types/today-types';
+import { TodayHeroView } from '@/features/today/components/today-hero-view';
+import { TodayPostView } from '@/features/today/components/today-post-view';
+import { useTodayHero } from '@/features/today/hooks/useTodayHero';
+import { useTodayPosts } from '@/features/today/hooks/useTodayPosts';
+import type { TodayLink } from '@/features/today/types/today-types';
 
 const APP_BAR_HEIGHT = 56;
 const HERO_HEIGHT = 480;
@@ -38,7 +38,7 @@ export function TodayScreen() {
       navigation.navigate('Web', { path: link.value });
     }
   };
-  const handleAppBarAction = (action: StandardAppBarAction) => {
+  const handleAppBarAction = (action: AppBarAction) => {
     if (action === 'freeForce') navigation.navigate('Web', { path: '/freeforce' });
     else if (action === 'calendar') navigation.navigate('Web', { path: '/cal' });
   };
@@ -46,7 +46,7 @@ export function TodayScreen() {
   if (postsQuery.isPending) {
     return (
       <ScreenContainer>
-        <StandardAppBar onPressAction={handleAppBarAction} />
+        <AppBar onPressAction={handleAppBarAction} />
         <ActivityIndicator />
       </ScreenContainer>
     );
@@ -54,7 +54,7 @@ export function TodayScreen() {
   if (postsQuery.isError) {
     return (
       <ScreenContainer>
-        <StandardAppBar onPressAction={handleAppBarAction} />
+        <AppBar onPressAction={handleAppBarAction} />
         <Column padding="300" gap="150">
           <Typography variant="body-md" color="subtle">
             투데이를 불러오지 못했어요.
@@ -84,7 +84,7 @@ export function TodayScreen() {
   if (!hero) {
     return (
       <ScreenContainer>
-        <StandardAppBar onPressAction={handleAppBarAction} />
+        <AppBar onPressAction={handleAppBarAction} />
         <Animated.ScrollView>{feed}</Animated.ScrollView>
       </ScreenContainer>
     );
@@ -107,10 +107,9 @@ export function TodayScreen() {
     <View style={[styles.fill, { backgroundColor: colors.background.surface }]}>
       <Animated.ScrollView
         scrollEventThrottle={16}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
-          { useNativeDriver: true },
-        )}
+        onScroll={Animated.event([{ nativeEvent: { contentOffset: { y: scrollY } } }], {
+          useNativeDriver: true,
+        })}
       >
         <TodayHeroView hero={hero} onPressLink={handlePressLink} />
         {feed}
@@ -126,12 +125,12 @@ export function TodayScreen() {
           pointerEvents="none"
         >
           <View style={{ paddingTop: insets.top, backgroundColor: colors.background.surface }}>
-            <StandardAppBar background="transparent" onPressAction={handleAppBarAction} />
+            <AppBar background="transparent" onPressAction={handleAppBarAction} />
           </View>
         </Animated.View>
         <Animated.View style={[StyleSheet.absoluteFill, { opacity: topOpacity }]}>
           <View style={{ paddingTop: insets.top }}>
-            <StandardAppBar
+            <AppBar
               background="transparent"
               iconColor={hero.iconColor}
               leading={<Text style={[styles.date, { color: hero.iconColor }]}>{hero.date}</Text>}
