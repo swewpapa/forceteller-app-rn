@@ -100,3 +100,21 @@ export type TodayPost =
       messages: ChatMessage[];
       picker: ChatPicker;
     });
+
+/**
+ * 투데이 히어로(GET /api/today/hero). 피드 상단 대형 배너 + 스크롤 반응 앱 바의 소스.
+ * - date: 앱 바 상단(스크롤 0) leading에 표시하는 오늘 날짜("7/14 화").
+ * - caption(레귤러) + headline(볼드): 히어로 텍스트. textColor로 렌더.
+ * - backgroundImage/animalImage: 원격 SVG / SVG(data-URI, 내부에 원격 PNG). SvgUri로 렌더.
+ * - iconColor: 히어로 위(스크롤 0) 앱 바 아이콘 색("white" 등). 스크롤 후엔 text/default.
+ */
+export type TodayHero = {
+  date: string;
+  caption: string;
+  headline: string;
+  backgroundImage: string;
+  animalImage: string;
+  link: TodayLink | null;
+  textColor: string;
+  iconColor: string;
+};

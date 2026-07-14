@@ -1,7 +1,12 @@
 import { Pressable, ScrollView, StyleSheet, Text } from 'react-native';
 import { useAppNavigation } from '@/features/auth';
 import { ThemeWidgetListByCode, type ThemeView } from '@/features/theme';
-import { Column, ScreenContainer } from '@/shared/components';
+import {
+  Column,
+  ScreenContainer,
+  StandardAppBar,
+  type StandardAppBarAction,
+} from '@/shared/components';
 import { radius, spacing, useAppColors } from '@/shared/theme';
 
 /** 홈 탭(RN). 테마 위젯 3개 리전(recommend_top/middle/bottom) + 예시 진입 버튼들. */
@@ -18,8 +23,19 @@ export function HomeScreen() {
     }
   };
 
+  // 앱 바 액션 목적지(가드가 게스트 리다이렉트 처리). 검색은 목적지 미정 → 후속.
+  const handleAppBarAction = (action: StandardAppBarAction) => {
+    if (action === 'freeForce') navigation.navigate('Web', { path: '/freeforce' });
+    else if (action === 'calendar') navigation.navigate('Web', { path: '/cal' });
+  };
+
   return (
     <ScreenContainer>
+      {/* 홈 헤더: BI + 검색/무료충전/캘린더 (Figma 20:508 기준 — event 없음). 세그먼트 컨트롤은 후속. */}
+      <StandardAppBar
+        actions={['search', 'freeForce', 'calendar']}
+        onPressAction={handleAppBarAction}
+      />
       <ScrollView>
         <Column padding="300" gap="300">
           <Text style={[styles.title, { color: colors.text.default }]}>홈</Text>

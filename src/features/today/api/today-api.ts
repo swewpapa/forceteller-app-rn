@@ -1,8 +1,10 @@
 import { http, type HttpClient } from '@/shared/lib';
-import type { TodayApiLink, TodayPost } from '../types/today-types';
+import type { TodayApiLink, TodayHero, TodayPost } from '../types/today-types';
 import {
+  normalizeTodayHero,
   normalizeTodayPost,
   normalizeTodayPosts,
+  type TodayHeroResponse,
   type TodayPostResponse,
   type TodayResponse,
 } from './normalize-today';
@@ -13,6 +15,12 @@ export function createTodayApi(client: HttpClient) {
     listPosts: async (): Promise<TodayPost[]> => {
       const res = await client.get<TodayResponse>('/api/today/posts');
       return normalizeTodayPosts(res.data);
+    },
+
+    /** GET /api/today/hero — 투데이 상단 히어로(날짜·헤드라인·bg·동물). 없으면 null. */
+    getHero: async (): Promise<TodayHero | null> => {
+      const res = await client.get<TodayHeroResponse>('/api/today/hero');
+      return normalizeTodayHero(res.data);
     },
 
     /** GET /api/today/post/{id} — 단일 포스트 재조회(액션 후 갱신 상태 획득용). */
