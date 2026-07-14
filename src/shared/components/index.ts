@@ -21,6 +21,7 @@ export { Typography, type TypographyProps } from './typography';
 // ── 미디어 ──────────────────────────────────
 export { Image, type ImageProps } from './image/image';
 export { Carousel, type CarouselProps } from './carousel/carousel';
+export { Thumbnail, type ThumbnailProps } from './thumbnail/thumbnail';
 
 // ── 입력·폼 ─────────────────────────────────
 export {
@@ -52,3 +53,4 @@ export { ActionButton, type ActionButtonProps } from './action-button';
 export { Likes, type LikesProps, type LikesSize } from './likes';
 export { PriceTag, type PriceTagProps } from './price-tag';
 export { ForceIcon, type ForceGlyph } from './price-tag/force-icon';
+export { EmptyState, type EmptyStateProps } from './empty-state/empty-state';
