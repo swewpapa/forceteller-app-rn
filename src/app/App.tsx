@@ -6,6 +6,7 @@ import { SplashGate } from './splash';
 import { http, authTokenStore, createAuthRequestInterceptor } from '@/shared/lib';
 import { useAuthStore, createSessionExpiredInterceptor } from '@/features/auth';
 import { useTheme } from '@/shared/theme';
+import { initRemoteConfig, useRemoteConfigSync } from '@/shared/config/remote-config/config-setup';
 
 // 앱 시작 시 토큰 주입 request 인터셉터를 등록한다(모듈 로드 1회).
 // http가 auth-token을 직접 import하면 순환이 되므로 app 레이어에서 연결한다.
@@ -13,6 +14,9 @@ http.interceptors.request.use(createAuthRequestInterceptor(authTokenStore));
 // 401(토큰 만료) → 로컬 세션 만료(guest 전환). shared(http)가 features(auth store)를
 // 모르도록 여기서 연결한다 — 위 request 인터셉터와 동일 선례.
 http.interceptors.response.use(undefined, createSessionExpiredInterceptor());
+
+// 원격 config를 캐시에서 동기 하이드레이트(렌더 전). 백그라운드 갱신은 App의 useRemoteConfigSync.
+initRemoteConfig();
 
 // 수동 day/night 모드에서도 상태바가 따라오도록 OS 스킴이 아닌 resolvedTheme을 본다.
 function ThemedStatusBar() {
@@ -33,6 +37,9 @@ function App() {
   useEffect(() => {
     useAuthStore.getState().restore();
   }, []);
+
+  // 원격 config 백그라운드 갱신(SWR revalidate). 부팅 스냅샷은 위 initRemoteConfig로 이미 동기 로드됨.
+  useRemoteConfigSync();
 
   return (
     <AppProviders>
