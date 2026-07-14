@@ -1,10 +1,10 @@
-jest.mock('../stores/auth-store', () => ({
+jest.mock('@/features/auth/stores/auth-store', () => ({
   useAuthStore: { getState: jest.fn() },
 }));
 
 import { ApiError } from '@/shared/lib/http';
-import { useAuthStore } from '../stores/auth-store';
-import { createSessionExpiredInterceptor } from '../api/session-expired-interceptor';
+import { useAuthStore } from '@/features/auth/stores/auth-store';
+import { createSessionExpiredInterceptor } from '@/features/auth/api/session-expired-interceptor';
 
 const expireSession = jest.fn();
 (useAuthStore.getState as jest.Mock).mockReturnValue({ expireSession });

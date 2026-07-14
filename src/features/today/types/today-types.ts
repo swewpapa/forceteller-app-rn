@@ -73,9 +73,7 @@ export type GiftItem = {
 };
 
 /** chat 말풍선 — 텍스트 또는 이미지. */
-export type ChatMessage =
-  | { kind: 'text'; text: string }
-  | { kind: 'image'; src: string };
+export type ChatMessage = { kind: 'text'; text: string } | { kind: 'image'; src: string };
 /** carousel 선택 카드(탭 시 action api 호출). */
 export type ChatCard = { src: string; action: TodayApiLink };
 /**

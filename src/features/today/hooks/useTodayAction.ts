@@ -1,6 +1,6 @@
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { todayApi } from '../api/today-api';
-import type { TodayApiLink, TodayPost } from '../types/today-types';
+import { todayApi } from '@/features/today/api/today-api';
+import type { TodayApiLink, TodayPost } from '@/features/today/types/today-types';
 
 /**
  * 포스트 아이템/버튼의 api 액션 실행 → 성공 시 해당 포스트를 재조회(getPost)해 피드 캐시에서 교체.

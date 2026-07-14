@@ -1,4 +1,4 @@
-import { normalizeConfig, remoteConfig } from '../remote-config';
+import { normalizeConfig, remoteConfig } from '@/shared/config/remote-config/remote-config';
 
 // dev 실응답(GET /api/config/firebase) 발췌 기반.
 describe('normalizeConfig', () => {

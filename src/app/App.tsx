@@ -1,12 +1,12 @@
 import { useEffect } from 'react';
 import { StatusBar } from 'react-native';
-import { AppProviders } from './providers';
-import { RootNavigator } from './navigation';
-import { SplashGate } from './splash';
 import { http, authTokenStore, createAuthRequestInterceptor } from '@/shared/lib';
 import { useAuthStore, createSessionExpiredInterceptor } from '@/features/auth';
 import { useTheme } from '@/shared/theme';
 import { initRemoteConfig, syncRemoteConfig } from '@/shared/config/remote-config/config-setup';
+import { SplashGate } from './splash';
+import { RootNavigator } from './navigation';
+import { AppProviders } from './providers';
 
 // 앱 시작 시 토큰 주입 request 인터셉터를 등록한다(모듈 로드 1회).
 // http가 auth-token을 직접 import하면 순환이 되므로 app 레이어에서 연결한다.
@@ -21,11 +21,7 @@ initRemoteConfig();
 // 수동 day/night 모드에서도 상태바가 따라오도록 OS 스킴이 아닌 resolvedTheme을 본다.
 function ThemedStatusBar() {
   const { resolvedTheme } = useTheme();
-  return (
-    <StatusBar
-      barStyle={resolvedTheme === 'night' ? 'light-content' : 'dark-content'}
-    />
-  );
+  return <StatusBar barStyle={resolvedTheme === 'night' ? 'light-content' : 'dark-content'} />;
 }
 
 function App() {

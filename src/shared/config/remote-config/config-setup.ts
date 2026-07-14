@@ -1,7 +1,12 @@
 import { createMMKV } from 'react-native-mmkv';
 import { http } from '@/shared/lib';
 import { createConfigStorage } from './config-storage';
-import { normalizeConfig, remoteConfig, type ConfigResponse, type RemoteConfig } from './remote-config';
+import {
+  normalizeConfig,
+  remoteConfig,
+  type ConfigResponse,
+  type RemoteConfig,
+} from './remote-config';
 
 // MMKV side-effect 격리: 이 모듈은 배럴(@/shared/config)에 노출하지 않고 App만 직접 import한다.
 const DEFAULT_PROVIDER = 'firebase';

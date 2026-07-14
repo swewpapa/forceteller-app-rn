@@ -72,6 +72,8 @@ export function withStyleProps<
     return <Component {...(rest as BaseProps)} style={styleValue as StyleProp<AnyStyle>} />;
   }
 
-  StyledComponent.displayName = `withStyleProps(${Component.displayName ?? Component.name ?? 'Component'})`;
+  StyledComponent.displayName = `withStyleProps(${
+    Component.displayName ?? Component.name ?? 'Component'
+  })`;
   return StyledComponent;
 }

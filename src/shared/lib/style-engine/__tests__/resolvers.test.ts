@@ -1,6 +1,6 @@
-import { background } from '../resolvers/background';
-import { textColor } from '../resolvers/text-color';
-import { font } from '../resolvers/font';
+import { background } from '@/shared/lib/style-engine/resolvers/background';
+import { textColor } from '@/shared/lib/style-engine/resolvers/text-color';
+import { font } from '@/shared/lib/style-engine/resolvers/font';
 import type { ThemeContextValue } from '@/shared/theme';
 
 const theme = {

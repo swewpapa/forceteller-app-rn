@@ -1,11 +1,4 @@
-import {
-  Image,
-  Pressable,
-  StyleSheet,
-  View,
-  type StyleProp,
-  type ViewStyle,
-} from 'react-native';
+import { Image, Pressable, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faUser } from '@fortawesome/pro-solid-svg-icons/faUser';
 import { faPen } from '@fortawesome/pro-solid-svg-icons/faPen';
@@ -41,7 +34,11 @@ export function ProfileHeader({
         <Image source={{ uri: avatarURL }} style={styles.avatar} />
       ) : (
         <View
-          style={[styles.avatar, styles.avatarFallback, { backgroundColor: colors.background.inset }]}
+          style={[
+            styles.avatar,
+            styles.avatarFallback,
+            { backgroundColor: colors.background.inset },
+          ]}
         >
           <FontAwesomeIcon icon={faUser} size={30} color={colors.text.muted} />
         </View>

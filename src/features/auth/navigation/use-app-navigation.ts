@@ -1,9 +1,9 @@
 import { useMemo } from 'react';
 import { useNavigation } from '@react-navigation/native'; // eslint-disable-line no-restricted-imports
 import type { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { useAuthStore } from '../stores/auth-store';
-import { ROUTE_GUARDS } from '../guard/route-guards';
-import { shouldRedirectToLogin } from '../guard/evaluate-guard';
+import { useAuthStore } from '@/features/auth/stores/auth-store';
+import { ROUTE_GUARDS } from '@/features/auth/guard/route-guards';
+import { shouldRedirectToLogin } from '@/features/auth/guard/evaluate-guard';
 import { navigateUnsafe } from './navigate-unsafe';
 
 // ReactNavigation.RootParamList는 전역 선언이라 index signature가 없어
@@ -25,10 +25,7 @@ export function useAppNavigation() {
   const status = useAuthStore((s) => s.status);
 
   return useMemo(() => {
-    const guarded = (
-      screen: keyof ReactNavigation.RootParamList,
-      params?: object,
-    ): void => {
+    const guarded = (screen: keyof ReactNavigation.RootParamList, params?: object): void => {
       if (shouldRedirectToLogin(ROUTE_GUARDS[screen], params, status)) {
         nav.navigate('Login', {
           redirect: { screen, params: params as Record<string, unknown> | undefined },

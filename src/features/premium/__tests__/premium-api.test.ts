@@ -1,4 +1,4 @@
-import { createPremiumApi } from '../api/premium-api';
+import { createPremiumApi } from '@/features/premium/api/premium-api';
 import type { HttpClient } from '@/shared/lib';
 
 describe('premium-api', () => {

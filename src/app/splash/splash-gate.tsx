@@ -8,12 +8,11 @@ import { createSplashStorage } from './splash-storage';
 import { useRemoteSplash } from './use-remote-splash';
 
 const storage = createSplashStorage(createMMKV({ id: 'splash' }));
-const prefetch = (url: string): Promise<boolean> =>
-  Image.prefetch(url, { cachePolicy: 'disk' });
+const prefetch = (url: string): Promise<boolean> => Image.prefetch(url, { cachePolicy: 'disk' });
 
 const MIN_VISIBLE_MS = 1000;
 const FADE_MS = 300;
-const fallback = require('../../assets/splash-fallback.png');
+const fallback = require('@/assets/splash-fallback.png');
 
 /**
  * 네이티브 스플래시(bootsplash) 위에서 remote 이미지를 SWR로 표시하는 게이트.

@@ -1,4 +1,4 @@
-import { createAuthApi } from '../api/auth-api';
+import { createAuthApi } from '@/features/auth/api/auth-api';
 import type { HttpClient } from '@/shared/lib';
 
 describe('auth-api', () => {

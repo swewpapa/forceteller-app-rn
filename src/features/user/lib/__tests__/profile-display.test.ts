@@ -3,7 +3,7 @@ import {
   getConstellation,
   getHourBranch,
   formatBirth,
-} from '../profile-display';
+} from '@/features/user/lib/profile-display';
 
 describe('profile-display', () => {
   describe('getZodiacName', () => {

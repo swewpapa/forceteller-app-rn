@@ -1,7 +1,7 @@
 // 배럴(@/shared/lib)은 auth-token(MMKV 네이티브)을 끌고 와 테스트에서 통째 모킹이 강제된다.
 // ApiError만 필요하므로 http 모듈 딥 임포트(style-engine 서브패스 임포트 선례).
 import { ApiError } from '@/shared/lib/http';
-import { useAuthStore } from '../stores/auth-store';
+import { useAuthStore } from '@/features/auth/stores/auth-store';
 
 /**
  * HTTP 401 → 세션 만료 처리 응답 인터셉터(onRejected).

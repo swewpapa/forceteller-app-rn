@@ -1,5 +1,5 @@
 import * as Updates from 'expo-updates';
-import { checkAndApplyUpdate } from '../updates';
+import { checkAndApplyUpdate } from '@/shared/lib/updates';
 
 // 루트 __mocks__/expo-updates.js가 자동 적용되지만, 의도를 명시하고 타입 안전하게 접근한다.
 jest.mock('expo-updates');

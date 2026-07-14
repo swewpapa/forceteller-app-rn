@@ -1,4 +1,4 @@
-import { resolveTheme } from '../resolve-theme';
+import { resolveTheme } from '@/shared/theme/resolve-theme';
 
 describe('resolveTheme', () => {
   it.each([

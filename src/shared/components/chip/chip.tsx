@@ -48,8 +48,16 @@ type ChipVariant = {
 };
 
 const chipVariants: Record<ChipAppearance, ChipVariant> = {
-  outline: { containerBorderColor: 'text.default', textLabelColor: 'text.default', textLabelFont: 'label-lg' },
-  solid: { containerColor: 'text.muted', textLabelColor: 'background.surface', textLabelFont: 'body-lg' },
+  outline: {
+    containerBorderColor: 'text.default',
+    textLabelColor: 'text.default',
+    textLabelFont: 'label-lg',
+  },
+  solid: {
+    containerColor: 'text.muted',
+    textLabelColor: 'background.surface',
+    textLabelFont: 'body-lg',
+  },
 };
 
 // ── 조합(공개) ───────────────────────────────

@@ -2,7 +2,7 @@ import type { StyleProp, ViewStyle } from 'react-native';
 import { faHeart as faHeartSolid } from '@fortawesome/pro-solid-svg-icons/faHeart';
 import { faHeart as faHeartLight } from '@fortawesome/pro-light-svg-icons/faHeart';
 import { spacing, type TypographyVariant } from '@/shared/theme';
-import { ActionButton } from '../action-button';
+import { ActionButton } from '@/shared/components/action-button';
 import { formatLikeCount, type LikesSize } from './likes-style';
 
 // size별 아이콘 px + 라벨 타이포(Figma 실측). gap은 두 사이즈 공통 4.

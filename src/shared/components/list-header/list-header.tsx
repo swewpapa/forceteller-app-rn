@@ -1,6 +1,6 @@
 import { Pressable } from 'react-native';
-import { Column, Row } from '../layout';
-import { Typography } from '../typography';
+import { Column, Row } from '@/shared/components/layout';
+import { Typography } from '@/shared/components/typography';
 
 export type ListHeaderProps = {
   title: string;

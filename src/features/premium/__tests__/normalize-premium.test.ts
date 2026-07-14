@@ -1,4 +1,4 @@
-import { normalizePremiumList } from '../api/normalize-premium';
+import { normalizePremiumList } from '@/features/premium/api/normalize-premium';
 
 // dev 실응답(premium-list.json {status, data:[]})에서 각 type 대표 1개 + 엣지를 발췌한 픽스처.
 // 위젯 subtitle은 top-level이 아니라 extra.subTitle에서 온다(실측).
@@ -214,7 +214,7 @@ describe('normalizePremiumList', () => {
       rawButton,
       rawTag,
     ]);
-    expect(result.map(w => w.type)).toEqual([
+    expect(result.map((w) => w.type)).toEqual([
       'rank',
       'general',
       'banner',
@@ -315,9 +315,7 @@ describe('normalizePremiumList', () => {
   it('unknown link type인 아이템은 드롭한다', () => {
     const badLink = {
       ...rawRank,
-      items: [
-        { id: 1, title: 'a', price: 100, link: { type: 'deeplink', value: 'x://y' } },
-      ],
+      items: [{ id: 1, title: 'a', price: 100, link: { type: 'deeplink', value: 'x://y' } }],
     };
     expect(normalizePremiumList([badLink])).toEqual([]);
   });

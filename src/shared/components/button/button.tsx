@@ -51,7 +51,10 @@ export function pickButtonColors(
 ): ButtonColors {
   const cs = COLOR_SETS[color];
   if (appearance === 'solid') {
-    return { background: disabled ? cs.mainDisabled : cs.main, text: disabled ? cs.onDisabled : cs.on };
+    return {
+      background: disabled ? cs.mainDisabled : cs.main,
+      text: disabled ? cs.onDisabled : cs.on,
+    };
   }
   const line = disabled ? cs.mainDisabled : cs.main;
   return { borderColor: line, text: line };

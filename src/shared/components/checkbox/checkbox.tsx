@@ -3,7 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faSquareCheck } from '@fortawesome/pro-solid-svg-icons/faSquareCheck';
 import { faSquare } from '@fortawesome/pro-light-svg-icons/faSquare';
 import { spacing, useAppColors, type TypographyVariant } from '@/shared/theme';
-import { Typography } from '../typography';
+import { Typography } from '@/shared/components/typography';
 
 export type CheckboxSize = 'md' | 'sm';
 

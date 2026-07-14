@@ -4,9 +4,9 @@ import { faArrowRight } from '@fortawesome/pro-solid-svg-icons/faArrowRight';
 import { faArrowDownToLine } from '@fortawesome/pro-solid-svg-icons/faArrowDownToLine';
 import { Button, Column, Row, Typography } from '@/shared/components';
 import { radius, useAppColors } from '@/shared/theme';
+import { useTodayAction } from '@/features/today/hooks/useTodayAction';
+import type { GiftButton, TodayLink, TodayPost } from '@/features/today/types/today-types';
 import { TodayPostHeader } from './today-post-header';
-import { useTodayAction } from '../hooks/useTodayAction';
-import type { GiftButton, TodayLink, TodayPost } from '../types/today-types';
 
 type GiftPostData = Extract<TodayPost, { type: 'gift' }>;
 
@@ -41,7 +41,11 @@ export function GiftPost({ post, onPressLink }: GiftPostProps) {
     <Column style={[styles.card, { backgroundColor: colors.background.surface }]}>
       <TodayPostHeader header={post.header} isDark={post.isDark} />
       <Column gap="200" style={styles.body}>
-        <Row align="center" gap="200" style={[styles.ticket, { borderColor: colors.stroke.subtle }]}>
+        <Row
+          align="center"
+          gap="200"
+          style={[styles.ticket, { borderColor: colors.stroke.subtle }]}
+        >
           <Column gap="50" style={styles.ticketContent}>
             <Typography variant="label-md" numberOfLines={1}>
               {item.title}
@@ -71,7 +75,9 @@ export function GiftPost({ post, onPressLink }: GiftPostProps) {
                   <FontAwesomeIcon
                     icon={trailingIcon(button.iconUrl)}
                     size={12}
-                    color={blocked ? colors.secondary.onSecondaryDisabled : colors.secondary.onSecondary}
+                    color={
+                      blocked ? colors.secondary.onSecondaryDisabled : colors.secondary.onSecondary
+                    }
                   />
                 }
                 onPress={() => handlePress(button)}

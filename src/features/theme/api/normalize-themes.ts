@@ -1,9 +1,4 @@
-import type {
-  Theme,
-  ThemeKeyword,
-  ThemeLink,
-  ThemeView,
-} from '../types/theme-types';
+import type { Theme, ThemeKeyword, ThemeLink, ThemeView } from '@/features/theme/types/theme-types';
 
 // ─── raw 타입: 서버 응답 그대로. api/ 내부 전용 — feature 배럴로 반출 금지 ───
 
@@ -46,11 +41,7 @@ export type ThemeListResponse = { status: number; data: RawTheme[] };
 
 // ─── 정규화 ───
 
-const CONTENT_TYPES = [
-  'text_only',
-  'thumbnail_carousel',
-  'full_image_carousel',
-] as const;
+const CONTENT_TYPES = ['text_only', 'thumbnail_carousel', 'full_image_carousel'] as const;
 type ContentType = (typeof CONTENT_TYPES)[number];
 
 function isContentType(type: string): type is ContentType {
@@ -117,9 +108,7 @@ export function normalizeThemes(raw: RawTheme[]): Theme[] {
       if (keywords.length === 0) continue;
       themes.push({ ...base, type: 'keyword_cloud', keywords });
     } else if (isContentType(w.type)) {
-      const views = rawViews
-        .map(normalizeView)
-        .filter((v): v is ThemeView => v !== null);
+      const views = rawViews.map(normalizeView).filter((v): v is ThemeView => v !== null);
       if (views.length === 0) continue;
       themes.push({ ...base, type: w.type, views });
     }

@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { StyleSheet, Text } from 'react-native';
-import { useAppColors, type ModeColors } from '../theme';
+import { useAppColors, type ModeColors } from '@/shared/theme';
 import { Column } from './layout';
 import { ScreenContainer } from './screen-container';
 

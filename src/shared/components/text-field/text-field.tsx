@@ -43,10 +43,10 @@ export function pickTextFieldColors({
     borderColor: disabled
       ? 'stroke.default' // disabled는 error/focused보다 우선(회색 고정)
       : error
-        ? 'stroke.alert'
-        : focused
-          ? 'primary.primary'
-          : 'stroke.default',
+      ? 'stroke.alert'
+      : focused
+      ? 'primary.primary'
+      : 'stroke.default',
     input: disabled ? 'text.muted' : 'text.default',
     placeholder: 'text.muted',
   };
@@ -148,7 +148,11 @@ export function TextField({
           // focused=false로 버튼이 언마운트되면 onPress가 안 불리는 RN 레이스를 회피.
           onPressIn={() => onChangeText('')}
         >
-          <FontAwesomeIcon icon={faCircleXmark} size={16} color={resolveColorPath('text.subtle', theme)} />
+          <FontAwesomeIcon
+            icon={faCircleXmark}
+            size={16}
+            color={resolveColorPath('text.subtle', theme)}
+          />
         </Pressable>
       )}
     </TextFieldContainer>

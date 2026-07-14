@@ -1,14 +1,6 @@
-import {
-  useCallback,
-  useRef,
-  type ForwardRefExoticComponent,
-  type RefAttributes,
-} from 'react';
+import { useCallback, useRef, type ForwardRefExoticComponent, type RefAttributes } from 'react';
 import { ActivityIndicator, BackHandler, StyleSheet, View } from 'react-native';
-import RNWebView, {
-  type WebViewNavigation,
-  type WebViewProps,
-} from 'react-native-webview';
+import RNWebView, { type WebViewNavigation, type WebViewProps } from 'react-native-webview';
 import { useFocusEffect, type RouteProp } from '@react-navigation/native';
 import { env } from '@/shared/config';
 import { useAppColors } from '@/shared/theme';

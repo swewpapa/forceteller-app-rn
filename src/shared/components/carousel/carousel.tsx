@@ -1,8 +1,8 @@
 import { type ReactElement } from 'react';
 import { FlatList, StyleSheet } from 'react-native';
 import { spacing } from '@/shared/theme';
-import { Column } from '../layout';
-import { ListHeader } from '../list-header';
+import { Column } from '@/shared/components/layout';
+import { ListHeader } from '@/shared/components/list-header';
 
 export type CarouselProps<T> = {
   title: string;

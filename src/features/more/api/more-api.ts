@@ -1,5 +1,5 @@
 import { http, type HttpClient } from '@/shared/lib';
-import type { MoreShortcut } from '../types/more-types';
+import type { MoreShortcut } from '@/features/more/types/more-types';
 import { normalizeMoreList, type MoreListResponse } from './normalize-more';
 
 export function createMoreApi(client: HttpClient) {

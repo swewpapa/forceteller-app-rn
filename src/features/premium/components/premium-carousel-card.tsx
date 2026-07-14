@@ -1,6 +1,6 @@
 import { Pressable } from 'react-native';
 import { AspectRatio, Image } from '@/shared/components';
-import type { PremiumItem } from '../types/premium-types';
+import type { PremiumItem } from '@/features/premium/types/premium-types';
 
 export type PremiumCarouselCardProps = {
   item: PremiumItem;

@@ -1,9 +1,6 @@
 import { http, type HttpClient } from '@/shared/lib';
-import type { Theme } from '../types/theme-types';
-import {
-  normalizeThemes,
-  type ThemeListResponse,
-} from './normalize-themes';
+import type { Theme } from '@/features/theme/types/theme-types';
+import { normalizeThemes, type ThemeListResponse } from './normalize-themes';
 
 export function createThemeApi(client: HttpClient) {
   return {

@@ -7,14 +7,14 @@ jest.mock('@react-native-google-signin/google-signin', () => ({
     configure: jest.fn(),
   },
 }));
-jest.mock('../providers/firebase', () => ({
+jest.mock('@/features/auth/providers/firebase', () => ({
   firebaseSignInWithGoogle: jest
     .fn()
     .mockResolvedValue({ idToken: 'fb-id-token', uid: 'uid-1', name: 'Tester' }),
   firebaseSignOut: jest.fn().mockResolvedValue(undefined),
 }));
 
-import { googleProvider } from '../providers/google-provider';
+import { googleProvider } from '@/features/auth/providers/google-provider';
 
 describe('google-provider', () => {
   it('returns firebase id token + user info from google sign-in', async () => {

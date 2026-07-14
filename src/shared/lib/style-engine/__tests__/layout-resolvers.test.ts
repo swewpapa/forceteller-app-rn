@@ -1,35 +1,70 @@
-import { padding, margin } from '../resolvers/spacing';
-import { gap } from '../resolvers/gap';
-import { radius } from '../resolvers/radius';
-import { justify, align } from '../resolvers/alignment';
+import { padding, margin } from '@/shared/lib/style-engine/resolvers/spacing';
+import { gap } from '@/shared/lib/style-engine/resolvers/gap';
+import { radius } from '@/shared/lib/style-engine/resolvers/radius';
+import { justify, align } from '@/shared/lib/style-engine/resolvers/alignment';
 import type { ThemeContextValue } from '@/shared/theme';
 
 const theme = {} as unknown as ThemeContextValue; // padding/gap은 spacing 스케일 직접 참조
 
 describe('padding resolver', () => {
   it('스칼라 토큰 → 4변', () => {
-    expect(padding('300', theme)).toEqual({ paddingTop: 24, paddingRight: 24, paddingBottom: 24, paddingLeft: 24 });
+    expect(padding('300', theme)).toEqual({
+      paddingTop: 24,
+      paddingRight: 24,
+      paddingBottom: 24,
+      paddingLeft: 24,
+    });
   });
   it('스칼라 원시 px', () => {
-    expect(padding(14, theme)).toEqual({ paddingTop: 14, paddingRight: 14, paddingBottom: 14, paddingLeft: 14 });
+    expect(padding(14, theme)).toEqual({
+      paddingTop: 14,
+      paddingRight: 14,
+      paddingBottom: 14,
+      paddingLeft: 14,
+    });
   });
   it('2-value [Y,X]', () => {
-    expect(padding(['100', 14], theme)).toEqual({ paddingTop: 8, paddingRight: 14, paddingBottom: 8, paddingLeft: 14 });
+    expect(padding(['100', 14], theme)).toEqual({
+      paddingTop: 8,
+      paddingRight: 14,
+      paddingBottom: 8,
+      paddingLeft: 14,
+    });
   });
   it('3-value [top,X,bottom]', () => {
-    expect(padding(['100', 14, '300'], theme)).toEqual({ paddingTop: 8, paddingRight: 14, paddingBottom: 24, paddingLeft: 14 });
+    expect(padding(['100', 14, '300'], theme)).toEqual({
+      paddingTop: 8,
+      paddingRight: 14,
+      paddingBottom: 24,
+      paddingLeft: 14,
+    });
   });
   it('4-value [t,r,b,l]', () => {
-    expect(padding(['100', 14, '300', 2], theme)).toEqual({ paddingTop: 8, paddingRight: 14, paddingBottom: 24, paddingLeft: 2 });
+    expect(padding(['100', 14, '300', 2], theme)).toEqual({
+      paddingTop: 8,
+      paddingRight: 14,
+      paddingBottom: 24,
+      paddingLeft: 2,
+    });
   });
   it('스칼라 0 명시 방출', () => {
-    expect(padding(0, theme)).toEqual({ paddingTop: 0, paddingRight: 0, paddingBottom: 0, paddingLeft: 0 });
+    expect(padding(0, theme)).toEqual({
+      paddingTop: 0,
+      paddingRight: 0,
+      paddingBottom: 0,
+      paddingLeft: 0,
+    });
   });
 });
 
 describe('margin resolver', () => {
   it('동일 shorthand로 4변', () => {
-    expect(margin(['100', 14], theme)).toEqual({ marginTop: 8, marginRight: 14, marginBottom: 8, marginLeft: 14 });
+    expect(margin(['100', 14], theme)).toEqual({
+      marginTop: 8,
+      marginRight: 14,
+      marginBottom: 8,
+      marginLeft: 14,
+    });
   });
 });
 

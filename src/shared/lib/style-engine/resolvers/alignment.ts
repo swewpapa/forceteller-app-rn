@@ -1,5 +1,5 @@
 import type { ViewStyle } from 'react-native';
-import type { Resolver } from '../resolver';
+import type { Resolver } from '@/shared/lib/style-engine/resolver';
 
 /** 주축 분배 통과(토큰 아님). */
 export const justify: Resolver<NonNullable<ViewStyle['justifyContent']>> = (value): ViewStyle => ({

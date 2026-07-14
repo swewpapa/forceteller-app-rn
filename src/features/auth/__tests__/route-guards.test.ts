@@ -1,4 +1,4 @@
-import { ROUTE_GUARDS } from '../guard/route-guards';
+import { ROUTE_GUARDS } from '@/features/auth/guard/route-guards';
 
 describe('ROUTE_GUARDS.Web (path 프리픽스 배선)', () => {
   const rule = ROUTE_GUARDS.Web;
