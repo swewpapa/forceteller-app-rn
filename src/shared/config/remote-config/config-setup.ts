@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { createMMKV } from 'react-native-mmkv';
 import { http } from '@/shared/lib';
 import { createConfigStorage } from './config-storage';
@@ -23,20 +22,14 @@ export function initRemoteConfig(provider: string = DEFAULT_PROVIDER): void {
   remoteConfig.apply(storage.read(provider) ?? {});
 }
 
-/** App에 마운트: 백그라운드 갱신(SWR) → 성공 시 스냅샷 apply + MMKV write. */
-export function useRemoteConfigSync(provider: string = DEFAULT_PROVIDER): void {
-  useEffect(() => {
-    let cancelled = false;
-    fetchConfig(provider).then((config) => {
-      if (config && !cancelled) {
-        remoteConfig.apply(config);
-        storage.write(provider, config);
-      }
-    });
-    return () => {
-      cancelled = true;
-    };
-    // 마운트 1회만(deps는 모듈 싱글턴).
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+/** App 부팅 이펙트에서 호출(fire-and-forget): 백그라운드 갱신(SWR) → 성공 시 스냅샷 apply + MMKV write.
+ *  실패(null)면 캐시 스냅샷 유지. 훅이 아닌 일반 함수 — 반영 대상이 React state가 아니라
+ *  모듈 싱글턴/MMKV라 언마운트 가드(cancelled)가 불필요하고, App useEffect에서 restore()와 나란히 호출한다. */
+export function syncRemoteConfig(provider: string = DEFAULT_PROVIDER): void {
+  fetchConfig(provider).then((config) => {
+    if (config) {
+      remoteConfig.apply(config);
+      storage.write(provider, config);
+    }
+  });
 }
