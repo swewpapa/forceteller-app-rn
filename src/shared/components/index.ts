@@ -2,7 +2,6 @@
 
 // ── 화면 셸 ─────────────────────────────────
 export { ScreenContainer } from './screen-container';
-export { PlaceholderScreen } from './placeholder-screen';
 // AppBar = 탭 chrome 전용(상세 화면은 react-navigation 헤더). AppBarButton은 내부 부품 — 미노출.
 export {
   AppBar,
