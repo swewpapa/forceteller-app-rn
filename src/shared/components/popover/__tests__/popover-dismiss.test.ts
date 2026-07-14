@@ -1,4 +1,4 @@
-import { createPopoverDismissStore } from '../popover-dismiss';
+import { createPopoverDismissStore } from '@/shared/components/popover/popover-dismiss';
 
 const fake = () => {
   const m = new Map<string, boolean>();
