@@ -2,18 +2,19 @@ import { ActivityIndicator } from 'react-native';
 import { Button, Column, Typography } from '@/shared/components';
 import { useThemeListByCode } from '@/features/theme/hooks/useThemeListByCode';
 import type { ThemeView } from '@/features/theme/types/theme-types';
-import { ThemeWidgetList } from './theme-widget-list';
+import { ThemeRenderer } from '@/features/theme/components/theme-renderer';
 
-export type ThemeWidgetListByCodeProps = {
+export type ThemeWidgetProps = {
   code: string;
   onPressView: (view: ThemeView) => void;
 };
 
 /**
- * code로 위젯 목록을 자체 페칭해 렌더하는 컨테이너 (홈 등 다중 리전용).
+ * 테마 위젯: code로 Theme[]를 자체 페칭해 변형들을 세로 나열한다.
+ * feature 유일의 query 결합 컴포넌트(widgets/) — 순수 컴포넌트는 components/.
  * 리전마다 독립 로딩/에러 — 한 리전이 느려도 나머지는 먼저 표시된다.
  */
-export function ThemeWidgetListByCode({ code, onPressView }: ThemeWidgetListByCodeProps) {
+export function ThemeWidget({ code, onPressView }: ThemeWidgetProps) {
   const query = useThemeListByCode(code);
 
   if (query.isPending) {
@@ -35,5 +36,11 @@ export function ThemeWidgetListByCode({ code, onPressView }: ThemeWidgetListByCo
       </Column>
     );
   }
-  return <ThemeWidgetList themes={query.data} onPressView={onPressView} />;
+  return (
+    <Column gap="400">
+      {query.data.map((theme) => (
+        <ThemeRenderer key={theme.uuid} theme={theme} onPressView={onPressView} />
+      ))}
+    </Column>
+  );
 }
