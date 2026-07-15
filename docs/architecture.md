@@ -62,7 +62,8 @@ feature 내부 컴포넌트는 **데이터 결합 축**으로 나눈다 (판정 
 - **`widgets/`** — query가 결합된(자체 페칭) 컴포넌트. "스크린이 훅 호출" 규칙의 승인된 예외(예: 홈 리전별 독립 로딩)를 구조로 표시한다.
 - **`components/`** — 순수(presentational) 컴포넌트. props만 소비하고 mock 없이 테스트·재사용 가능해야 하며, `-widget` 접미사를 붙이지 않는다.
 - `shared/components`에는 이 축을 적용하지 않는다 — container가 존재하지 않는 레이어라 변별력이 없다(컴포넌트 종류별 조직 유지).
-- 첫 적용: theme(2026-07-15). premium 등 기존 feature의 동일 미스네이밍(`PremiumWidget`)은 후속 정리.
+- 적용 완료: theme·premium(2026-07-15). premium은 스크린이 컨테이너(query 컴포넌트 없음)라 `widgets/` 없이 `components/` 리네임만 적용 — `widgets/`는 query 컴포넌트가 있을 때만 만든다.
+- 변형 이름이 일반명사(`carousel`/`button` 등)여서 무접미사 탈락 시 shared DS 심볼과 충돌하면 **도메인 접두사**로 명명한다(`PremiumCarousel`, `PremiumButton`). theme처럼 이름이 고유하면(`TextOnly`) 접두사 불필요.
 
 ## 네이밍 컨벤션
 
