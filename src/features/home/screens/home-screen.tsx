@@ -1,4 +1,4 @@
-import { Pressable, ScrollView, StyleSheet, Text } from 'react-native';
+import { ScrollView } from 'react-native';
 import { useAppNavigation } from '@/features/auth';
 import { useFreeForceTip } from '@/features/freeforce';
 import { ThemeWidget, type ThemeView } from '@/features/theme';
@@ -11,14 +11,12 @@ import {
   Popover,
   ScreenContainer,
 } from '@/shared/components';
-import { radius, spacing, useAppColors } from '@/shared/theme';
 
-/** 홈 탭(RN). 테마 위젯 3개 리전(recommend_top/middle/bottom) + 예시 진입 버튼들. */
+/** 홈 탭(RN). 테마 위젯 3개 리전(recommend_top/middle/bottom). */
 const THEME_CODES = ['recommend_top', 'recommend_middle', 'recommend_bottom'] as const;
 
 export function HomeScreen() {
   const navigation = useAppNavigation();
-  const colors = useAppColors();
   const showFreeForceTip = useFreeForceTip();
 
   const handlePressView = (view: ThemeView) => {
@@ -46,28 +44,6 @@ export function HomeScreen() {
       />
       <ScrollView>
         <Column padding="300" gap="300">
-          <Text style={[styles.title, { color: colors.text.default }]}>홈</Text>
-
-          <Pressable
-            accessibilityRole="button"
-            onPress={() => navigation.navigate('Web', { path: '/premium/2284', title: '상세' })}
-            style={[styles.link, { borderColor: colors.stroke.subtle }]}
-          >
-            <Text style={[styles.linkText, { color: colors.text.default }]}>
-              상세 페이지 열기 (WebView)
-            </Text>
-          </Pressable>
-
-          <Pressable
-            accessibilityRole="button"
-            onPress={() => navigation.navigate('Web', { path: '/item/4053', title: '상세' })}
-            style={[styles.link, { borderColor: colors.stroke.subtle }]}
-          >
-            <Text style={[styles.linkText, { color: colors.text.default }]}>
-              상세 페이지 열기 (WebView)
-            </Text>
-          </Pressable>
-
           {THEME_CODES.map((code) => (
             <ThemeWidget key={code} code={code} onPressView={handlePressView} />
           ))}
@@ -76,15 +52,3 @@ export function HomeScreen() {
     </ScreenContainer>
   );
 }
-
-const styles = StyleSheet.create({
-  title: { fontSize: 24, fontWeight: '700' },
-  link: {
-    borderWidth: 1,
-    borderRadius: radius.md,
-    paddingVertical: spacing[100],
-    paddingHorizontal: spacing[300],
-    alignItems: 'center',
-  },
-  linkText: { fontSize: 15, fontWeight: '500' },
-});
