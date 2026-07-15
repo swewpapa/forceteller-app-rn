@@ -3,14 +3,14 @@ import type { Theme, ThemeView } from '@/features/theme/types/theme-types';
 
 type TextOnlyTheme = Extract<Theme, { type: 'text_only' }>;
 
-export type TextOnlyWidgetProps = {
+export type TextOnlyProps = {
   theme: TextOnlyTheme;
   onPressView: (view: ThemeView) => void;
   onPressViewAll?: (theme: TextOnlyTheme) => void;
 };
 
-/** text_only 위젯: ListHeader + 라벨/제목 텍스트 행 목록. */
-export function TextOnlyWidget({ theme, onPressView, onPressViewAll }: TextOnlyWidgetProps) {
+/** text_only 변형: ListHeader + 라벨/제목 텍스트 행 목록. */
+export function TextOnly({ theme, onPressView, onPressViewAll }: TextOnlyProps) {
   return (
     <Column gap="150">
       <ListHeader

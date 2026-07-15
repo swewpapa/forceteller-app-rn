@@ -4,13 +4,13 @@ import { FullImageCard } from './full-image-card';
 
 type FullImageCarouselTheme = Extract<Theme, { type: 'full_image_carousel' }>;
 
-export type FullImageCarouselWidgetProps = {
+export type FullImageCarouselProps = {
   theme: FullImageCarouselTheme;
   onPressView: (view: ThemeView) => void;
 };
 
-/** full_image_carousel 위젯: Carousel + FullImageCard(240px). */
-export function FullImageCarouselWidget({ theme, onPressView }: FullImageCarouselWidgetProps) {
+/** full_image_carousel 변형: Carousel + FullImageCard(240px). */
+export function FullImageCarousel({ theme, onPressView }: FullImageCarouselProps) {
   return (
     <Carousel
       title={theme.title}
