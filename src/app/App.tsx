@@ -4,6 +4,8 @@ import { http, authTokenStore, createAuthRequestInterceptor } from '@/shared/lib
 import { useAuthStore, createSessionExpiredInterceptor } from '@/features/auth';
 import { useTheme } from '@/shared/theme';
 import { initRemoteConfig, syncRemoteConfig } from '@/shared/config/remote-config/config-setup';
+import { PopoverProvider } from '@/shared/components/popover/popover-context';
+import { PopoverHost } from '@/shared/components/popover/popover-host';
 import { SplashGate } from './splash';
 import { RootNavigator } from './navigation';
 import { AppProviders } from './providers';
@@ -39,10 +41,15 @@ function App() {
 
   return (
     <AppProviders>
-      <ThemedStatusBar />
-      <SplashGate>
-        <RootNavigator />
-      </SplashGate>
+      {/* Popover Provider/Host는 앱 루트에 둔다 — ScreenContainer를 쓰지 않는 화면
+          (투데이 히어로 풀블리드 등)도 커버하기 위함. Host는 box-none이라 popover 없으면 무해. */}
+      <PopoverProvider>
+        <ThemedStatusBar />
+        <SplashGate>
+          <RootNavigator />
+        </SplashGate>
+        <PopoverHost />
+      </PopoverProvider>
     </AppProviders>
   );
 }

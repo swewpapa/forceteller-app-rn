@@ -58,17 +58,17 @@ module.exports = {
           {
             target: './src/features/home',
             from: './src/features',
-            except: ['./home', './auth', './theme'],
+            except: ['./home', './auth', './theme', './freeforce'],
           },
           {
             target: './src/features/today',
             from: './src/features',
-            except: ['./today', './auth'],
+            except: ['./today', './auth', './freeforce'],
           },
           {
             target: './src/features/premium',
             from: './src/features',
-            except: ['./premium', './auth'],
+            except: ['./premium', './auth', './freeforce'],
           },
           {
             target: './src/features/more',
@@ -81,6 +81,12 @@ module.exports = {
             target: './src/features/user',
             from: './src/features',
             except: ['./user', './auth'],
+          },
+          // `freeforce`(무료충전 도메인): auth만 소비. 앱바 툴팁 표시조건 훅 등.
+          {
+            target: './src/features/freeforce',
+            from: './src/features',
+            except: ['./freeforce', './auth'],
           },
         ],
       },

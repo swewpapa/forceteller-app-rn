@@ -1,5 +1,6 @@
 import { ActivityIndicator, ScrollView } from 'react-native';
 import { useAppNavigation } from '@/features/auth';
+import { useFreeForceTip } from '@/features/freeforce';
 import {
   AppBar,
   AppBarCalendarButton,
@@ -8,6 +9,7 @@ import {
   AppBarSearchButton,
   Button,
   Column,
+  Popover,
   ScreenContainer,
   Typography,
 } from '@/shared/components';
@@ -25,6 +27,7 @@ export function PremiumScreen() {
   const navigation = useAppNavigation();
   const query = usePremiumList();
   const subjectsQuery = usePremiumSubjects();
+  const showFreeForceTip = useFreeForceTip();
 
   // 카테고리 링크: value + queryParams(genre id / keyword)를 쿼리스트링으로 붙여 Web 네비.
   const handleSubjectLink = (link: PremiumSubjectLink) => {
@@ -66,9 +69,11 @@ export function PremiumScreen() {
         trailing={
           <>
             <AppBarSearchButton onPress={() => {}} />
-            <AppBarFreeForceButton
-              onPress={() => navigation.navigate('Web', { path: '/freeforce' })}
-            />
+            <Popover id="freeforce" visible={showFreeForceTip} message="무료 포스 받기">
+              <AppBarFreeForceButton
+                onPress={() => navigation.navigate('Web', { path: '/freeforce' })}
+              />
+            </Popover>
             <AppBarEventButton onPress={() => {}} />
             <AppBarCalendarButton onPress={() => navigation.navigate('Web', { path: '/cal' })} />
           </>
