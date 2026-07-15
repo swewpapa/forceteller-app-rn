@@ -7,7 +7,8 @@ import { AppBarIconColorProvider } from './app-bar-context';
 // 포스텔러 BI 심볼(Figma bi_symbol). shared 앱 바 chrome 전용 로고.
 const LOGO = require('@/assets/forceteller-logo.png');
 
-const BAR_HEIGHT = 56;
+/** 탭 앱바 고정 높이(Figma h56). 오버레이/스크롤 수학의 SSOT — 소비처는 하드코딩 대신 import. */
+export const APP_BAR_HEIGHT = 56;
 
 export type AppBarBackground = 'surface' | 'transparent';
 
@@ -67,7 +68,7 @@ export function AppBar({
 
 const styles = StyleSheet.create({
   root: {
-    height: BAR_HEIGHT,
+    height: APP_BAR_HEIGHT,
     paddingHorizontal: 8,
     flexDirection: 'row',
     alignItems: 'center',
