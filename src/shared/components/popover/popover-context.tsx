@@ -6,7 +6,7 @@ import {
   useState,
   type PropsWithChildren,
 } from 'react';
-import type { AnchorRect, PopoverPlacement } from '@/shared/components/popover/popover-position';
+import type { AnchorRect, PopoverPlacement } from './popover-position';
 
 export type PopoverEntry = {
   id: string;

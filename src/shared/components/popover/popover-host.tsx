@@ -79,7 +79,7 @@ export function PopoverHost() {
           style={[styles.caret, { left: caretLeft, backgroundColor: colors.primary.primary }]}
         />
         <Typography
-          variant="label-md"
+          variant="label-sm"
           style={[styles.message, { color: colors.primary.onPrimary }]}
         >
           {entry.message}
