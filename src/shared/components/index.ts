@@ -56,3 +56,4 @@ export { Likes, type LikesProps, type LikesSize } from './likes';
 export { PriceTag, type PriceTagProps } from './price-tag';
 export { ForceIcon, type ForceGlyph } from './price-tag/force-icon';
 export { EmptyState, type EmptyStateProps } from './empty-state/empty-state';
+export { Popover, type PopoverProps } from './popover/popover';
