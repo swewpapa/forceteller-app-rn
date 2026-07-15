@@ -33,7 +33,7 @@ src/
 │  ├─ today/            # 투데이 (오늘의 운세 — api·hooks·stores·screens·types 전체 예시)
 │  ├─ premium/          # 프리미엄
 │  └─ more/             # 더 보기 (메뉴 허브 — 추후 프로필·설정·북마크 등 진입)
-│      └─ { api/ screens/ components/ hooks/ stores/ types/ } + index.ts(barrel)
+│      └─ { api/ screens/ widgets/ components/ hooks/ stores/ types/ } + index.ts(barrel)
 └─ shared/              # 도메인 무관 공용 (가장 아래 레이어, 어디서나 import 가능)
    ├─ components/       # 공용 UI (디자인시스템 진입점)
    ├─ lib/              # api-client(axios), query-client
@@ -54,6 +54,15 @@ ESLint `import/no-restricted-paths`로 **강제**한다 (`.eslintrc.js`):
 - `app`은 `features`·`shared`를 자유롭게 import (조립 레이어).
 
 위반 시 lint 에러. feature 추가 시 `.eslintrc.js`의 zones에 해당 feature 줄을 추가한다.
+
+### feature 내부 폴더 규약: widgets/ vs components/ (2026-07-15)
+
+feature 내부 컴포넌트는 **데이터 결합 축**으로 나눈다 (판정 기준: `useQuery`/store 구독 유무 — 이진):
+
+- **`widgets/`** — query가 결합된(자체 페칭) 컴포넌트. "스크린이 훅 호출" 규칙의 승인된 예외(예: 홈 리전별 독립 로딩)를 구조로 표시한다.
+- **`components/`** — 순수(presentational) 컴포넌트. props만 소비하고 mock 없이 테스트·재사용 가능해야 하며, `-widget` 접미사를 붙이지 않는다.
+- `shared/components`에는 이 축을 적용하지 않는다 — container가 존재하지 않는 레이어라 변별력이 없다(컴포넌트 종류별 조직 유지).
+- 첫 적용: theme(2026-07-15). premium 등 기존 feature의 동일 미스네이밍(`PremiumWidget`)은 후속 정리.
 
 ## 네이밍 컨벤션
 
@@ -82,15 +91,15 @@ ESLint `import/no-restricted-paths`로 **강제**한다 (`.eslintrc.js`):
 | API 메서드 | API-친화적 | 엔드포인트·파라미터가 이름에 드러남 | `themeApi.listByCode(code)`, `getById(id)` |
 | 훅 | API-친화적 | `use<도메인><조회방법>` | `useThemeListByCode(code)` |
 | 타입 | 도메인 개념 | HTTP 라우트 어휘 금지, 도메인 엔티티 | `Theme`, `ThemeView` |
-| 컴포넌트 | 도메인 개념 | 데이터 조회 방법이 아니라 개념을 렌더 | `ThemeWidget`, `ThemeWidgetList`, `TextOnlyWidget` |
+| 컴포넌트 | 도메인 개념 | 데이터 조회 방법이 아니라 개념을 렌더 | `ThemeWidget`, `ThemeRenderer`, `TextOnly` |
 
 **theme 도메인의 엔티티/컴포넌트 분리** — 엔티티 이름과 컴포넌트 이름의 언어를 나눈다:
 
 - **엔티티 = `Theme`**: `/api/theme/list/{code}`와 향후 `/api/theme/{id}`가 **같은 도메인 엔티티**를 반환한다. 두 컨텍스트를 어휘가 아니라 **훅 이름**(`listByCode` vs 향후 `getById`)으로 구분한다. 엔티티에는 라우트 어휘를 새기지 않는다.
-- **컴포넌트 = `ThemeWidget*`**: `Theme`를 홈 위젯 UI로 렌더하는 컴포넌트 레이어(`ThemeWidget` 스위치, `ThemeWidgetList`, `TextOnlyWidget`). 응답의 `type` 필드(`text_only`/`thumbnail_carousel`/`full_image_carousel`/`keyword_cloud`)는 콘텐츠 분류가 아니라 **위젯 렌더러 지시자**다.
+- **위젯 = query 결합 컴포넌트**: `ThemeWidget`(`widgets/`)이 `useThemeListByCode`로 `Theme[]`를 자체 페칭해 렌더한다 — feature에서 useQuery를 갖는 유일한 컴포넌트. 순수 컴포넌트는 `components/`: 디스패처 `ThemeRenderer`(type→변형 스위치), 접미사 없는 룩 네이밍 변형(`TextOnly`/`KeywordCloud`/`ThumbnailCarousel`/`FullImageCarousel`), 조각(`ThumbnailCard`/`FullImageCard`). 응답의 `type` 필드(`text_only`/`thumbnail_carousel`/`full_image_carousel`/`keyword_cloud`)는 콘텐츠 분류가 아니라 **변형 렌더러 지시자**다.
 - `ThemeList` 타입은 **만들지 않는다** — "테마들의 목록"과 "테마 안 아이템 목록"(레거시 theme-list-page)이 충돌하는 중의적 이름. 응답은 그냥 `Theme[]`.
 - `ThemeView` = 서버 `themeViews[]`의 아이템 단위 (서버 필드명 유지로 도메인 추적성 확보).
-- "위젯(widget)"은 React 생태계 용어가 아니라 **팀 도메인 용어**다 (컴포넌트 일반을 widget이라 부르지 않는다).
+- "위젯(widget)"은 React 생태계 용어가 아니라 **팀 도메인 용어**다: **useQuery가 결합된(자체 페칭) 컴포넌트**만 위젯이라 부른다. 순수 컴포넌트는 크기와 무관하게 widget이 아니다.
 
 ## API 레이어 패턴
 

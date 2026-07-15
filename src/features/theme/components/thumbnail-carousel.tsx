@@ -4,13 +4,13 @@ import { ThumbnailCard } from './thumbnail-card';
 
 type ThumbnailCarouselTheme = Extract<Theme, { type: 'thumbnail_carousel' }>;
 
-export type ThumbnailCarouselWidgetProps = {
+export type ThumbnailCarouselProps = {
   theme: ThumbnailCarouselTheme;
   onPressView: (view: ThemeView) => void;
 };
 
-/** thumbnail_carousel 위젯: Carousel + ThumbnailCard(144px). */
-export function ThumbnailCarouselWidget({ theme, onPressView }: ThumbnailCarouselWidgetProps) {
+/** thumbnail_carousel 변형: Carousel + ThumbnailCard(144px). */
+export function ThumbnailCarousel({ theme, onPressView }: ThumbnailCarouselProps) {
   return (
     <Carousel
       title={theme.title}

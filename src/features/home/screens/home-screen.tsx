@@ -1,6 +1,6 @@
 import { Pressable, ScrollView, StyleSheet, Text } from 'react-native';
 import { useAppNavigation } from '@/features/auth';
-import { ThemeWidgetListByCode, type ThemeView } from '@/features/theme';
+import { ThemeWidget, type ThemeView } from '@/features/theme';
 import {
   AppBar,
   AppBarCalendarButton,
@@ -64,7 +64,7 @@ export function HomeScreen() {
           </Pressable>
 
           {THEME_CODES.map((code) => (
-            <ThemeWidgetListByCode key={code} code={code} onPressView={handlePressView} />
+            <ThemeWidget key={code} code={code} onPressView={handlePressView} />
           ))}
         </Column>
       </ScrollView>

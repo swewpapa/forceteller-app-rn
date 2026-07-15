@@ -4,13 +4,13 @@ import type { Theme, ThemeKeyword } from '@/features/theme/types/theme-types';
 
 type KeywordCloudTheme = Extract<Theme, { type: 'keyword_cloud' }>;
 
-export type KeywordCloudWidgetProps = {
+export type KeywordCloudProps = {
   theme: KeywordCloudTheme;
   onPressKeyword: (keyword: ThemeKeyword) => void;
 };
 
-/** keyword_cloud 위젯: ListHeader + flex-wrap Chip 목록. isMore → solid("더보기"). */
-export function KeywordCloudWidget({ theme, onPressKeyword }: KeywordCloudWidgetProps) {
+/** keyword_cloud 변형: ListHeader + flex-wrap Chip 목록. isMore → solid("더보기"). */
+export function KeywordCloud({ theme, onPressKeyword }: KeywordCloudProps) {
   return (
     <Column gap="150">
       <ListHeader title={theme.title} subtitle={theme.subtitle ?? undefined} />
