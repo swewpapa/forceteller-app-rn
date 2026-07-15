@@ -4,19 +4,19 @@ import type { Premium, PremiumLink } from '@/features/premium/types/premium-type
 
 type TagPremium = Extract<Premium, { type: 'tag' }>;
 
-export type TagWidgetProps = {
+export type PremiumTagProps = {
   premium: TagPremium;
   onPressLink: (link: PremiumLink) => void;
 };
 
 /**
- * tag 위젯: ListHeader + flex-wrap Chip 그리드(태그 칩). tag엔 moreLink 없어 "모두 보기" 없음.
+ * tag 변형: ListHeader + flex-wrap Chip 그리드(태그 칩). tag엔 moreLink 없어 "모두 보기" 없음.
  * Figma 997:9856(Type=Tag)·Angular premium-list-tag 실측: 칩 gap 8(spacing/100) + wrap.
- * keyword_cloud 위젯과 동일한 Chip wrap 패턴 — DS Chip을 그대로 재사용(칩 색/치수는 DS SSOT).
+ * keyword_cloud 변형과 동일한 Chip wrap 패턴 — DS Chip을 그대로 재사용(칩 색/치수는 DS SSOT).
  * PremiumTag엔 선택/더보기 플래그가 없어 전 칩 outline. 탭은 onPressLink에 위임
  * (tag.link는 api 타입 — 실제 조회/no-op은 상위 screen 담당).
  */
-export function TagWidget({ premium, onPressLink }: TagWidgetProps) {
+export function PremiumTag({ premium, onPressLink }: PremiumTagProps) {
   const { title, subtitle, tags } = premium;
   return (
     <Column gap="250">

@@ -13,14 +13,14 @@ import {
   ScreenContainer,
   Typography,
 } from '@/shared/components';
-import { PremiumWidget } from '@/features/premium/components/premium-widget';
+import { PremiumRenderer } from '@/features/premium/components/premium-renderer';
 import { PremiumSubjects } from '@/features/premium/components/premium-subjects';
 import { usePremiumList } from '@/features/premium/hooks/usePremiumList';
 import { usePremiumSubjects } from '@/features/premium/hooks/usePremiumSubjects';
 import type { PremiumLink, PremiumSubjectLink } from '@/features/premium/types/premium-types';
 
 /**
- * 프리미엄 탭(RN). 상단 표준 앱 바 + 서버드리븐 위젯 리스트(usePremiumList).
+ * 프리미엄 탭(RN). 상단 표준 앱 바 + 서버드리븐 리스트(usePremiumList).
  * 앱 바는 로딩/에러/정상 모든 상태에서 유지되도록 body만 분기한다.
  */
 export function PremiumScreen() {
@@ -50,7 +50,7 @@ export function PremiumScreen() {
     switch (link.type) {
       case 'url':
         // home과 동일한 Web 라우트. WebRouteParams.title은 optional이라
-        // 위젯 콜백이 link만 넘기는 premium에선 생략한다(title을 지어내지 않음).
+        // 변형 콜백이 link만 넘기는 premium에선 생략한다(title을 지어내지 않음).
         navigation.navigate('Web', { path: link.value });
         return;
       case 'api':
@@ -105,7 +105,7 @@ export function PremiumScreen() {
           ) : null}
           <Column padding="300" gap="300">
             {query.data.map((premium) => (
-              <PremiumWidget key={premium.id} premium={premium} onPressLink={handlePressLink} />
+              <PremiumRenderer key={premium.id} premium={premium} onPressLink={handlePressLink} />
             ))}
           </Column>
         </ScrollView>
