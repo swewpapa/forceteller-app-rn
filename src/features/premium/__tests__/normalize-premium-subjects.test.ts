@@ -1,4 +1,4 @@
-import { normalizePremiumSubjects } from '../api/normalize-premium-subjects';
+import { normalizePremiumSubjects } from '@/features/premium/api/normalize-premium-subjects';
 
 // dev 실응답(GET /api/premium/subjects) 발췌.
 const rawGenre = {
@@ -10,7 +10,11 @@ const rawGenre = {
 };
 const rawKeyword = {
   name: '개운',
-  link: { type: 'url', value: '/premium/subjects/keywords', params: { queryParams: { value: '개운' } } },
+  link: {
+    type: 'url',
+    value: '/premium/subjects/keywords',
+    params: { queryParams: { value: '개운' } },
+  },
 };
 
 describe('normalizePremiumSubjects', () => {
@@ -20,7 +24,11 @@ describe('normalizePremiumSubjects', () => {
       {
         name: '신년운세',
         iconUrl: 'https://static.forceteller.com/images/category/icon_newyear.png',
-        link: { type: 'url', value: '/premium/subjects/genres', params: { queryParams: { value: 1 } } },
+        link: {
+          type: 'url',
+          value: '/premium/subjects/genres',
+          params: { queryParams: { value: 1 } },
+        },
         tag: 'new!!!',
       },
     ]);
@@ -32,7 +40,11 @@ describe('normalizePremiumSubjects', () => {
       {
         name: '개운',
         iconUrl: null,
-        link: { type: 'url', value: '/premium/subjects/keywords', params: { queryParams: { value: '개운' } } },
+        link: {
+          type: 'url',
+          value: '/premium/subjects/keywords',
+          params: { queryParams: { value: '개운' } },
+        },
         tag: null,
       },
     ]);

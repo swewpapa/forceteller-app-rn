@@ -1,6 +1,6 @@
 import { Carousel } from '@/shared/components';
+import type { Premium, PremiumLink } from '@/features/premium/types/premium-types';
 import { PremiumCarouselCard } from './premium-carousel-card';
-import type { Premium, PremiumLink } from '../types/premium-types';
 
 type CarouselPremium = Extract<Premium, { type: 'carousel' }>;
 
@@ -23,8 +23,8 @@ export function CarouselWidget({ premium, onPressLink }: CarouselWidgetProps) {
       title={title}
       subtitle={subtitle ?? undefined}
       data={items}
-      keyExtractor={item => String(item.id)}
-      renderCard={item => (
+      keyExtractor={(item) => String(item.id)}
+      renderCard={(item) => (
         <PremiumCarouselCard
           item={item}
           width={thumbnail.width}

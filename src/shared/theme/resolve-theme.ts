@@ -9,10 +9,7 @@ export type ResolvedTheme = 'day' | 'night';
 type OsColorScheme = ColorSchemeName | null | undefined;
 
 /** 사용자 모드와 OS 스킴(light/dark/unspecified/null/undefined)을 최종 테마로 확정한다. */
-export function resolveTheme(
-  mode: ThemeMode,
-  osScheme: OsColorScheme,
-): ResolvedTheme {
+export function resolveTheme(mode: ThemeMode, osScheme: OsColorScheme): ResolvedTheme {
   if (mode === 'system') {
     return osScheme === 'dark' ? 'night' : 'day';
   }

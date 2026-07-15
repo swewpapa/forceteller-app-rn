@@ -1,4 +1,4 @@
-import type { ColorPath } from '@/shared/lib/style-engine';
+import type { ColorPath } from '@/shared/style-engine';
 
 /**
  * status 뱃지 색 페어. background/text 모두 ColorPath라 accent 등 임의 토큰 주입 가능.

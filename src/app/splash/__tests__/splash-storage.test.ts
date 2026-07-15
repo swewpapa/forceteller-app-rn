@@ -1,4 +1,4 @@
-import { createSplashStorage, type KVStore } from '../splash-storage';
+import { createSplashStorage, type KVStore } from '@/app/splash/splash-storage';
 
 function fakeStore(): KVStore {
   const map = new Map<string, string>();

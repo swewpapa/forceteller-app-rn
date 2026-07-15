@@ -1,11 +1,5 @@
 import { Pressable, StyleSheet, View, type StyleProp, type ViewStyle } from 'react-native';
-import {
-  Column,
-  ForceIcon,
-  Row,
-  Typography,
-  type ForceGlyph,
-} from '@/shared/components';
+import { Column, ForceIcon, Row, Typography, type ForceGlyph } from '@/shared/components';
 import { radius, useAppColors } from '@/shared/theme';
 
 export type ForceCardProps = {

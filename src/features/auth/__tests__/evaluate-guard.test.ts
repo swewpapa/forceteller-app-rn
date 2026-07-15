@@ -1,4 +1,4 @@
-import { shouldRedirectToLogin } from '../guard/evaluate-guard';
+import { shouldRedirectToLogin } from '@/features/auth/guard/evaluate-guard';
 
 describe('shouldRedirectToLogin', () => {
   it('규칙 없음 → false', () => {
@@ -19,7 +19,9 @@ describe('shouldRedirectToLogin', () => {
   });
 
   it('guest + predicate → params로 평가', () => {
-    const rule = { requiresAuth: (p: object | undefined) => (p as { path?: string })?.path === '/my' };
+    const rule = {
+      requiresAuth: (p: object | undefined) => (p as { path?: string })?.path === '/my',
+    };
     expect(shouldRedirectToLogin(rule, { path: '/my' }, 'guest')).toBe(true);
     expect(shouldRedirectToLogin(rule, { path: '/fortune' }, 'guest')).toBe(false);
     expect(shouldRedirectToLogin(rule, undefined, 'guest')).toBe(false);

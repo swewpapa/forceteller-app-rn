@@ -17,8 +17,8 @@ export class ApiError extends Error {
       kind === 'http'
         ? `HTTP ${status}`
         : kind === 'timeout'
-          ? 'Request timed out'
-          : 'Network error',
+        ? 'Request timed out'
+        : 'Network error',
     );
     this.name = 'ApiError';
   }
@@ -33,9 +33,7 @@ export type RequestConfig = {
   signal?: AbortSignal;
 };
 
-type RequestInterceptor = (
-  config: RequestConfig,
-) => RequestConfig | Promise<RequestConfig>;
+type RequestInterceptor = (config: RequestConfig) => RequestConfig | Promise<RequestConfig>;
 type ResponseFulfilled = (response: Response) => Response | Promise<Response>;
 /** 에러를 받아 복구값을 반환하거나(재요청 결과 등) 다시 throw한다. */
 type ResponseRejected = (error: unknown) => unknown;
@@ -164,8 +162,7 @@ export function createHttpClient({ baseURL, timeout }: HttpClientConfig) {
 
   return {
     interceptors,
-    get: <T>(path: string, options?: RequestOptions) =>
-      request<T>('GET', path, undefined, options),
+    get: <T>(path: string, options?: RequestOptions) => request<T>('GET', path, undefined, options),
     post: <T>(path: string, body?: unknown, options?: RequestOptions) =>
       request<T>('POST', path, body, options),
     put: <T>(path: string, body?: unknown, options?: RequestOptions) =>

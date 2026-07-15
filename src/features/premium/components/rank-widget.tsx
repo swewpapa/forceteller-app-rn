@@ -9,7 +9,7 @@ import {
   Typography,
 } from '@/shared/components';
 import { spacing, typographyStyles, useAppColors } from '@/shared/theme';
-import type { Premium, PremiumItem, PremiumLink } from '../types/premium-types';
+import type { Premium, PremiumItem, PremiumLink } from '@/features/premium/types/premium-types';
 
 type RankPremium = Extract<Premium, { type: 'rank' }>;
 
@@ -64,7 +64,9 @@ function RankItemRow({
         <Row gap="150" align="center" style={styles.body}>
           {/* 순위 번호: Figma는 Roboto Medium Italic이나 Roboto는 앱 등록 폰트가 아니라(GoogleSignIn Pod 내부에만 존재)
               디자인 시스템 폰트에 italic만 적용. 색 text/muted. */}
-          <Text style={[typographyStyles['headline-xs'], styles.rank, { color: colors.text.muted }]}>
+          <Text
+            style={[typographyStyles['headline-xs'], styles.rank, { color: colors.text.muted }]}
+          >
             {rank}
           </Text>
           <Column style={styles.text}>

@@ -27,6 +27,20 @@ module.exports = {
         ],
       },
     ],
+    // import 순서 강제(autofix): react → react-native → 외부 → @/(internal) → 상대.
+    // 그룹 내 알파벳 정렬은 diff 최소화를 위해 미적용.
+    'import/order': [
+      'error',
+      {
+        groups: ['builtin', 'external', 'internal', ['parent', 'sibling', 'index']],
+        pathGroups: [
+          { pattern: 'react', group: 'external', position: 'before' },
+          { pattern: 'react-native', group: 'external', position: 'before' },
+          { pattern: '@/**', group: 'internal' },
+        ],
+        pathGroupsExcludedImportTypes: ['react', 'react-native'],
+      },
+    ],
     // Domain-based architecture boundaries: shared -> features -> app.
     // See docs/architecture.md.
     'import/no-restricted-paths': [

@@ -1,5 +1,5 @@
 import { Column } from '@/shared/components';
-import type { Theme, ThemeView } from '../types/theme-types';
+import type { Theme, ThemeView } from '@/features/theme/types/theme-types';
 import { ThemeWidget } from './theme-widget';
 
 export type ThemeWidgetListProps = {
@@ -12,7 +12,7 @@ export type ThemeWidgetListProps = {
 export function ThemeWidgetList({ themes, onPressView, onPressViewAll }: ThemeWidgetListProps) {
   return (
     <Column gap="400">
-      {themes.map(theme => (
+      {themes.map((theme) => (
         <ThemeWidget
           key={theme.uuid}
           theme={theme}

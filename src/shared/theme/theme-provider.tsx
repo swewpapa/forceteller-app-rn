@@ -1,10 +1,4 @@
-import {
-  createContext,
-  useCallback,
-  useMemo,
-  useState,
-  type PropsWithChildren,
-} from 'react';
+import { createContext, useCallback, useMemo, useState, type PropsWithChildren } from 'react';
 import { useColorScheme } from 'react-native';
 import { createMMKV } from 'react-native-mmkv';
 import { dayColors, nightColors, type ModeColors } from './generated/mode-colors';

@@ -1,4 +1,4 @@
-import { aspectRatio } from '../resolvers/aspect-ratio';
+import { aspectRatio } from '@/shared/style-engine/resolvers/aspect-ratio';
 import type { ThemeContextValue } from '@/shared/theme';
 
 const theme = {} as unknown as ThemeContextValue; // aspectRatio는 theme 미사용

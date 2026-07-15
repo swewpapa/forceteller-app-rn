@@ -13,7 +13,7 @@ import type {
   TodayLink,
   TodayPost,
   WeatherItem,
-} from '../types/today-types';
+} from '@/features/today/types/today-types';
 
 // ─── raw 타입: 서버 응답 그대로. api/ 내부 전용 — feature 배럴/도메인 밖 반출 금지 ───
 
@@ -244,7 +244,13 @@ function normalizeChatPicker(group: RawChatEl[] | undefined): ChatPicker | null 
     const button = captionEl?.a?.find((a) => a.t === 'button')?.button;
     const submit = toApiAction(button?.link);
     if (!submit) return null;
-    return { kind: 'tarot', caption, cardSrc: tarotEl.src, submitText: button?.text ?? '선택', submit };
+    return {
+      kind: 'tarot',
+      caption,
+      cardSrc: tarotEl.src,
+      submitText: button?.text ?? '선택',
+      submit,
+    };
   }
   const cards: ChatCard[] = [];
   for (const a of captionEl?.a ?? []) {

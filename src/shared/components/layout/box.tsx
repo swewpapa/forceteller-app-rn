@@ -1,6 +1,6 @@
 import { type ComponentProps } from 'react';
 import { View } from 'react-native';
-import { withStyleProps } from '@/shared/lib/style-engine';
+import { withStyleProps } from '@/shared/style-engine';
 import { boxResolvers } from './bindings';
 
 /** 배경·패딩·radius를 갖는 시각적 컨테이너(Flutter Container 대응). 나열·간격은 Row/Column. */

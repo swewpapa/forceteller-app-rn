@@ -1,4 +1,4 @@
-import { createThemeStorage, type KVStore } from '../theme-storage';
+import { createThemeStorage, type KVStore } from '@/shared/theme/theme-storage';
 
 function fakeStore(): KVStore {
   const map = new Map<string, string>();

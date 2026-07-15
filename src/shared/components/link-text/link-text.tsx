@@ -2,7 +2,7 @@ import { Pressable, StyleSheet, type StyleProp, type ViewStyle } from 'react-nat
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faArrowRight } from '@fortawesome/pro-light-svg-icons/faArrowRight';
 import { spacing, useAppColors } from '@/shared/theme';
-import { Typography } from '../typography';
+import { Typography } from '@/shared/components/typography';
 
 export type LinkTextProps = {
   label: string;
@@ -16,7 +16,13 @@ export type LinkTextProps = {
 };
 
 /** 텍스트 링크(라벨 + trailing 화살표). colored로 강조/보조 색 전환. */
-export function LinkText({ label, onPress, colored = false, showArrow = true, style }: LinkTextProps) {
+export function LinkText({
+  label,
+  onPress,
+  colored = false,
+  showArrow = true,
+  style,
+}: LinkTextProps) {
   const colors = useAppColors();
   const tone = colored ? 'link' : 'subtle';
 

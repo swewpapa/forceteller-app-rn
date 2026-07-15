@@ -2,14 +2,16 @@
 
 // ── 화면 셸 ─────────────────────────────────
 export { ScreenContainer } from './screen-container';
-export { PlaceholderScreen } from './placeholder-screen';
+// AppBar = 탭 chrome 전용(상세 화면은 react-navigation 헤더). leading/trailing 슬롯 조합.
 export { AppBar, type AppBarProps, type AppBarBackground } from './app-bar/app-bar';
 export { AppBarButton, type AppBarButtonProps } from './app-bar/app-bar-button';
+// 표준 액션 버튼(예약 4종) — 아이콘·badge·context 색 내장. 화면은 onPress만 준다.
 export {
-  StandardAppBar,
-  type StandardAppBarProps,
-  type StandardAppBarAction,
-} from './app-bar/standard-app-bar';
+  AppBarSearchButton,
+  AppBarFreeForceButton,
+  AppBarEventButton,
+  AppBarCalendarButton,
+} from './app-bar/app-bar-actions';
 
 // ── 레이아웃 ────────────────────────────────
 export { Box, Row, Column, type BoxProps, type RowProps, type ColumnProps } from './layout';
@@ -21,6 +23,7 @@ export { Typography, type TypographyProps } from './typography';
 // ── 미디어 ──────────────────────────────────
 export { Image, type ImageProps } from './image/image';
 export { Carousel, type CarouselProps } from './carousel/carousel';
+export { Thumbnail, type ThumbnailProps } from './thumbnail/thumbnail';
 
 // ── 입력·폼 ─────────────────────────────────
 export {
@@ -52,3 +55,4 @@ export { ActionButton, type ActionButtonProps } from './action-button';
 export { Likes, type LikesProps, type LikesSize } from './likes';
 export { PriceTag, type PriceTagProps } from './price-tag';
 export { ForceIcon, type ForceGlyph } from './price-tag/force-icon';
+export { EmptyState, type EmptyStateProps } from './empty-state/empty-state';

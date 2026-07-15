@@ -3,7 +3,7 @@ import type {
   PremiumItem,
   PremiumLink,
   PremiumTag,
-} from '../types/premium-types';
+} from '@/features/premium/types/premium-types';
 
 // ─── raw 타입: 서버 응답 그대로. api/ 내부 전용 — feature 배럴로 반출 금지 ───
 
@@ -98,9 +98,7 @@ function normalizeItem(item: RawPremiumItem): PremiumItem | null {
 }
 
 function normalizeItems(items: RawPremiumItem[] | undefined): PremiumItem[] {
-  return (items ?? [])
-    .map(normalizeItem)
-    .filter((i): i is PremiumItem => i !== null);
+  return (items ?? []).map(normalizeItem).filter((i): i is PremiumItem => i !== null);
 }
 
 function normalizeTag(tag: RawPremiumTag): PremiumTag | null {
@@ -137,9 +135,7 @@ export function normalizePremiumList(raw: RawPremium[]): Premium[] {
       if (!link) continue; // 배너는 탭 타깃(link)이 존재 이유 — 없으면 렌더 의미 없음
       premiums.push({ ...base, type: 'banner', image, bgColor, link });
     } else if (w.type === 'tag') {
-      const tags = (w.tags ?? [])
-        .map(normalizeTag)
-        .filter((t): t is PremiumTag => t !== null);
+      const tags = (w.tags ?? []).map(normalizeTag).filter((t): t is PremiumTag => t !== null);
       if (tags.length === 0) continue;
       premiums.push({ ...base, type: 'tag', tags });
     } else if (w.type === 'carousel') {

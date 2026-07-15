@@ -2,17 +2,20 @@ jest.mock('@/shared/lib', () => ({
   authTokenStore: { get: jest.fn(), set: jest.fn(), clear: jest.fn() },
   queryClient: { invalidateQueries: jest.fn() },
 }));
-jest.mock('../providers/google-provider', () => ({
-  googleProvider: { signIn: jest.fn().mockResolvedValue({ firebaseIdToken: 'fb' }), signOut: jest.fn().mockResolvedValue(undefined) },
+jest.mock('@/features/auth/providers/google-provider', () => ({
+  googleProvider: {
+    signIn: jest.fn().mockResolvedValue({ firebaseIdToken: 'fb' }),
+    signOut: jest.fn().mockResolvedValue(undefined),
+  },
 }));
-jest.mock('../api/auth-api', () => ({
+jest.mock('@/features/auth/api/auth-api', () => ({
   authApi: {
     exchangeFirebaseToken: jest.fn().mockResolvedValue({ serviceToken: 'svc' }),
   },
 }));
 
 import { authTokenStore, queryClient } from '@/shared/lib';
-import { useAuthStore } from '../stores/auth-store';
+import { useAuthStore } from '@/features/auth/stores/auth-store';
 
 const mockTokenStore = authTokenStore as jest.Mocked<typeof authTokenStore>;
 const mockQueryClient = queryClient as jest.Mocked<typeof queryClient>;

@@ -1,4 +1,4 @@
-import { normalizeTodayHero, normalizeTodayPosts } from '../api/normalize-today';
+import { normalizeTodayHero, normalizeTodayPosts } from '@/features/today/api/normalize-today';
 
 // dev 실응답(today-posts-member.json {status, data:[]})에서 각 지원 타입 대표 + 엣지를 발췌한 픽스처.
 // weather의 temp는 raw item.title("25º 비")에서 온다(실측). link의 analytics/method는 도메인 미반영.
@@ -13,8 +13,7 @@ const rawFullImage = {
   body: {
     items: [
       {
-        image:
-          'https://static.forceteller.com/9/a1/f552/b2857de9952942b509503be269f2e43bc.jpg',
+        image: 'https://static.forceteller.com/9/a1/f552/b2857de9952942b509503be269f2e43bc.jpg',
         link: {
           type: 'url',
           value: 'https://event.forceteller.com/event/slotmachine2',
@@ -93,8 +92,7 @@ const rawThumbnail = {
       },
       {
         title: '(복사)날 좋아하게 만들고싶어!짝사랑 공략법♡',
-        image:
-          'https://static.forceteller.com/5/4b/52ec/47dbfdad6fb9d5c27583f3078e2df515d.jpg',
+        image: 'https://static.forceteller.com/5/4b/52ec/47dbfdad6fb9d5c27583f3078e2df515d.jpg',
         link: { type: 'url', value: '/item/2240' },
         price: 0,
       },
@@ -198,16 +196,14 @@ const rawWeather = {
   header: {
     title: '외출 시 우산 필수예요',
     subtitle: '오늘 종로구 날씨',
-    bgImage:
-      'https://static.forceteller.com/images/weather/bg/summer_night_rainy_hot.jpg',
+    bgImage: 'https://static.forceteller.com/images/weather/bg/summer_night_rainy_hot.jpg',
   },
   body: {
     items: [
       {
         title: '25º 비',
         caption: '미세 좋음 · 초미세 좋음',
-        image:
-          'https://static.forceteller.com/images/weather/icons/icon_night_rainy.png',
+        image: 'https://static.forceteller.com/images/weather/icons/icon_night_rainy.png',
         link: {
           type: 'url',
           value: 'https://event.forceteller.com/weather',
@@ -247,8 +243,7 @@ describe('normalizeTodayPosts', () => {
     expect(p).toMatchObject({ id: 1, type: 'full_image', isDark: false });
     if (p.type !== 'full_image') throw new Error('unreachable');
     expect(p.item).toEqual({
-      image:
-        'https://static.forceteller.com/9/a1/f552/b2857de9952942b509503be269f2e43bc.jpg',
+      image: 'https://static.forceteller.com/9/a1/f552/b2857de9952942b509503be269f2e43bc.jpg',
       link: { type: 'url', value: 'https://event.forceteller.com/event/slotmachine2' },
     });
     // header portrait/bgImage 부재 → null.
@@ -310,8 +305,7 @@ describe('normalizeTodayPosts', () => {
     expect(p.item).toEqual({
       temp: '25º 비',
       caption: '미세 좋음 · 초미세 좋음',
-      image:
-        'https://static.forceteller.com/images/weather/icons/icon_night_rainy.png',
+      image: 'https://static.forceteller.com/images/weather/icons/icon_night_rainy.png',
       link: { type: 'url', value: 'https://event.forceteller.com/weather' },
     });
     expect(p.header.bgImage).toContain('summer_night_rainy_hot.jpg');
@@ -338,7 +332,7 @@ describe('normalizeTodayPosts', () => {
 
   it('여러 타입을 순서 보존하며 정규화한다', () => {
     const result = normalizeTodayPosts([rawFullImage, rawThumbnail, rawIcon, rawWeather]);
-    expect(result.map(p => `${p.id}:${p.type}`)).toEqual([
+    expect(result.map((p) => `${p.id}:${p.type}`)).toEqual([
       '1:full_image',
       '400:thumbnail',
       '6:icon',
@@ -373,7 +367,9 @@ describe('normalizeTodayPosts', () => {
   it('이미지 없는 weather는 헤더만 렌더한다(item null)', () => {
     const noImage = {
       ...rawWeather,
-      body: { items: [{ title: '25º 비', caption: 'c', image: '', link: { type: 'url', value: '' } }] },
+      body: {
+        items: [{ title: '25º 비', caption: 'c', image: '', link: { type: 'url', value: '' } }],
+      },
     };
     const [p] = normalizeTodayPosts([noImage]);
     if (p.type !== 'weather') throw new Error('unreachable');
@@ -414,7 +410,10 @@ describe('normalizeTodayPosts', () => {
     expect(p.items[0].title).toBe('88점');
     // 이미지 있는 item이 없으면 빈 items로 렌더(포스트 유지).
     const [q] = normalizeTodayPosts([
-      { ...rawIcon, body: { items: [{ title: 'x', caption: 'c', link: { type: 'url', value: '/x' } }] } },
+      {
+        ...rawIcon,
+        body: { items: [{ title: 'x', caption: 'c', link: { type: 'url', value: '/x' } }] },
+      },
     ]);
     if (q.type !== 'icon') throw new Error('unreachable');
     expect(q.items).toEqual([]);
@@ -442,7 +441,14 @@ describe('normalizeTodayPosts', () => {
     expect(p.items[0].title).toBe('유효 항목');
     // title 있는 item이 없으면 빈 items로 렌더(포스트 유지).
     const [q] = normalizeTodayPosts([
-      { ...rawThumbnail, body: { items: [{ title: '', image: 'https://x/a.png', price: 0, link: { type: 'url', value: '/a' } }] } },
+      {
+        ...rawThumbnail,
+        body: {
+          items: [
+            { title: '', image: 'https://x/a.png', price: 0, link: { type: 'url', value: '/a' } },
+          ],
+        },
+      },
     ]);
     if (q.type !== 'thumbnail') throw new Error('unreachable');
     expect(q.items).toEqual([]);
@@ -562,7 +568,10 @@ describe('normalizeTodayPosts', () => {
         header: { title: '타로', subtitle: '아이샤', portrait: 'https://x/p.png' },
         body: {
           items: [
-            [{ v: '반가워요' }, { t: 'image', src: 'https://x/img.jpg', link: { type: 'url', value: '' } }],
+            [
+              { v: '반가워요' },
+              { t: 'image', src: 'https://x/img.jpg', link: { type: 'url', value: '' } },
+            ],
             [
               {
                 v: '좌우로 스와이프',
@@ -613,8 +622,16 @@ describe('normalizeTodayPosts', () => {
               {
                 v: '좌우로 스와이프',
                 a: [
-                  { t: 'image', src: 'https://x/t1.png', link: { type: 'api', value: '/api/daily/calc/d_proverb', method: 'POST' } },
-                  { t: 'image', src: 'https://x/t2.png', link: { type: 'api', value: '/api/daily/calc/d_proverb', method: 'POST' } },
+                  {
+                    t: 'image',
+                    src: 'https://x/t1.png',
+                    link: { type: 'api', value: '/api/daily/calc/d_proverb', method: 'POST' },
+                  },
+                  {
+                    t: 'image',
+                    src: 'https://x/t2.png',
+                    link: { type: 'api', value: '/api/daily/calc/d_proverb', method: 'POST' },
+                  },
                 ],
               },
               { t: 'carousel' },
@@ -628,8 +645,14 @@ describe('normalizeTodayPosts', () => {
     expect(p.bgColor).toBe('#ACD9FF');
     if (p.picker.kind !== 'carousel') throw new Error('expected carousel');
     expect(p.picker.cards).toEqual([
-      { src: 'https://x/t1.png', action: { type: 'api', endpoint: '/api/daily/calc/d_proverb', method: 'POST' } },
-      { src: 'https://x/t2.png', action: { type: 'api', endpoint: '/api/daily/calc/d_proverb', method: 'POST' } },
+      {
+        src: 'https://x/t1.png',
+        action: { type: 'api', endpoint: '/api/daily/calc/d_proverb', method: 'POST' },
+      },
+      {
+        src: 'https://x/t2.png',
+        action: { type: 'api', endpoint: '/api/daily/calc/d_proverb', method: 'POST' },
+      },
     ]);
   });
 });
@@ -641,7 +664,8 @@ describe('normalizeTodayHero', () => {
     caption: '지금 가입하시고',
     sub: '매일 새로워지는\n오늘의 운세를 만나보세요.',
     heroImage: 'data:image/svg+xml;base64,PHN2Zz48L3N2Zz4=',
-    backgroundImage: 'https://static.forceteller.com/images/today/hero_section_bg/v2/today_bg_summer_day.svg',
+    backgroundImage:
+      'https://static.forceteller.com/images/today/hero_section_bg/v2/today_bg_summer_day.svg',
     link: { type: 'url', value: '/calc/daily', params: { state: { code: 'd_sazoo' } } },
     textColor: '#27484E',
     iconColor: 'white',

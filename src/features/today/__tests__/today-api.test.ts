@@ -1,4 +1,4 @@
-import { createTodayApi } from '../api/today-api';
+import { createTodayApi } from '@/features/today/api/today-api';
 import type { HttpClient } from '@/shared/lib';
 
 describe('today-api', () => {
@@ -87,7 +87,10 @@ describe('today-api', () => {
     const get = jest.fn().mockResolvedValue(undefined);
     const todayApi = createTodayApi({ get } as unknown as HttpClient);
 
-    await todayApi.runAction({ type: 'api', endpoint: '/api/x', method: 'GET' }, { selectedIndex: 2 });
+    await todayApi.runAction(
+      { type: 'api', endpoint: '/api/x', method: 'GET' },
+      { selectedIndex: 2 },
+    );
 
     expect(get).toHaveBeenCalledWith('/api/x?selectedIndex=2');
   });

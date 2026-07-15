@@ -1,10 +1,10 @@
+import type { Premium, PremiumLink } from '@/features/premium/types/premium-types';
 import { BannerWidget } from './banner-widget';
 import { ButtonWidget } from './button-widget';
 import { CarouselWidget } from './carousel-widget';
 import { GeneralWidget } from './general-widget';
 import { RankWidget } from './rank-widget';
 import { TagWidget } from './tag-widget';
-import type { Premium, PremiumLink } from '../types/premium-types';
 
 export type PremiumWidgetProps = {
   premium: Premium;

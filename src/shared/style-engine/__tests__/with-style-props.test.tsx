@@ -1,7 +1,7 @@
 import { View } from 'react-native';
-import { withStyleProps } from '../with-style-props';
-import { background } from '../resolvers/background';
-import { radius } from '../resolvers/radius';
+import { withStyleProps } from '@/shared/style-engine/with-style-props';
+import { background } from '@/shared/style-engine/resolvers/background';
+import { radius } from '@/shared/style-engine/resolvers/radius';
 
 const Styled = withStyleProps(View, { resolvers: { color: background, radius } });
 

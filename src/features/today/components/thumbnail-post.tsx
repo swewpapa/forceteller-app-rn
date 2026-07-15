@@ -1,8 +1,8 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 import { AspectRatio, Image, PriceTag, Row, Typography } from '@/shared/components';
 import { radius, spacing, useAppColors } from '@/shared/theme';
+import type { ThumbnailItem, TodayLink, TodayPost } from '@/features/today/types/today-types';
 import { POST_DARK, TodayPostHeader } from './today-post-header';
-import type { ThumbnailItem, TodayLink, TodayPost } from '../types/today-types';
 
 type ThumbnailPostData = Extract<TodayPost, { type: 'thumbnail' }>;
 

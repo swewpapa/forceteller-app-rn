@@ -1,4 +1,4 @@
-import { normalizeMoreList } from '../api/normalize-more';
+import { normalizeMoreList } from '@/features/more/api/normalize-more';
 
 // dev 실응답(GET /api/more/list {status, data:[]})에서 발췌한 픽스처.
 // 각 항목: {id, name, link:{type:'url', value}, icon:원격SVG, code, priority, status}.
@@ -68,7 +68,9 @@ describe('normalizeMoreList', () => {
 
   it('id 없으면 드롭', () => {
     expect(
-      normalizeMoreList([{ name: '내 사주', icon: 'x.svg', link: { type: 'url', value: '/four' } }]),
+      normalizeMoreList([
+        { name: '내 사주', icon: 'x.svg', link: { type: 'url', value: '/four' } },
+      ]),
     ).toEqual([]);
   });
 
@@ -87,15 +89,14 @@ describe('normalizeMoreList', () => {
   });
 
   it('url 이외 link type은 드롭', () => {
-    expect(
-      normalizeMoreList([{ ...rawSaju, link: { type: 'api', value: '/x' } }]),
-    ).toEqual([]);
+    expect(normalizeMoreList([{ ...rawSaju, link: { type: 'api', value: '/x' } }])).toEqual([]);
   });
 
   it('priority 없으면 0으로 취급', () => {
     expect(
-      normalizeMoreList([{ id: 7, name: '내 사주', icon: 'x.svg', link: { type: 'url', value: '/four' } }])[0]
-        .priority,
+      normalizeMoreList([
+        { id: 7, name: '내 사주', icon: 'x.svg', link: { type: 'url', value: '/four' } },
+      ])[0].priority,
     ).toBe(0);
   });
 });

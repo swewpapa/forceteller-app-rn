@@ -1,10 +1,10 @@
+import type { TodayLink, TodayPost } from '@/features/today/types/today-types';
 import { ChatPost } from './chat-post';
 import { FullImagePost } from './full-image-post';
 import { GiftPost } from './gift-post';
 import { IconPost } from './icon-post';
 import { ThumbnailPost } from './thumbnail-post';
 import { WeatherPost } from './weather-post';
-import type { TodayLink, TodayPost } from '../types/today-types';
 
 export type TodayPostViewProps = {
   post: TodayPost;

@@ -1,5 +1,5 @@
 import { Platform } from 'react-native';
-import { fetchSplashConfig, pickImageUrl } from '../splash-api';
+import { fetchSplashConfig, pickImageUrl } from '@/app/splash/splash-api';
 
 describe('pickImageUrl', () => {
   it('picks ios url on ios', () => {

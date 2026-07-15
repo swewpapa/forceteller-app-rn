@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, Text } from 'react-native';
 import { AspectRatio, Column, Image } from '@/shared/components';
 import { spacing, typographyStyles, useAppColors } from '@/shared/theme';
-import type { ThemeView } from '../types/theme-types';
+import type { ThemeView } from '@/features/theme/types/theme-types';
 
 const CARD_WIDTH = 144;
 const IMAGE_RATIO = 144 / 92; // Figma 실측(원시 px)
@@ -22,7 +22,10 @@ export function ThumbnailCard({ view, onPress }: ThumbnailCardProps) {
             {view.label.text}
           </Text>
         ) : null}
-        <Text numberOfLines={2} style={[typographyStyles['headline-xs'], { color: colors.text.default }]}>
+        <Text
+          numberOfLines={2}
+          style={[typographyStyles['headline-xs'], { color: colors.text.default }]}
+        >
           {view.title}
         </Text>
       </Column>

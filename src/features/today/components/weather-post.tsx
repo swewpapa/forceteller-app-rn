@@ -3,8 +3,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faArrowRight } from '@fortawesome/pro-light-svg-icons/faArrowRight';
 import { AspectRatio, Column, Image, Row, Typography } from '@/shared/components';
 import { radius, spacing, useAppColors } from '@/shared/theme';
+import type { TodayLink, TodayPost } from '@/features/today/types/today-types';
 import { POST_DARK, TodayPostHeader } from './today-post-header';
-import type { TodayLink, TodayPost } from '../types/today-types';
 
 type WeatherPostData = Extract<TodayPost, { type: 'weather' }>;
 

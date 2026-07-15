@@ -29,10 +29,7 @@ export function Typography({
 }: TypographyProps) {
   const colors = useAppColors();
   return (
-    <Text
-      style={[typographyStyles[variant], { color: colors.text[color] }, style]}
-      {...rest}
-    >
+    <Text style={[typographyStyles[variant], { color: colors.text[color] }, style]} {...rest}>
       {children}
     </Text>
   );

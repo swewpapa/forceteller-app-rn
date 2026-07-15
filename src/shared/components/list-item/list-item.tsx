@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet, Text } from 'react-native';
 import { spacing, useAppColors } from '@/shared/theme';
-import { typographyStyles } from '../typography';
+import { typographyStyles } from '@/shared/components/typography';
 
 export type ListItemProps = {
   /** 좌측 라벨(카테고리 등). */

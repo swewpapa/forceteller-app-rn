@@ -9,7 +9,7 @@ import {
   Typography,
 } from '@/shared/components';
 import { spacing } from '@/shared/theme';
-import type { Premium, PremiumItem, PremiumLink } from '../types/premium-types';
+import type { Premium, PremiumItem, PremiumLink } from '@/features/premium/types/premium-types';
 
 type GeneralPremium = Extract<Premium, { type: 'general' }>;
 

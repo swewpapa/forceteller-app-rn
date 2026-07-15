@@ -1,4 +1,4 @@
-import { webPathRequiresAuth } from '../guard/web-guard';
+import { webPathRequiresAuth } from '@/features/auth/guard/web-guard';
 
 describe('webPathRequiresAuth', () => {
   const prefixes = ['/my', '/purchase'];

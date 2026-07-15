@@ -2,8 +2,8 @@ import {
   createAuthTokenStore,
   createAuthRequestInterceptor,
   AUTH_HEADER,
-} from '../auth-token';
-import type { RequestConfig } from '../http';
+} from '@/shared/lib/auth-token';
+import type { RequestConfig } from '@/shared/lib/http';
 
 function mockStore() {
   const m = new Map<string, string>();

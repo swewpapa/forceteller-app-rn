@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet } from 'react-native';
 import { Image } from '@/shared/components';
 import { spacing } from '@/shared/theme';
-import type { Premium, PremiumLink } from '../types/premium-types';
+import type { Premium, PremiumLink } from '@/features/premium/types/premium-types';
 
 type BannerPremium = Extract<Premium, { type: 'banner' }>;
 

@@ -15,7 +15,7 @@ import {
   withStyleProps,
   type ColorPath,
   type Resolver,
-} from '@/shared/lib/style-engine';
+} from '@/shared/style-engine';
 
 export type ButtonColor = 'primary' | 'secondary';
 export type ButtonAppearance = 'solid' | 'outline';
@@ -51,7 +51,10 @@ export function pickButtonColors(
 ): ButtonColors {
   const cs = COLOR_SETS[color];
   if (appearance === 'solid') {
-    return { background: disabled ? cs.mainDisabled : cs.main, text: disabled ? cs.onDisabled : cs.on };
+    return {
+      background: disabled ? cs.mainDisabled : cs.main,
+      text: disabled ? cs.onDisabled : cs.on,
+    };
   }
   const line = disabled ? cs.mainDisabled : cs.main;
   return { borderColor: line, text: line };

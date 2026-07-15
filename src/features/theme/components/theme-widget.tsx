@@ -1,4 +1,4 @@
-import type { Theme, ThemeKeyword, ThemeView } from '../types/theme-types';
+import type { Theme, ThemeKeyword, ThemeView } from '@/features/theme/types/theme-types';
 import { FullImageCarouselWidget } from './full-image-carousel-widget';
 import { KeywordCloudWidget } from './keyword-cloud-widget';
 import { TextOnlyWidget } from './text-only-widget';
@@ -33,13 +33,9 @@ export function ThemeWidget({
         <KeywordCloudWidget theme={theme} onPressKeyword={onPressKeyword ?? (() => undefined)} />
       );
     case 'thumbnail_carousel':
-      return (
-        <ThumbnailCarouselWidget theme={theme} onPressView={onPressView} />
-      );
+      return <ThumbnailCarouselWidget theme={theme} onPressView={onPressView} />;
     case 'full_image_carousel':
-      return (
-        <FullImageCarouselWidget theme={theme} onPressView={onPressView} />
-      );
+      return <FullImageCarouselWidget theme={theme} onPressView={onPressView} />;
     default: {
       const _exhaustive: never = theme;
       return _exhaustive;

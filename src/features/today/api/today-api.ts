@@ -1,5 +1,5 @@
 import { http, type HttpClient } from '@/shared/lib';
-import type { TodayApiLink, TodayHero, TodayPost } from '../types/today-types';
+import type { TodayApiLink, TodayHero, TodayPost } from '@/features/today/types/today-types';
 import {
   normalizeTodayHero,
   normalizeTodayPost,
@@ -33,10 +33,7 @@ export function createTodayApi(client: HttpClient) {
      * 아이템/버튼의 api 링크 실행(gift 클레임·chat 선택 등). method에 맞는 HTTP 메서드로 endpoint 호출.
      * 응답 본문은 쓰지 않고, 호출부가 getPost로 갱신 상태를 다시 받는다(Martin 확정 플로우).
      */
-    runAction: async (
-      action: TodayApiLink,
-      payload?: Record<string, unknown>,
-    ): Promise<void> => {
+    runAction: async (action: TodayApiLink, payload?: Record<string, unknown>): Promise<void> => {
       switch (action.method.toUpperCase()) {
         case 'GET': {
           // GET은 payload를 쿼리로, POST/PUT/PATCH는 body로.

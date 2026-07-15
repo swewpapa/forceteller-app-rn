@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { Button, Column, Row, Typography } from '@/shared/components';
 import { radius, useAppColors } from '@/shared/theme';
+import { useTodayAction } from '@/features/today/hooks/useTodayAction';
+import type { ChatMessage, TodayLink, TodayPost } from '@/features/today/types/today-types';
 import { TodayPostHeader } from './today-post-header';
-import { useTodayAction } from '../hooks/useTodayAction';
-import type { ChatMessage, TodayLink, TodayPost } from '../types/today-types';
 
 type ChatPostData = Extract<TodayPost, { type: 'chat' }>;
 
@@ -54,7 +54,11 @@ export function ChatPost({ post }: ChatPostProps) {
                       { zIndex: picked ? TAROT_DECK_SIZE + 1 : i },
                     ]}
                   >
-                    <Image source={{ uri: picker.cardSrc }} style={styles.tarotCard} resizeMode="contain" />
+                    <Image
+                      source={{ uri: picker.cardSrc }}
+                      style={styles.tarotCard}
+                      resizeMode="contain"
+                    />
                   </Pressable>
                 );
               })}
@@ -75,7 +79,11 @@ export function ChatPost({ post }: ChatPostProps) {
                 loading={action.isPending}
                 onPress={() => {
                   if (selectedIndex === null) return;
-                  action.mutate({ postId: post.id, action: picker.submit, payload: { selectedIndex } });
+                  action.mutate({
+                    postId: post.id,
+                    action: picker.submit,
+                    payload: { selectedIndex },
+                  });
                 }}
               />
             </Row>
@@ -99,7 +107,11 @@ export function ChatPost({ post }: ChatPostProps) {
                   disabled={action.isPending}
                   onPress={() => action.mutate({ postId: post.id, action: card.action })}
                 >
-                  <Image source={{ uri: card.src }} style={styles.carouselCard} resizeMode="contain" />
+                  <Image
+                    source={{ uri: card.src }}
+                    style={styles.carouselCard}
+                    resizeMode="contain"
+                  />
                 </Pressable>
               ))}
             </ScrollView>
@@ -134,7 +146,13 @@ const styles = StyleSheet.create({
   bubbleImage: { alignSelf: 'flex-start', width: '70%', aspectRatio: 1, borderRadius: radius.md },
   caption: { textAlign: 'center', marginTop: 4 },
   // tarot 덱(레거시 실측): 카드 height 90, margin-right -32(겹침), 선택 시 translateY 16.
-  deck: { flexDirection: 'row', alignItems: 'flex-start', paddingHorizontal: 20, paddingTop: 4, paddingBottom: 20 },
+  deck: {
+    flexDirection: 'row',
+    alignItems: 'flex-start',
+    paddingHorizontal: 20,
+    paddingTop: 4,
+    paddingBottom: 20,
+  },
   cardWrap: { marginRight: -32 },
   cardPicked: { transform: [{ translateY: 16 }] },
   tarotCard: { width: 60, height: 90 },

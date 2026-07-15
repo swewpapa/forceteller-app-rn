@@ -2,14 +2,14 @@ import { ActivityIndicator, Linking, ScrollView, StyleSheet } from 'react-native
 import { Button, Column, ScreenContainer } from '@/shared/components';
 import { useAppNavigation, useAuthStore } from '@/features/auth';
 import { useMe, useProfile, getZodiacName, getConstellation, formatBirth } from '@/features/user';
-import { ProfileHeader } from '../components/profile-header';
-import { SajuPill } from '../components/saju-pill';
-import { ForceCard } from '../components/force-card';
-import { ShortcutGrid, type Shortcut } from '../components/shortcut-grid';
-import { MoreFooter } from '../components/more-footer';
-import { MoreGuest } from '../components/more-guest';
-import { useMoreList } from '../hooks/useMoreList';
-import type { MoreShortcutLink } from '../types/more-types';
+import { ProfileHeader } from '@/features/more/components/profile-header';
+import { SajuPill } from '@/features/more/components/saju-pill';
+import { ForceCard } from '@/features/more/components/force-card';
+import { ShortcutGrid, type Shortcut } from '@/features/more/components/shortcut-grid';
+import { MoreFooter } from '@/features/more/components/more-footer';
+import { MoreGuest } from '@/features/more/components/more-guest';
+import { useMoreList } from '@/features/more/hooks/useMoreList';
+import type { MoreShortcutLink } from '@/features/more/types/more-types';
 
 // TODO(실데이터): 소스 부재로 placeholder 유지(Martin 합의) —
 //  · dayAnimal(일주동물): 서버 간지(a/e/h/i/s/z) normalize 확장 필요
@@ -82,7 +82,11 @@ export function MoreScreen() {
           zodiacSign={p ? getConstellation(p.month, p.day) : ''}
           style={styles.pill}
         />
-        <ForceCard force={PLACEHOLDER.force} bonusForce={PLACEHOLDER.bonusForce} style={styles.card} />
+        <ForceCard
+          force={PLACEHOLDER.force}
+          bonusForce={PLACEHOLDER.bonusForce}
+          style={styles.card}
+        />
         <ShortcutGrid items={shortcuts} style={styles.grid} />
         <MoreFooter style={styles.footer} />
         {/* dev 전용 QA 로그아웃(정식 로그아웃 UI 신설 전 임시). prod 번들 미포함. */}

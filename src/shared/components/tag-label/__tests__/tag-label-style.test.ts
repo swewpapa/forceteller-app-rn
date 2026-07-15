@@ -1,4 +1,7 @@
-import { resolveTagLabelVariant, tagLabelVariants } from '../tag-label-style';
+import {
+  resolveTagLabelVariant,
+  tagLabelVariants,
+} from '@/shared/components/tag-label/tag-label-style';
 
 describe('tag-label-style', () => {
   it('빌트인 키 → 프리셋 조회', () => {

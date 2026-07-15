@@ -1,6 +1,6 @@
 import TestRenderer, { act } from 'react-test-renderer';
 import { ThemeProvider } from '@/shared/theme';
-import { PriceTag, type PriceTagProps } from '../price-tag';
+import { PriceTag, type PriceTagProps } from '@/shared/components/price-tag/price-tag';
 
 // PriceTag는 useAppColors(ThemeContext)에 의존하므로 ThemeProvider로 감싼다.
 // (MMKV는 __mocks__/react-native-mmkv.js로 자동 모킹)

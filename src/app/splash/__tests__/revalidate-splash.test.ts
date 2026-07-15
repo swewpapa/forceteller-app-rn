@@ -1,7 +1,7 @@
-import { revalidateSplash } from '../revalidate-splash';
-import * as api from '../splash-api';
+import { revalidateSplash } from '@/app/splash/revalidate-splash';
+import * as api from '@/app/splash/splash-api';
 
-jest.mock('../splash-api');
+jest.mock('@/app/splash/splash-api');
 const mockedApi = api as jest.Mocked<typeof api>;
 
 describe('revalidateSplash', () => {

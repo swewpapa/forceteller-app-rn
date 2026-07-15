@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Row, Typography } from '@/shared/components';
 import { useAppColors } from '@/shared/theme';
-import type { PremiumSubjectLink, PremiumSubjects } from '../types/premium-types';
+import type { PremiumSubjectLink, PremiumSubjects } from '@/features/premium/types/premium-types';
 
 type Segment = 'genre' | 'subject';
 
@@ -66,10 +66,7 @@ export function PremiumSubjects({ subjects, onPressItem, onPressViewAll }: Premi
             </Pressable>
           ))}
         </View>
-        <Pressable
-          accessibilityRole="button"
-          onPress={() => onPressViewAll?.(segment)}
-        >
+        <Pressable accessibilityRole="button" onPress={() => onPressViewAll?.(segment)}>
           <Typography variant="label-md" color="subtle">
             모두 보기
           </Typography>
@@ -93,7 +90,11 @@ export function PremiumSubjects({ subjects, onPressItem, onPressViewAll }: Premi
               ]}
             >
               {segment === 'genre' && item.iconUrl ? (
-                <Image source={{ uri: item.iconUrl }} style={styles.genreIcon} resizeMode="contain" />
+                <Image
+                  source={{ uri: item.iconUrl }}
+                  style={styles.genreIcon}
+                  resizeMode="contain"
+                />
               ) : null}
               <Typography variant="label-sm" numberOfLines={1}>
                 {item.name}

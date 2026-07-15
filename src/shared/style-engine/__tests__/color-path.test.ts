@@ -1,4 +1,4 @@
-import { resolveColorPath } from '../color-path';
+import { resolveColorPath } from '@/shared/style-engine/color-path';
 import type { ThemeContextValue } from '@/shared/theme';
 
 const theme = {
@@ -35,7 +35,9 @@ describe('resolveColorPath', () => {
   it('서로 다른 theme.colors 객체는 캐시가 분리된다(WeakMap 키=colors 아이덴티티 → 모드 전환 안전)', () => {
     // day/night는 서로 다른 colors 객체다. 한쪽 플랫 테이블이 다른 쪽으로 새면 모드 전환 시 stale 색이 된다.
     const day = { colors: { background: { surface: '#ffffff' } } } as unknown as ThemeContextValue;
-    const night = { colors: { background: { surface: '#0b0b0b' } } } as unknown as ThemeContextValue;
+    const night = {
+      colors: { background: { surface: '#0b0b0b' } },
+    } as unknown as ThemeContextValue;
     expect(resolveColorPath('background.surface', day)).toBe('#ffffff'); // day 테이블 구축
     expect(resolveColorPath('background.surface', night)).toBe('#0b0b0b'); // night는 자기 값(day 캐시 미유출)
     expect(resolveColorPath('background.surface', day)).toBe('#ffffff'); // 역방향 재확인 — 각자 자기 값 유지

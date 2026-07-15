@@ -1,20 +1,22 @@
 import { useState, type ReactNode } from 'react';
-import { Image, ScrollView, StyleSheet } from 'react-native';
-import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import { ScrollView, StyleSheet } from 'react-native';
 import { faCopy } from '@fortawesome/pro-light-svg-icons/faCopy';
+import { faInbox } from '@fortawesome/pro-light-svg-icons/faInbox';
 import { faShareNodes } from '@fortawesome/pro-light-svg-icons/faShareNodes';
-import { faMagnifyingGlass } from '@fortawesome/pro-light-svg-icons/faMagnifyingGlass';
-import { faCalendarDays } from '@fortawesome/pro-light-svg-icons/faCalendarDays';
 import {
   ActionButton,
   AppBar,
-  AppBarButton,
+  AppBarCalendarButton,
+  AppBarEventButton,
+  AppBarFreeForceButton,
+  AppBarSearchButton,
   AspectRatio,
   Box,
   Button,
   Checkbox,
   Chip,
   Column,
+  EmptyState,
   Likes,
   LinkText,
   ListHeader,
@@ -25,11 +27,10 @@ import {
   TagChip,
   TagLabel,
   TextField,
+  Thumbnail,
   Typography,
 } from '@/shared/components';
-import { spacing, useAppColors, useTheme, type TypographyVariant } from '@/shared/theme';
-
-const LOGO = require('../../assets/forceteller-logo.png');
+import { spacing, useTheme, type TypographyVariant } from '@/shared/theme';
 
 function Section({ title, children }: { title: string; children: ReactNode }) {
   return (
@@ -41,6 +42,9 @@ function Section({ title, children }: { title: string; children: ReactNode }) {
     </Column>
   );
 }
+
+// dev 갤러리 데모용 원격 placeholder(네트워크 필요). 실사용은 서버 드리븐 uri.
+const SAMPLE_IMG = 'https://picsum.photos/240/126';
 
 const TYPO_SAMPLES: TypographyVariant[] = [
   'headline-md',
@@ -58,7 +62,6 @@ const TYPO_SAMPLES: TypographyVariant[] = [
  */
 export function DsGalleryScreen() {
   const { resolvedTheme, setMode } = useTheme();
-  const colors = useAppColors();
   const [text, setText] = useState('');
   const [checked, setChecked] = useState(true);
   const [selected, setSelected] = useState(true);
@@ -77,25 +80,23 @@ export function DsGalleryScreen() {
           />
         </Row>
 
-        <Section title="AppBar (Root) — leading BI + trailing(아이콘/badge)">
+        <Section title="AppBar — 탭 chrome (표준 액션 named 버튼 · 홈 변형 event 제외)">
           <AppBar
-            leading={
-              <AppBarButton accessibilityLabel="홈">
-                <Image source={LOGO} style={styles.appBarLogo} resizeMode="contain" />
-              </AppBarButton>
-            }
             trailing={
               <>
-                <AppBarButton accessibilityLabel="검색" onPress={() => {}}>
-                  <FontAwesomeIcon
-                    icon={faMagnifyingGlass}
-                    size={20}
-                    color={colors.text.default}
-                  />
-                </AppBarButton>
-                <AppBarButton badge accessibilityLabel="캘린더" onPress={() => {}}>
-                  <FontAwesomeIcon icon={faCalendarDays} size={20} color={colors.text.default} />
-                </AppBarButton>
+                <AppBarSearchButton onPress={() => {}} />
+                <AppBarFreeForceButton onPress={() => {}} />
+                <AppBarEventButton onPress={() => {}} />
+                <AppBarCalendarButton onPress={() => {}} />
+              </>
+            }
+          />
+          <AppBar
+            trailing={
+              <>
+                <AppBarSearchButton onPress={() => {}} />
+                <AppBarFreeForceButton onPress={() => {}} />
+                <AppBarCalendarButton onPress={() => {}} />
               </>
             }
           />
@@ -140,7 +141,12 @@ export function DsGalleryScreen() {
         <Section title="Checkbox — md/sm, 위치, 아이콘 온리">
           <Checkbox checked={checked} onChange={setChecked} label="동의합니다 (md)" />
           <Checkbox checked={checked} onChange={setChecked} label="동의합니다 (sm)" size="sm" />
-          <Checkbox checked={checked} onChange={setChecked} label="체크박스 우측" checkboxPosition="right" />
+          <Checkbox
+            checked={checked}
+            onChange={setChecked}
+            label="체크박스 우측"
+            checkboxPosition="right"
+          />
           <Row gap="150" align="center">
             <Checkbox checked onChange={() => {}} />
             <Checkbox checked={false} onChange={() => {}} />
@@ -162,8 +168,14 @@ export function DsGalleryScreen() {
           <Row gap="100">
             <TagLabel label="성향" />
             <TagLabel label="성향" variant="highlighted" />
-            <TagLabel label="불" variant={{ background: 'accent.fireTonal', text: 'accent.onFireTonal' }} />
-            <TagLabel label="물" variant={{ background: 'accent.waterTonal', text: 'accent.onWaterTonal' }} />
+            <TagLabel
+              label="불"
+              variant={{ background: 'accent.fireTonal', text: 'accent.onFireTonal' }}
+            />
+            <TagLabel
+              label="물"
+              variant={{ background: 'accent.waterTonal', text: 'accent.onWaterTonal' }}
+            />
           </Row>
         </Section>
 
@@ -182,7 +194,12 @@ export function DsGalleryScreen() {
 
         <Section title="ListHeader / ListItem">
           <ListHeader title="섹션 타이틀" subtitle="서브타이틀" onPressViewAll={() => {}} />
-          <ListItem label="사주" labelColor="#5870d0" title="리스트 아이템 제목" onPress={() => {}} />
+          <ListItem
+            label="사주"
+            labelColor="#5870d0"
+            title="리스트 아이템 제목"
+            onPress={() => {}}
+          />
           <ListItem title="라벨 없는 아이템" onPress={() => {}} />
         </Section>
 
@@ -203,6 +220,31 @@ export function DsGalleryScreen() {
             <Box color="highlight" radius="md" style={styles.fill} />
           </AspectRatio>
         </Section>
+
+        <Section title="Thumbnail — ratio·radius 변형 (source는 dev placeholder)">
+          <Row gap="150">
+            <Box style={styles.thumb144}>
+              <Thumbnail source={SAMPLE_IMG} ratio={144 / 92} accessibilityLabel="리스트 썸네일" />
+            </Box>
+            <Box style={styles.thumb92}>
+              <Thumbnail
+                source={SAMPLE_IMG}
+                ratio={92 / 128}
+                radius="xs"
+                accessibilityLabel="페이트북 썸네일"
+              />
+            </Box>
+          </Row>
+        </Section>
+
+        <Section title="EmptyState — 아이콘 + 제목/설명 + action">
+          <EmptyState
+            icon={faInbox}
+            title="아직 내역이 없어요."
+            description="출석 체크로 보너스포스를 모아 보세요."
+            action={<LinkText label="출석 체크하기" colored onPress={() => {}} />}
+          />
+        </Section>
       </ScrollView>
     </ScreenContainer>
   );
@@ -211,6 +253,7 @@ export function DsGalleryScreen() {
 const styles = StyleSheet.create({
   content: { padding: spacing[200], gap: spacing[300], paddingBottom: spacing[900] },
   inversedBox: { alignSelf: 'flex-start', backgroundColor: '#191919' },
-  appBarLogo: { width: 36, height: 36 },
   fill: { flex: 1 },
+  thumb144: { width: 144 },
+  thumb92: { width: 92 },
 });

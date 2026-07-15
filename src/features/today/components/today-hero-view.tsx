@@ -1,14 +1,8 @@
-import {
-  Pressable,
-  StyleSheet,
-  Text,
-  useWindowDimensions,
-  View,
-} from 'react-native';
+import { Pressable, StyleSheet, Text, useWindowDimensions, View } from 'react-native';
 import { SvgUri } from 'react-native-svg';
 import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
 import { faArrowRight } from '@fortawesome/pro-light-svg-icons/faArrowRight';
-import type { TodayHero, TodayLink } from '../types/today-types';
+import type { TodayHero, TodayLink } from '@/features/today/types/today-types';
 
 const HERO_HEIGHT = 480;
 const BG_HEIGHT = 464;

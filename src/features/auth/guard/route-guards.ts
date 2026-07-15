@@ -13,9 +13,7 @@ export type RouteGuardRule = {
  * features 간 직접 import 금지 — params를 구조적 타입으로 판단.
  * 다른 라우트가 필요해지면 여기에 { requiresAuth: true }로 추가한다.
  */
-export const ROUTE_GUARDS: Partial<
-  Record<keyof AppRoutes.GuardableParamList, RouteGuardRule>
-> = {
+export const ROUTE_GUARDS: Partial<Record<keyof AppRoutes.GuardableParamList, RouteGuardRule>> = {
   Web: {
     requiresAuth: (params) => webPathRequiresAuth((params as { path?: string })?.path ?? ''),
   },

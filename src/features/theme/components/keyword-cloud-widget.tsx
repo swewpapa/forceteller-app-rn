@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { Chip, Column, ListHeader, Row } from '@/shared/components';
-import type { Theme, ThemeKeyword } from '../types/theme-types';
+import type { Theme, ThemeKeyword } from '@/features/theme/types/theme-types';
 
 type KeywordCloudTheme = Extract<Theme, { type: 'keyword_cloud' }>;
 

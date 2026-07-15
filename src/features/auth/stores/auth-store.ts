@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { authTokenStore, queryClient } from '@/shared/lib';
-import { googleProvider } from '../providers/google-provider';
-import { authApi } from '../api/auth-api';
+import { googleProvider } from '@/features/auth/providers/google-provider';
+import { authApi } from '@/features/auth/api/auth-api';
 
 export type AuthStatus = 'loading' | 'guest' | 'authenticated';
 type Status = AuthStatus;

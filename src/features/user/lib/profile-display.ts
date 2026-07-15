@@ -1,4 +1,4 @@
-import type { UserProfile } from '../types/user-types';
+import type { UserProfile } from '@/features/user/types/user-types';
 
 /**
  * 프로필(생년월일시) → 마이페이지 표시 문자열 변환. 순수함수.
@@ -58,5 +58,7 @@ export function formatBirth(
 ): string {
   const branch = getHourBranch(profile.hour);
   const time = branch ? ` ${branch}시` : '';
-  return `${calendarLabel(profile.calendar)} ${profile.year}. ${profile.month}. ${profile.day}.${time}`;
+  return `${calendarLabel(profile.calendar)} ${profile.year}. ${profile.month}. ${
+    profile.day
+  }.${time}`;
 }

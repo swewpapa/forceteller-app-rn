@@ -25,24 +25,16 @@ const TAB_ICONS: Record<keyof RootTabParamList, TabIconSet> = {
   More: { active: faEllipsis, inactive: faEllipsisLight },
 };
 
-export function TabBar({
-  state,
-  descriptors,
-  navigation,
-}: BottomTabBarProps) {
+export function TabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   const colors = useAppColors();
   const insets = useSafeAreaInsets();
-  const styles = useMemo(
-    () => makeStyles(colors, insets.bottom),
-    [colors, insets.bottom],
-  );
+  const styles = useMemo(() => makeStyles(colors, insets.bottom), [colors, insets.bottom]);
 
   return (
     <View style={styles.bar}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
-        const label =
-          typeof options.title === 'string' ? options.title : route.name;
+        const label = typeof options.title === 'string' ? options.title : route.name;
         const focused = state.index === index;
         const icons = TAB_ICONS[route.name as keyof RootTabParamList];
         const color = focused ? colors.text.default : colors.text.muted;
@@ -82,12 +74,7 @@ export function TabBar({
               size={20}
               color={color}
             />
-            <Text
-              style={[
-                styles.label,
-                focused ? styles.labelActive : styles.labelInactive,
-              ]}
-            >
+            <Text style={[styles.label, focused ? styles.labelActive : styles.labelInactive]}>
               {label}
             </Text>
           </Pressable>

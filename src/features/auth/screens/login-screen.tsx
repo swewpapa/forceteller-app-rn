@@ -4,7 +4,7 @@ import { useNavigation, useRoute, type RouteProp } from '@react-navigation/nativ
 import { Button, Column, ScreenContainer } from '@/shared/components';
 import { useAppColors } from '@/shared/theme';
 import { useAuthStore } from '@/features/auth';
-import { navigateUnsafe } from '../navigation/navigate-unsafe';
+import { navigateUnsafe } from '@/features/auth/navigation/navigate-unsafe';
 
 type LoginRoute = RouteProp<{ Login: { redirect?: { screen: string; params?: object } } }, 'Login'>;
 

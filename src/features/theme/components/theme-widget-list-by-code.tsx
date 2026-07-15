@@ -1,7 +1,7 @@
 import { ActivityIndicator } from 'react-native';
 import { Button, Column, Typography } from '@/shared/components';
-import { useThemeListByCode } from '../hooks/useThemeListByCode';
-import type { ThemeView } from '../types/theme-types';
+import { useThemeListByCode } from '@/features/theme/hooks/useThemeListByCode';
+import type { ThemeView } from '@/features/theme/types/theme-types';
 import { ThemeWidgetList } from './theme-widget-list';
 
 export type ThemeWidgetListByCodeProps = {

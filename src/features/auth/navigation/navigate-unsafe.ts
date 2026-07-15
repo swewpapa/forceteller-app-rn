@@ -4,10 +4,6 @@
  * any-캐스트를 이 함수 한 곳에 격리한다 — 호출부(use-app-navigation/use-auth-guard/
  * login-screen)에 캐스트를 흩뿌리지 않는다.
  */
-export function navigateUnsafe(
-  nav: { navigate: unknown },
-  screen: string,
-  params?: object,
-): void {
+export function navigateUnsafe(nav: { navigate: unknown }, screen: string, params?: object): void {
   (nav as { navigate: (screen: string, params?: object) => void }).navigate(screen, params);
 }

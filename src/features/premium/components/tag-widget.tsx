@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native';
 import { Chip, Column, ListHeader, Row } from '@/shared/components';
-import type { Premium, PremiumLink } from '../types/premium-types';
+import type { Premium, PremiumLink } from '@/features/premium/types/premium-types';
 
 type TagPremium = Extract<Premium, { type: 'tag' }>;
 

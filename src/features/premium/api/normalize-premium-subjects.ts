@@ -2,7 +2,7 @@ import type {
   PremiumSubjectItem,
   PremiumSubjectLink,
   PremiumSubjects,
-} from '../types/premium-types';
+} from '@/features/premium/types/premium-types';
 
 // ─── raw 타입: 서버 응답 그대로. api/ 내부 전용 ───
 
@@ -50,9 +50,7 @@ function normalizeSubjectItems(raw: RawSubjectItem[] | undefined): PremiumSubjec
 }
 
 /** raw 카테고리 → 도메인 PremiumSubjects. name 없는 항목만 드롭. */
-export function normalizePremiumSubjects(
-  raw: PremiumSubjectsResponse['data'],
-): PremiumSubjects {
+export function normalizePremiumSubjects(raw: PremiumSubjectsResponse['data']): PremiumSubjects {
   return {
     genres: normalizeSubjectItems(raw.genres),
     keywords: normalizeSubjectItems(raw.keywords),

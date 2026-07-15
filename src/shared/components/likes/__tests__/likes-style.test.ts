@@ -1,4 +1,4 @@
-import { formatLikeCount } from '../likes-style';
+import { formatLikeCount } from '@/shared/components/likes/likes-style';
 
 describe('formatLikeCount', () => {
   it('천단위 콤마', () => {

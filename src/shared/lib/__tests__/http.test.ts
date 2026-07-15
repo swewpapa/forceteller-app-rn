@@ -1,4 +1,4 @@
-import { createHttpClient, ApiError } from '../http';
+import { createHttpClient, ApiError } from '@/shared/lib/http';
 
 afterEach(() => jest.restoreAllMocks());
 

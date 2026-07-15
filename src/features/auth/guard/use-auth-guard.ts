@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import type { NavigationContainerRef } from '@react-navigation/native';
-import { useAuthStore } from '../stores/auth-store';
-import { navigateUnsafe } from '../navigation/navigate-unsafe';
+import { useAuthStore } from '@/features/auth/stores/auth-store';
+import { navigateUnsafe } from '@/features/auth/navigation/navigate-unsafe';
 import { ROUTE_GUARDS } from './route-guards';
 import { shouldRedirectToLogin } from './evaluate-guard';
 import { decideBackstopAction } from './backstop-policy';
@@ -19,9 +19,7 @@ const FALLBACK_ROUTE = 'Tabs';
  *   없이 닫힘) 재오픈 대신 FALLBACK_ROUTE로 이탈한다(decideBackstopAction).
  * - app 레이어를 import하지 않고 전역 AppRoutes.GuardableParamList를 참조한다.
  */
-export function useAuthGuard(
-  navRef: NavigationContainerRef<ReactNavigation.RootParamList>,
-): void {
+export function useAuthGuard(navRef: NavigationContainerRef<ReactNavigation.RootParamList>): void {
   const status = useAuthStore((s) => s.status);
   // Login을 띄운 원인 라우트의 인스턴스 key. effect 재구독(status 변화)에도 유지돼야 해서 ref.
   const pendingKeyRef = useRef<string | null>(null);

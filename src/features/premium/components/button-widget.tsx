@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet } from 'react-native';
 import { AspectRatio, Column, Image, ListHeader, Row } from '@/shared/components';
-import type { Premium, PremiumItem, PremiumLink } from '../types/premium-types';
+import type { Premium, PremiumItem, PremiumLink } from '@/features/premium/types/premium-types';
 
 type ButtonPremium = Extract<Premium, { type: 'button' }>;
 
@@ -27,7 +27,7 @@ export function ButtonWidget({ premium, onPressLink }: ButtonWidgetProps) {
         onPressViewAll={moreLink ? () => onPressLink(moreLink) : undefined}
       />
       <Row gap="150" align="flex-start">
-        {items.map(item => (
+        {items.map((item) => (
           <ButtonTile key={item.id} item={item} onPress={() => onPressLink(item.link)} />
         ))}
       </Row>

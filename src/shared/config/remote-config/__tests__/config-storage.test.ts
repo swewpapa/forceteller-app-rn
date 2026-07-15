@@ -1,4 +1,4 @@
-import { createConfigStorage, type KVStore } from '../config-storage';
+import { createConfigStorage, type KVStore } from '@/shared/config/remote-config/config-storage';
 
 function fakeKV(): KVStore & { data: Record<string, string> } {
   const data: Record<string, string> = {};

@@ -1,4 +1,4 @@
-import { createUserApi } from '../api/user-api';
+import { createUserApi } from '@/features/user/api/user-api';
 import type { HttpClient } from '@/shared/lib';
 
 // 실측 픽스처(scratchpad/users-me.json, users-me-profile.json)에서 그대로 옮긴 봉투.

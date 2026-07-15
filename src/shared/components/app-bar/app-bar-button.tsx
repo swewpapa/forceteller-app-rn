@@ -1,13 +1,22 @@
-import type { ReactNode } from 'react';
+import { isValidElement, type ReactElement } from 'react';
 import { Pressable, StyleSheet, View } from 'react-native';
+import { FontAwesomeIcon } from '@fortawesome/react-native-fontawesome';
+import type { IconDefinition } from '@fortawesome/fontawesome-svg-core';
 import { useAppColors } from '@/shared/theme';
+import { useAppBarIconColor } from './app-bar-context';
 
 const SLOT_SIZE = 44;
 const BADGE_SIZE = 8;
+const DEFAULT_ICON_SIZE = 20;
 
 export type AppBarButtonProps = {
-  /** 슬롯에 중앙 배치할 아이콘(FA·SVG 컴포넌트·이미지 등). 색/크기는 호출부가 결정. */
-  children: ReactNode;
+  /**
+   * FA IconDefinition(색=AppBar iconColor·기본 text.default, 크기 iconSize) 또는
+   * 이미 만든 element(SVG 등 — 크기·색은 element가 소유). isValidElement로 분기.
+   */
+  icon: IconDefinition | ReactElement;
+  /** FA icon일 때 크기(px). 기본 20. element면 무시. */
+  iconSize?: number;
   onPress?: () => void;
   /** 우상단 red dot(Figma "New Badge") — 신규/미확인 표기. */
   badge?: boolean;
@@ -17,12 +26,18 @@ export type AppBarButtonProps = {
 
 /**
  * 앱 바 슬롯 버튼(Figma "Button App Bar Slot" 57:6055, 44²).
- * 44 슬롯 + 중앙 정렬 + press + 옵션 badge만 담당하는 제네릭 셸.
- * 아이콘 아트(BI·Search·Free Force·Event·Calendar…)는 상위가 children으로 주입한다
- * — 제품 전용 에셋을 shared에 묶지 않기 위함.
+ * 44 슬롯 + 중앙 정렬 + press + 옵션 badge. FA는 icon def로(색·크기 자동),
+ * 브랜드 SVG/커스텀은 element로 icon에 담는다. 표준 4종은 app-bar-actions의 named 버튼 사용.
  */
-export function AppBarButton({ children, onPress, badge, accessibilityLabel }: AppBarButtonProps) {
+export function AppBarButton({
+  icon,
+  iconSize = DEFAULT_ICON_SIZE,
+  onPress,
+  badge,
+  accessibilityLabel,
+}: AppBarButtonProps) {
   const colors = useAppColors();
+  const iconColor = useAppBarIconColor() ?? colors.text.default;
 
   return (
     <Pressable
@@ -32,7 +47,11 @@ export function AppBarButton({ children, onPress, badge, accessibilityLabel }: A
       hitSlop={6}
       style={styles.slot}
     >
-      {children}
+      {isValidElement(icon) ? (
+        icon
+      ) : (
+        <FontAwesomeIcon icon={icon} size={iconSize} color={iconColor} />
+      )}
       {badge ? (
         <View
           style={[styles.badge, { backgroundColor: colors.background.alert }]}

@@ -1,6 +1,6 @@
 import type { ReactNode } from 'react';
-import { Column } from '../layout';
-import { Typography } from '../typography';
+import { Column } from '@/shared/components/layout';
+import { Typography } from '@/shared/components/typography';
 
 export type FieldProps = {
   /** 있으면 label-md로 표시 (Figma 106:3419 라벨 14/500 정확 일치) */

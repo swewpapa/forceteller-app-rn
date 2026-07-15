@@ -3,7 +3,7 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { navigationDayTheme, navigationNightTheme, useTheme } from '@/shared/theme';
 import { WebScreen } from '@/features/web';
 import { LoginScreen, useAuthGuard } from '@/features/auth';
-import { DsGalleryScreen } from '../dev/ds-gallery-screen';
+import { DsGalleryScreen } from '@/app/dev/ds-gallery-screen';
 import { TabsNavigator } from './tabs-navigator';
 import type { RootStackParamList } from './navigation-types';
 

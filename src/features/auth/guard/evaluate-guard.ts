@@ -1,4 +1,4 @@
-import type { AuthStatus } from '../stores/auth-store';
+import type { AuthStatus } from '@/features/auth/stores/auth-store';
 import type { RouteGuardRule } from './route-guards';
 
 /**
@@ -15,7 +15,5 @@ export function shouldRedirectToLogin(
   status: AuthStatus,
 ): boolean {
   if (!rule || status !== 'guest') return false;
-  return typeof rule.requiresAuth === 'function'
-    ? rule.requiresAuth(params)
-    : rule.requiresAuth;
+  return typeof rule.requiresAuth === 'function' ? rule.requiresAuth(params) : rule.requiresAuth;
 }

@@ -24,7 +24,7 @@ describe('env', () => {
         MMKV_ENCRYPTION_KEY: 'dev-key',
       },
     }));
-    const { env } = require('../env');
+    const { env } = require('@/shared/config/env');
     expect(env.apiBaseUrl).toBe('https://dev.api.example.com');
     expect(env.webBaseUrl).toBe('https://dev.web.example.com');
     expect(env.splashConfigUrl).toBe('https://dev.cdn/splash.json');
@@ -34,12 +34,10 @@ describe('env', () => {
 
   it('값이 없으면 fallback을 쓴다', () => {
     jest.doMock('react-native-config', () => ({ __esModule: true, default: {} }));
-    const { env } = require('../env');
+    const { env } = require('@/shared/config/env');
     expect(env.apiBaseUrl).toBe('https://api.forceteller.com');
     expect(env.webBaseUrl).toBe('https://forceteller.com');
-    expect(env.splashConfigUrl).toBe(
-      'https://static.forceteller.com/images/splash/splash.json',
-    );
+    expect(env.splashConfigUrl).toBe('https://static.forceteller.com/images/splash/splash.json');
     expect(env.googleWebClientId).toBe('');
     expect(env.mmkvEncryptionKey).toBe('forceteller-dev-key');
   });

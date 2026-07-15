@@ -1,7 +1,7 @@
 import { useMemo, type PropsWithChildren } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { useAppColors, type ModeColors } from '../theme';
+import { useAppColors, type ModeColors } from '@/shared/theme';
 
 /**
  * Base screen wrapper: top safe-area inset + scheme-aware background.
@@ -13,11 +13,7 @@ export function ScreenContainer({ children }: PropsWithChildren) {
   const insets = useSafeAreaInsets();
   const styles = useMemo(() => makeStyles(colors), [colors]);
 
-  return (
-    <View style={[styles.container, { paddingTop: insets.top }]}>
-      {children}
-    </View>
-  );
+  return <View style={[styles.container, { paddingTop: insets.top }]}>{children}</View>;
 }
 
 function makeStyles(colors: ModeColors) {
