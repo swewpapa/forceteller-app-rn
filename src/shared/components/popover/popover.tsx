@@ -1,5 +1,6 @@
 import { useEffect, useRef, type ReactElement } from 'react';
 import { View } from 'react-native';
+import { useIsFocused } from '@react-navigation/native';
 import { usePopoverRegistry } from './popover-context';
 import { dismissPopover } from './popover-dismiss';
 import type { PopoverPlacement } from './popover-position';
@@ -23,9 +24,11 @@ export function Popover({
 }: PopoverProps) {
   const anchorRef = useRef<View>(null);
   const { register, unregister } = usePopoverRegistry();
+  const isFocused = useIsFocused();
 
   useEffect(() => {
-    if (!visible) {
+    // popover는 현재 페이지에 종속 — 화면이 focus 아니면(탭 이동·스택 push) 등록 해제.
+    if (!visible || !isFocused) {
       unregister(id);
       return;
     }
@@ -44,7 +47,7 @@ export function Popover({
       });
     });
     return () => unregister(id);
-  }, [visible, id, message, placement, onDismiss, register, unregister]);
+  }, [visible, isFocused, id, message, placement, onDismiss, register, unregister]);
 
   return (
     <View ref={anchorRef} collapsable={false}>
