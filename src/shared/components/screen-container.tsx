@@ -2,6 +2,8 @@ import { useMemo, type PropsWithChildren } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppColors, type ModeColors } from '@/shared/theme';
+import { PopoverProvider } from './popover/popover-context';
+import { PopoverHost } from './popover/popover-host';
 
 /**
  * Base screen wrapper: top safe-area inset + scheme-aware background.
@@ -13,7 +15,14 @@ export function ScreenContainer({ children }: PropsWithChildren) {
   const insets = useSafeAreaInsets();
   const styles = useMemo(() => makeStyles(colors), [colors]);
 
-  return <View style={[styles.container, { paddingTop: insets.top }]}>{children}</View>;
+  return (
+    <View style={[styles.container, { paddingTop: insets.top }]}>
+      <PopoverProvider>
+        {children}
+        <PopoverHost />
+      </PopoverProvider>
+    </View>
+  );
 }
 
 function makeStyles(colors: ModeColors) {
