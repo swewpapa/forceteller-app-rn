@@ -13,16 +13,16 @@ import type { Premium, PremiumItem, PremiumLink } from '@/features/premium/types
 
 type RankPremium = Extract<Premium, { type: 'rank' }>;
 
-export type RankWidgetProps = {
+export type PremiumRankProps = {
   premium: RankPremium;
   onPressLink: (link: PremiumLink) => void;
 };
 
 /**
- * rank 위젯: ListHeader + 순위 번호 + 작은 썸네일(50×70) 세로 리스트.
+ * rank 변형: ListHeader + 순위 번호 + 작은 썸네일(50×70) 세로 리스트.
  * Figma 997:7360(Type=Rank) 실측. presentational — 탭은 onPressLink에 위임.
  */
-export function RankWidget({ premium, onPressLink }: RankWidgetProps) {
+export function PremiumRank({ premium, onPressLink }: PremiumRankProps) {
   const { title, subtitle, items, moreLink } = premium;
   return (
     <Column gap="250">

@@ -13,16 +13,16 @@ import type { Premium, PremiumItem, PremiumLink } from '@/features/premium/types
 
 type GeneralPremium = Extract<Premium, { type: 'general' }>;
 
-export type GeneralWidgetProps = {
+export type PremiumGeneralProps = {
   premium: GeneralPremium;
   onPressLink: (link: PremiumLink) => void;
 };
 
 /**
- * general 위젯: ListHeader + 큰 썸네일(72×100) 세로 리스트. 아이템별 subtitle/title/price.
+ * general 변형: ListHeader + 큰 썸네일(72×100) 세로 리스트. 아이템별 subtitle/title/price.
  * Figma 997:7358(Type=Large) 실측. presentational — 탭은 onPressLink에 위임.
  */
-export function GeneralWidget({ premium, onPressLink }: GeneralWidgetProps) {
+export function PremiumGeneral({ premium, onPressLink }: PremiumGeneralProps) {
   const { title, subtitle, items, moreLink } = premium;
   return (
     <Column gap="250">
