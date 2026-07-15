@@ -140,3 +140,9 @@ export function useFreeForceTip(): boolean {
 ## 진행
 
 `feature/appbar-trailing-slot`(AppBar trailing 슬롯, PR #27)에 의존 — 그 위(또는 머지 후 main)에서 popover 브랜치. push 없음, 커밋은 명시 요청 시.
+
+## 구현 노트 (2026-07-15, 스펙과 달라진 최종 구조)
+
+- **Provider/Host 위치: ScreenContainer → App 루트** — 투데이 히어로 화면이 ScreenContainer를 쓰지 않아(풀블리드 `View`) "must be used within PopoverProvider" 런타임 에러. Provider+Host를 `App.tsx` 루트로 이동(`a3e693e`). ScreenContainer는 원복(순수 셸). 위 "사이드이펙트 > ScreenContainer" 항목은 App 루트 기준으로 대체된다.
+- **페이지 종속 가드 추가** — 루트 단일 레지스트리 + react-navigation의 화면 유지(unmount 안 함) 조합으로 탭/스택 이동 후에도 popover가 남는 문제. `Popover`에 `useIsFocused` 가드를 넣어 blur 시 unregister(`cb089d6`).
+- **투데이 이중 앱바 앵커 중복** — 스크롤 크로스페이드로 같은 popover id 앵커가 2개 등록되는 문제. 인터랙션 레이어(투명 오버레이)에만 Popover를 달아 해소(`6f7e0e9`).
