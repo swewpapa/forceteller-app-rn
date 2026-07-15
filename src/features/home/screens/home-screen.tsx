@@ -1,5 +1,6 @@
 import { Pressable, ScrollView, StyleSheet, Text } from 'react-native';
 import { useAppNavigation } from '@/features/auth';
+import { useFreeForceTip } from '@/features/freeforce';
 import { ThemeWidget, type ThemeView } from '@/features/theme';
 import {
   AppBar,
@@ -7,6 +8,7 @@ import {
   AppBarFreeForceButton,
   AppBarSearchButton,
   Column,
+  Popover,
   ScreenContainer,
 } from '@/shared/components';
 import { radius, spacing, useAppColors } from '@/shared/theme';
@@ -17,6 +19,7 @@ const THEME_CODES = ['recommend_top', 'recommend_middle', 'recommend_bottom'] as
 export function HomeScreen() {
   const navigation = useAppNavigation();
   const colors = useAppColors();
+  const showFreeForceTip = useFreeForceTip();
 
   const handlePressView = (view: ThemeView) => {
     // tag_filter 링크는 keyword_cloud 사이클에서 처리 (text_only에는 url만 관측됨)
@@ -32,9 +35,11 @@ export function HomeScreen() {
         trailing={
           <>
             <AppBarSearchButton onPress={() => {}} />
-            <AppBarFreeForceButton
-              onPress={() => navigation.navigate('Web', { path: '/freeforce' })}
-            />
+            <Popover id="freeforce" visible={showFreeForceTip} message="무료 포스 받기">
+              <AppBarFreeForceButton
+                onPress={() => navigation.navigate('Web', { path: '/freeforce' })}
+              />
+            </Popover>
             <AppBarCalendarButton onPress={() => navigation.navigate('Web', { path: '/cal' })} />
           </>
         }

@@ -2,6 +2,7 @@ import { useRef } from 'react';
 import { ActivityIndicator, Animated, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useAppNavigation } from '@/features/auth';
+import { useFreeForceTip } from '@/features/freeforce';
 import {
   AppBar,
   AppBarCalendarButton,
@@ -10,6 +11,7 @@ import {
   AppBarSearchButton,
   Button,
   Column,
+  Popover,
   ScreenContainer,
   Typography,
 } from '@/shared/components';
@@ -33,6 +35,7 @@ export function TodayScreen() {
   const colors = useAppColors();
   const heroQuery = useTodayHero();
   const postsQuery = useTodayPosts();
+  const showFreeForceTip = useFreeForceTip();
   const scrollY = useRef(new Animated.Value(0)).current;
 
   const handlePressLink = (link: TodayLink) => {
@@ -46,7 +49,9 @@ export function TodayScreen() {
   const appBarTrailing = (
     <>
       <AppBarSearchButton onPress={() => {}} />
-      <AppBarFreeForceButton onPress={() => navigation.navigate('Web', { path: '/freeforce' })} />
+      <Popover id="freeforce" visible={showFreeForceTip} message="무료 포스 받기">
+        <AppBarFreeForceButton onPress={() => navigation.navigate('Web', { path: '/freeforce' })} />
+      </Popover>
       <AppBarEventButton onPress={() => {}} />
       <AppBarCalendarButton onPress={() => navigation.navigate('Web', { path: '/cal' })} />
     </>
