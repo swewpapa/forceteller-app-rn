@@ -1,12 +1,16 @@
-import { createConfigStorage, type KVStore } from '@/shared/config/remote-config/config-storage';
+import { createConfigStorage } from '@/shared/config/remote-config/config-storage';
+import type { KVStorage } from '@/shared/types';
 
-function fakeKV(): KVStore & { data: Record<string, string> } {
+function fakeKV(): KVStorage & { data: Record<string, string> } {
   const data: Record<string, string> = {};
   return {
     data,
     getString: (k) => data[k],
     set: (k, v) => {
       data[k] = v;
+    },
+    remove: (k) => {
+      delete data[k];
     },
   };
 }
