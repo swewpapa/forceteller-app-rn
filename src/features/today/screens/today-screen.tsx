@@ -5,6 +5,7 @@ import { useAppNavigation } from '@/features/auth';
 import { useFreeForceTip } from '@/features/freeforce';
 import {
   AppBar,
+  APP_BAR_HEIGHT,
   AppBarCalendarButton,
   AppBarEventButton,
   AppBarFreeForceButton,
@@ -22,7 +23,6 @@ import { useTodayHero } from '@/features/today/hooks/useTodayHero';
 import { useTodayPosts } from '@/features/today/hooks/useTodayPosts';
 import type { TodayLink } from '@/features/today/types/today-types';
 
-const APP_BAR_HEIGHT = 56;
 const HERO_HEIGHT = 480;
 
 /**

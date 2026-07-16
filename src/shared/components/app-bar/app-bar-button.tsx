@@ -7,7 +7,9 @@ import { useAppBarIconColor } from './app-bar-context';
 
 const SLOT_SIZE = 44;
 const BADGE_SIZE = 8;
-const DEFAULT_ICON_SIZE = 20;
+// Figma 원본(57:6055)은 FA 20이나, 커스텀 아트(event 27·freeforce ~24)와의 시각 격차를
+// 줄이기 위해 24로 상향(Martin 결정, 2026-07-15). Figma 반영은 후속.
+const DEFAULT_ICON_SIZE = 24;
 
 export type AppBarButtonProps = {
   /**
@@ -15,7 +17,7 @@ export type AppBarButtonProps = {
    * 이미 만든 element(SVG 등 — 크기·색은 element가 소유). isValidElement로 분기.
    */
   icon: IconDefinition | ReactElement;
-  /** FA icon일 때 크기(px). 기본 20. element면 무시. */
+  /** FA icon일 때 크기(px). 기본 24. element면 무시. */
   iconSize?: number;
   onPress?: () => void;
   /** 우상단 red dot(Figma "New Badge") — 신규/미확인 표기. */
