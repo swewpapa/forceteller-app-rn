@@ -124,7 +124,7 @@ feature 내부 컴포넌트는 **데이터 결합 축**으로 나눈다 (판정 
 
 ## Storage 패턴 (MMKV KV 영속)
 
-- MMKV 영속 모듈은 `<도메인>-storage.ts` + `create<도메인>Storage(kv: KVStorage)` 팩토리 + 모듈 싱글턴 배선으로 만든다 (`splash-storage`/`config-storage`/`theme-storage`/`auth-token`).
+- MMKV 영속 모듈은 `<도메인>-storage.ts` + `create<도메인>Storage(kv: KVStorage)` 팩토리 + 모듈 싱글턴 배선으로 만든다 (`splash-storage`/`config-storage`/`theme-storage`/`auth-storage`).
 - **공용 `KVStorage` 계약**(`shared/types/kv-storage-types.ts`): MMKV 부분 인터페이스(`getString`/`set`/`remove`). 팩토리는 구체 MMKV가 아니라 이 계약에 의존해 jest에서 fake 주입이 가능하고, 라이브러리와의 구조 호환은 각 싱글턴 배선 지점에서 컴파일러가 검증한다. `-store`(Zustand)와의 접미사 구분에 따라 이름도 `KVStorage`다 — "store" 어휘는 쓰지 않는다.
 - 값은 **문자열 직렬화 전용**. boolean 등 다른 값 타입이 필요하면 공용 계약을 넓히지 말고 모듈 로컬 계약을 정의한다(`popover-dismiss`의 `BoolKV` 선례).
 - MMKV 인스턴스 `id`·저장 키는 기기 데이터 계약이다 — 바꾸면 기존 설치 사용자의 값을 잃는다.
