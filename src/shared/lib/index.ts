@@ -1,7 +1,7 @@
 export { http, ApiError } from './http';
 export type { HttpClient, RequestConfig } from './http';
 export { queryClient } from './query-client';
-export { setupQueryOnlineManager, subscribeQueryFocusManager } from './query-managers';
+export { initQueryOnlineManager, subscribeQueryFocusManager } from './query-managers';
 export {
   authTokenStore,
   createAuthTokenStore,

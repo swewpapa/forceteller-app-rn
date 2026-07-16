@@ -8,7 +8,7 @@ import { focusManager, onlineManager } from '@tanstack/react-query';
  * 모른다(오프라인 미감지, 재접속 자동 refetch 없음). NetInfo를 onlineManager에 연결한다.
  * 공식 레시피: https://tanstack.com/query/v5/docs/framework/react/react-native
  */
-export function setupQueryOnlineManager() {
+export function initQueryOnlineManager() {
   onlineManager.setEventListener((setOnline) =>
     NetInfo.addEventListener((state) => setOnline(!!state.isConnected)),
   );

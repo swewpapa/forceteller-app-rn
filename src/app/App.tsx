@@ -4,7 +4,7 @@ import {
   http,
   authTokenStore,
   createAuthRequestInterceptor,
-  setupQueryOnlineManager,
+  initQueryOnlineManager,
   subscribeQueryFocusManager,
 } from '@/shared/lib';
 import { useAuthStore, createSessionExpiredInterceptor } from '@/features/auth';
@@ -28,7 +28,7 @@ initRemoteConfig();
 
 // RN엔 브라우저 online 이벤트가 없어 NetInfo를 react-query onlineManager에 배선한다
 // (재접속 시 자동 refetch). set-and-forget이라 인터셉터 선례처럼 모듈 로드 1회.
-setupQueryOnlineManager();
+initQueryOnlineManager();
 
 // 수동 day/night 모드에서도 상태바가 따라오도록 OS 스킴이 아닌 resolvedTheme을 본다.
 function ThemedStatusBar() {
