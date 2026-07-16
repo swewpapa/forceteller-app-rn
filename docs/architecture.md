@@ -75,7 +75,8 @@ feature 내부 컴포넌트는 **데이터 결합 축**으로 나눈다 (판정 
 | 컴포넌트 파일 | kebab-case `.tsx`, **export 심볼은 PascalCase** | `text-field.tsx` → `export function TextField` |
 | 화면 | `*-screen.tsx` (kebab) | `horoscope-screen.tsx` |
 | 훅 | camelCase `useX.ts` (React 관용 예외) | `useHoroscope.ts` |
-| 스토어 | `*-store.ts` | `horoscope-store.ts` |
+| 스토어 | `*-store.ts` (Zustand) | `horoscope-store.ts` |
+| 영속 storage | `*-storage.ts` — MMKV 등 KV 영속. `-store`(Zustand)와 접미사로 역할 구분 | `theme-storage.ts` |
 | API | `*-api.ts` | `horoscope-api.ts` |
 | 타입 | `*-types.ts` | `horoscope-types.ts` |
 | 유틸 | 테마별 파일, **제네릭 `utils.ts` 금지** | `format-date.ts` |
@@ -120,6 +121,13 @@ feature 내부 컴포넌트는 **데이터 결합 축**으로 나눈다 (판정 
 - **응답 봉투 네이밍**: normalize 내부의 raw **데이터** 타입은 `Raw*`(파일-private, `api/` 밖 반출 금지). 단 api가 `client.get<T>`로 소비하려고 **export하는 서버 응답 봉투**는 `Response` 접미사가 이미 '정규화 전 서버 응답'을 함의하므로 `Raw`를 빼고 `<Domain>Response`로 명명한다(예: `PremiumListResponse`, `TodayResponse`, `UserMeResponse`). 즉 raw '데이터'(`RawPremium`)와 '응답 봉투'(`PremiumListResponse`)를 이름으로 구분한다.
 - **서버 드리븐 type 방어**: unknown type 값은 드롭(forward compat — 서버가 새 타입을 추가해도 구버전 앱이 깨지지 않는다). 렌더 불가능한 단위(빈 아이템 목록, link 없는 아이템)도 이 경계에서 드롭.
 - **데이터 페칭 위치**: 스크린이 훅을 호출(컨테이너)하고, 하위 컴포넌트는 props만 받는 presentational로 유지한다. TanStack Query가 같은 queryKey를 dedup하므로 컴포넌트 레벨 페칭도 가능하지만, 한 응답이 화면 전체를 채우는 구조에서는 스크린 레벨이 표준.
+
+## Storage 패턴 (MMKV KV 영속)
+
+- MMKV 영속 모듈은 `<도메인>-storage.ts` + `create<도메인>Storage(kv: KVStorage)` 팩토리 + 모듈 싱글턴 배선으로 만든다 (`splash-storage`/`config-storage`/`theme-storage`/`auth-token`).
+- **공용 `KVStorage` 계약**(`shared/types/kv-storage-types.ts`): MMKV 부분 인터페이스(`getString`/`set`/`remove`). 팩토리는 구체 MMKV가 아니라 이 계약에 의존해 jest에서 fake 주입이 가능하고, 라이브러리와의 구조 호환은 각 싱글턴 배선 지점에서 컴파일러가 검증한다. `-store`(Zustand)와의 접미사 구분에 따라 이름도 `KVStorage`다 — "store" 어휘는 쓰지 않는다.
+- 값은 **문자열 직렬화 전용**. boolean 등 다른 값 타입이 필요하면 공용 계약을 넓히지 말고 모듈 로컬 계약을 정의한다(`popover-dismiss`의 `BoolKV` 선례).
+- MMKV 인스턴스 `id`·저장 키는 기기 데이터 계약이다 — 바꾸면 기존 설치 사용자의 값을 잃는다.
 
 ## Import 규칙
 

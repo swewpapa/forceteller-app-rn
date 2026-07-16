@@ -1,5 +1,6 @@
 import { createMMKV } from 'react-native-mmkv';
 import { env } from '@/shared/config';
+import type { KVStorage } from '@/shared/types';
 import type { RequestConfig } from './http';
 
 /** 토큰을 실을 요청 헤더명. TODO: 서버 계약 확인 후 수정. */
@@ -7,17 +8,10 @@ export const AUTH_HEADER = 'X-Auth-Token';
 
 const KEY = 'auth.accessToken';
 
-/** auth-token 저장소가 의존하는 최소 KV 인터페이스(DI로 테스트 가능). MMKV와 메서드 호환. */
-export type KVStore = {
-  getString(key: string): string | undefined;
-  set(key: string, value: string): void;
-  remove(key: string): void;
-};
-
 /** 액세스 토큰 저장소. */
-export function createAuthTokenStore(store: KVStore) {
+export function createAuthTokenStore(kv: KVStorage) {
   return {
-    get: (): string | null => store.getString(KEY) ?? null,
+    get: (): string | null => kv.getString(KEY) ?? null,
     set: (token: string): void => {
       // 응답 형태 불일치 등으로 undefined/빈 값이 들어오면 MMKV가 크립틱하게 크래시한다
       // (variant 변환 에러) → 호출부가 원인을 알 수 있게 명확한 에러로 가드한다(defense-in-depth).
@@ -26,9 +20,9 @@ export function createAuthTokenStore(store: KVStore) {
           `authTokenStore.set: 비어있지 않은 문자열 토큰이 필요합니다(받은 타입: ${typeof token})`,
         );
       }
-      store.set(KEY, token);
+      kv.set(KEY, token);
     },
-    clear: (): void => store.remove(KEY),
+    clear: (): void => kv.remove(KEY),
   };
 }
 
