@@ -1,6 +1,12 @@
 import { useEffect } from 'react';
 import { StatusBar } from 'react-native';
-import { http, authTokenStore, createAuthRequestInterceptor } from '@/shared/lib';
+import {
+  http,
+  authTokenStore,
+  createAuthRequestInterceptor,
+  setupQueryOnlineManager,
+  subscribeQueryFocusManager,
+} from '@/shared/lib';
 import { useAuthStore, createSessionExpiredInterceptor } from '@/features/auth';
 import { useTheme } from '@/shared/theme';
 import { initRemoteConfig, syncRemoteConfig } from '@/shared/config/remote-config/config-setup';
@@ -20,6 +26,10 @@ http.interceptors.response.use(undefined, createSessionExpiredInterceptor());
 // 원격 config를 캐시에서 동기 하이드레이트(렌더 전). 백그라운드 갱신은 App의 syncRemoteConfig.
 initRemoteConfig();
 
+// RN엔 브라우저 online 이벤트가 없어 NetInfo를 react-query onlineManager에 배선한다
+// (재접속 시 자동 refetch). set-and-forget이라 인터셉터 선례처럼 모듈 로드 1회.
+setupQueryOnlineManager();
+
 // 수동 day/night 모드에서도 상태바가 따라오도록 OS 스킴이 아닌 resolvedTheme을 본다.
 function ThemedStatusBar() {
   const { resolvedTheme } = useTheme();
@@ -38,6 +48,10 @@ function App() {
     useAuthStore.getState().restore();
     syncRemoteConfig();
   }, []);
+
+  // 앱 포그라운드 복귀 → focusManager → stale 쿼리 자동 갱신 (웹 refetchOnWindowFocus 대응).
+  // AppState 구독이라 해제 함수를 cleanup으로 반환한다.
+  useEffect(() => subscribeQueryFocusManager(), []);
 
   return (
     <AppProviders>
