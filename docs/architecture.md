@@ -83,6 +83,17 @@ feature 내부 컴포넌트는 **데이터 결합 축**으로 나눈다 (판정 
 
 근거: 현 Angular 가이드는 `.component.ts` 같은 dot 접미사를 폐기(2025 스타일 = 간결 kebab), feature 단위 구성, 제네릭 `utils.ts` 지양을 권장. 팀은 가독성을 위해 hyphen 타입 접미사(`-store`/`-api`/`-screen`)를 의식적으로 유지한다. (출처: [angular.dev/style-guide](https://angular.dev/style-guide), [angular.dev/cli/generate/application](https://angular.dev/cli/generate/application))
 
+### 부수효과 함수 동사 규약 (2026-07-16 확정)
+
+부팅/배선 계열 함수는 **반환 계약**에 따라 동사를 구분한다. 같은 계약이면 같은 동사 — `init` vs `setup` 같은 동의어 드리프트를 만들지 않는다(생태계 관례 `Sentry.init`/`initializeApp` 정렬로 init 채택, setup 폐기).
+
+| 동사 | 계약 | 예시 |
+|---|---|---|
+| `create*` | 순수 팩토리 — 값 반환, 부수효과 없음 | `createThemeApi(client)`, `createConfigStorage(store)` |
+| `init*` | 부팅 1회 부수효과 — 반환값·정리 없음 | `initRemoteConfig()`, `initQueryOnlineManager()` |
+| `subscribe*` | 구독 시작 — **해제 함수 반환**, 호출부가 cleanup 책임 | `subscribeQueryFocusManager()` |
+| `sync*` | 백그라운드 재검증(SWR revalidate) | `syncRemoteConfig()` |
+
 ### 계층별 네이밍 언어 (2026-07-06 확정)
 
 같은 도메인이라도 계층마다 이름이 답해야 할 질문이 다르다. **API/훅은 "어떻게 조회하는가", 타입/컴포넌트는 "무엇인가"** 를 말한다.
