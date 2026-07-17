@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '@/features/auth';
-import { userApi } from '@/features/user/api/user-api';
+import { userApi } from '../api/user-api';
 
 /**
  * 로그인 사용자 기본 정보(me). 인증 상태일 때만 페칭(토큰 없으면 미조회).

@@ -1,4 +1,4 @@
-import type { UserProfile } from '@/features/user/types/user-types';
+import type { UserProfile } from '../types/user-types';
 
 /**
  * 프로필(생년월일시) → 마이페이지 표시 문자열 변환. 순수함수.
