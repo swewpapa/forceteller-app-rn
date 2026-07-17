@@ -1,5 +1,5 @@
 import { Column, ListHeader, ListItem } from '@/shared/components';
-import type { Theme, ThemeView } from '@/features/theme/types/theme-types';
+import type { Theme, ThemeView } from '../types/theme-types';
 
 type TextOnlyTheme = Extract<Theme, { type: 'text_only' }>;
 

@@ -1,4 +1,4 @@
-import type { Theme, ThemeKeyword, ThemeLink, ThemeView } from '@/features/theme/types/theme-types';
+import type { Theme, ThemeKeyword, ThemeLink, ThemeView } from '../types/theme-types';
 
 // ─── raw 타입: 서버 응답 그대로. api/ 내부 전용 — feature 배럴로 반출 금지 ───
 

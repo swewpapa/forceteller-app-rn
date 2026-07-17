@@ -1,5 +1,5 @@
 import { Carousel } from '@/shared/components';
-import type { Theme, ThemeView } from '@/features/theme/types/theme-types';
+import type { Theme, ThemeView } from '../types/theme-types';
 import { FullImageCard } from './full-image-card';
 
 type FullImageCarouselTheme = Extract<Theme, { type: 'full_image_carousel' }>;

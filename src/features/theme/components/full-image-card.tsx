@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet } from 'react-native';
 import { AspectRatio, Image } from '@/shared/components';
-import type { ThemeView } from '@/features/theme/types/theme-types';
+import type { ThemeView } from '../types/theme-types';
 
 const CARD_WIDTH = 240;
 const IMAGE_RATIO = 240 / 126; // Figma 실측(원시 px)
