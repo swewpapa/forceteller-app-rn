@@ -1,4 +1,4 @@
-import type { TodayLink, TodayPost } from '@/features/today/types/today-types';
+import type { TodayLink, TodayPost } from '../types/today-types';
 import { ChatPost } from './chat-post';
 import { FullImagePost } from './full-image-post';
 import { GiftPost } from './gift-post';

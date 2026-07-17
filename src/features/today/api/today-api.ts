@@ -1,5 +1,5 @@
 import { http, type HttpClient } from '@/shared/lib';
-import type { TodayApiLink, TodayHero, TodayPost } from '@/features/today/types/today-types';
+import type { TodayApiLink, TodayHero, TodayPost } from '../types/today-types';
 import {
   normalizeTodayHero,
   normalizeTodayPost,

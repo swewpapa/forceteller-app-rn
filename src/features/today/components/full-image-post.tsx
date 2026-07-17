@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 import { AspectRatio, Image } from '@/shared/components';
 import { radius, useAppColors } from '@/shared/theme';
-import type { TodayLink, TodayPost } from '@/features/today/types/today-types';
+import type { TodayLink, TodayPost } from '../types/today-types';
 import { POST_DARK, TodayPostHeader } from './today-post-header';
 
 type FullImagePostData = Extract<TodayPost, { type: 'full_image' }>;
