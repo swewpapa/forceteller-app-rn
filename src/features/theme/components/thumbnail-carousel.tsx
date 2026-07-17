@@ -1,5 +1,5 @@
 import { Carousel } from '@/shared/components';
-import type { Theme, ThemeView } from '@/features/theme/types/theme-types';
+import type { Theme, ThemeView } from '../types/theme-types';
 import { ThumbnailCard } from './thumbnail-card';
 
 type ThumbnailCarouselTheme = Extract<Theme, { type: 'thumbnail_carousel' }>;

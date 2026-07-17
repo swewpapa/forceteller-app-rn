@@ -1,4 +1,4 @@
-import type { AuthUser, UserProfile } from '@/features/user/types/user-types';
+import type { AuthUser, UserProfile } from '../types/user-types';
 
 // ─── raw 타입: 서버 응답 그대로. api/ 내부 전용 — feature 배럴로 반출 금지 ───
 // (premium normalize 선례: RawResponse는 normalize 모듈에서만 export, 도메인 밖 반출 X)

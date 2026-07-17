@@ -13,7 +13,7 @@ import {
 } from '@/shared/components';
 import { spacing } from '@/shared/theme';
 import { useAppNavigation } from '@/features/auth';
-import { useMoreList } from '@/features/more/hooks/useMoreList';
+import { useMoreList } from '../hooks/useMoreList';
 import { ShortcutGrid, type Shortcut } from './shortcut-grid';
 
 // 포스텔러 BI 심볼(Figma 82:7107 bi_symbol). 브랜드 워드마크용(앱 바 로고는 AppBar 소유).

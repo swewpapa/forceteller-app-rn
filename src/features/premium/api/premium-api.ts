@@ -1,5 +1,5 @@
 import { http, type HttpClient } from '@/shared/lib';
-import type { Premium, PremiumSubjects } from '@/features/premium/types/premium-types';
+import type { Premium, PremiumSubjects } from '../types/premium-types';
 import { normalizePremiumList, type PremiumListResponse } from './normalize-premium';
 import {
   normalizePremiumSubjects,

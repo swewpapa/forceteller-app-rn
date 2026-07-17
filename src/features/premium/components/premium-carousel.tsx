@@ -1,5 +1,5 @@
 import { Carousel } from '@/shared/components';
-import type { Premium, PremiumLink } from '@/features/premium/types/premium-types';
+import type { Premium, PremiumLink } from '../types/premium-types';
 import { PremiumCarouselCard } from './premium-carousel-card';
 
 type CarouselPremium = Extract<Premium, { type: 'carousel' }>;

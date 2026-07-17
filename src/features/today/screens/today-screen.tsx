@@ -17,11 +17,11 @@ import {
   Typography,
 } from '@/shared/components';
 import { useAppColors } from '@/shared/theme';
-import { TodayHeroView } from '@/features/today/components/today-hero-view';
-import { TodayPostView } from '@/features/today/components/today-post-view';
-import { useTodayHero } from '@/features/today/hooks/useTodayHero';
-import { useTodayPosts } from '@/features/today/hooks/useTodayPosts';
-import type { TodayLink } from '@/features/today/types/today-types';
+import { TodayHeroView } from '../components/today-hero-view';
+import { TodayPostView } from '../components/today-post-view';
+import { useTodayHero } from '../hooks/useTodayHero';
+import { useTodayPosts } from '../hooks/useTodayPosts';
+import type { TodayLink } from '../types/today-types';
 
 const HERO_HEIGHT = 480;
 

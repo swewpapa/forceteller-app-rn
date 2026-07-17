@@ -1,4 +1,4 @@
-import type { Premium, PremiumLink } from '@/features/premium/types/premium-types';
+import type { Premium, PremiumLink } from '../types/premium-types';
 import { PremiumBanner } from './premium-banner';
 import { PremiumButton } from './premium-button';
 import { PremiumCarousel } from './premium-carousel';

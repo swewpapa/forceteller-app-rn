@@ -1,6 +1,6 @@
 import { StyleSheet, View } from 'react-native';
 import { AspectRatio, Column, Image, Row, Typography } from '@/shared/components';
-import type { TodayHeader } from '@/features/today/types/today-types';
+import type { TodayHeader } from '../types/today-types';
 
 export type TodayPostHeaderProps = {
   header: TodayHeader;

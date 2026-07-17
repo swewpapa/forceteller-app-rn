@@ -4,8 +4,8 @@ import { faArrowRight } from '@fortawesome/pro-solid-svg-icons/faArrowRight';
 import { faArrowDownToLine } from '@fortawesome/pro-solid-svg-icons/faArrowDownToLine';
 import { Button, Column, Row, Typography } from '@/shared/components';
 import { radius, useAppColors } from '@/shared/theme';
-import { useTodayAction } from '@/features/today/hooks/useTodayAction';
-import type { GiftButton, TodayLink, TodayPost } from '@/features/today/types/today-types';
+import { useTodayAction } from '../hooks/useTodayAction';
+import type { GiftButton, TodayLink, TodayPost } from '../types/today-types';
 import { TodayPostHeader } from './today-post-header';
 
 type GiftPostData = Extract<TodayPost, { type: 'gift' }>;

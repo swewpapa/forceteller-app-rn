@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet } from 'react-native';
 import { Button, Column, Row, Typography } from '@/shared/components';
 import { radius, useAppColors } from '@/shared/theme';
-import { useTodayAction } from '@/features/today/hooks/useTodayAction';
-import type { ChatMessage, TodayLink, TodayPost } from '@/features/today/types/today-types';
+import { useTodayAction } from '../hooks/useTodayAction';
+import type { ChatMessage, TodayLink, TodayPost } from '../types/today-types';
 import { TodayPostHeader } from './today-post-header';
 
 type ChatPostData = Extract<TodayPost, { type: 'chat' }>;

@@ -1,4 +1,4 @@
-import type { Theme, ThemeKeyword, ThemeView } from '@/features/theme/types/theme-types';
+import type { Theme, ThemeKeyword, ThemeView } from '../types/theme-types';
 import { FullImageCarousel } from './full-image-carousel';
 import { KeywordCloud } from './keyword-cloud';
 import { TextOnly } from './text-only';

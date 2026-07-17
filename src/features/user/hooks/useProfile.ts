@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import { useAuthStore } from '@/features/auth';
-import { userApi } from '@/features/user/api/user-api';
+import { userApi } from '../api/user-api';
 
 /**
  * 로그인 사용자 사주 프로필(생년월일시 + 출생지). 인증 상태일 때만 페칭.

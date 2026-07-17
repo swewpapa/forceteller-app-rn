@@ -1,7 +1,7 @@
 import { Pressable, StyleSheet, View } from 'react-native';
 import { AspectRatio, Column, Image, Typography } from '@/shared/components';
 import { radius, spacing, useAppColors } from '@/shared/theme';
-import type { IconItem, TodayLink, TodayPost } from '@/features/today/types/today-types';
+import type { IconItem, TodayLink, TodayPost } from '../types/today-types';
 import { POST_DARK, TodayPostHeader } from './today-post-header';
 
 type IconPostData = Extract<TodayPost, { type: 'icon' }>;

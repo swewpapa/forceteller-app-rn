@@ -1,6 +1,6 @@
 import { Pressable, StyleSheet } from 'react-native';
 import { AspectRatio, Column, Image, ListHeader, Row } from '@/shared/components';
-import type { Premium, PremiumItem, PremiumLink } from '@/features/premium/types/premium-types';
+import type { Premium, PremiumItem, PremiumLink } from '../types/premium-types';
 
 type ButtonPremium = Extract<Premium, { type: 'button' }>;
 

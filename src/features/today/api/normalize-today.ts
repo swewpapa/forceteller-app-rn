@@ -13,7 +13,7 @@ import type {
   TodayLink,
   TodayPost,
   WeatherItem,
-} from '@/features/today/types/today-types';
+} from '../types/today-types';
 
 // ─── raw 타입: 서버 응답 그대로. api/ 내부 전용 — feature 배럴/도메인 밖 반출 금지 ───
 

@@ -1,4 +1,4 @@
-import type { AuthStatus } from '@/features/auth/stores/auth-store';
+import type { AuthStatus } from '../stores/auth-store';
 import type { RouteGuardRule } from './route-guards';
 
 /**
