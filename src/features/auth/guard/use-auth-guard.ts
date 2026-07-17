@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'react';
 import type { NavigationContainerRef } from '@react-navigation/native';
-import { useAuthStore } from '@/features/auth/stores/auth-store';
-import { navigateUnsafe } from '@/features/auth/navigation/navigate-unsafe';
+import { useAuthStore } from '../stores/auth-store';
+import { navigateUnsafe } from '../navigation/navigate-unsafe';
 import { ROUTE_GUARDS } from './route-guards';
 import { shouldRedirectToLogin } from './evaluate-guard';
 import { decideBackstopAction } from './backstop-policy';

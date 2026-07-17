@@ -3,8 +3,8 @@ import { StyleSheet, Text } from 'react-native';
 import { useNavigation, useRoute, type RouteProp } from '@react-navigation/native'; // eslint-disable-line no-restricted-imports
 import { Button, Column, ScreenContainer } from '@/shared/components';
 import { useAppColors } from '@/shared/theme';
-import { useAuthStore } from '@/features/auth';
-import { navigateUnsafe } from '@/features/auth/navigation/navigate-unsafe';
+import { useAuthStore } from '../stores/auth-store';
+import { navigateUnsafe } from '../navigation/navigate-unsafe';
 
 type LoginRoute = RouteProp<{ Login: { redirect?: { screen: string; params?: object } } }, 'Login'>;
 
