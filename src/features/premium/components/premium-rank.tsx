@@ -9,7 +9,7 @@ import {
   Typography,
 } from '@/shared/components';
 import { spacing, typographyStyles, useAppColors } from '@/shared/theme';
-import type { Premium, PremiumItem, PremiumLink } from '@/features/premium/types/premium-types';
+import type { Premium, PremiumItem, PremiumLink } from '../types/premium-types';
 
 type RankPremium = Extract<Premium, { type: 'rank' }>;
 

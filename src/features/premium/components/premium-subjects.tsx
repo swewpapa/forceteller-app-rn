@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Image, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { Row, Typography } from '@/shared/components';
 import { useAppColors } from '@/shared/theme';
-import type { PremiumSubjectLink, PremiumSubjects } from '@/features/premium/types/premium-types';
+import type { PremiumSubjectLink, PremiumSubjects } from '../types/premium-types';
 
 type Segment = 'genre' | 'subject';
 

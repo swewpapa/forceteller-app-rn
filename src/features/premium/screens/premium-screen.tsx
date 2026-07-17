@@ -13,11 +13,11 @@ import {
   ScreenContainer,
   Typography,
 } from '@/shared/components';
-import { PremiumRenderer } from '@/features/premium/components/premium-renderer';
-import { PremiumSubjects } from '@/features/premium/components/premium-subjects';
-import { usePremiumList } from '@/features/premium/hooks/usePremiumList';
-import { usePremiumSubjects } from '@/features/premium/hooks/usePremiumSubjects';
-import type { PremiumLink, PremiumSubjectLink } from '@/features/premium/types/premium-types';
+import { PremiumRenderer } from '../components/premium-renderer';
+import { PremiumSubjects } from '../components/premium-subjects';
+import { usePremiumList } from '../hooks/usePremiumList';
+import { usePremiumSubjects } from '../hooks/usePremiumSubjects';
+import type { PremiumLink, PremiumSubjectLink } from '../types/premium-types';
 
 /**
  * 프리미엄 탭(RN). 상단 표준 앱 바 + 서버드리븐 리스트(usePremiumList).

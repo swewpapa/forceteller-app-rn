@@ -1,9 +1,4 @@
-import type {
-  Premium,
-  PremiumItem,
-  PremiumLink,
-  PremiumTag,
-} from '@/features/premium/types/premium-types';
+import type { Premium, PremiumItem, PremiumLink, PremiumTag } from '../types/premium-types';
 
 // ─── raw 타입: 서버 응답 그대로. api/ 내부 전용 — feature 배럴로 반출 금지 ───
 

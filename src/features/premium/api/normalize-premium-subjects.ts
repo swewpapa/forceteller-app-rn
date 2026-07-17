@@ -2,7 +2,7 @@ import type {
   PremiumSubjectItem,
   PremiumSubjectLink,
   PremiumSubjects,
-} from '@/features/premium/types/premium-types';
+} from '../types/premium-types';
 
 // ─── raw 타입: 서버 응답 그대로. api/ 내부 전용 ───
 
