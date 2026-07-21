@@ -18,7 +18,7 @@ export function LoginScreen() {
   const onGoogle = useCallback(async () => {
     setLoading(true);
     try {
-      await signIn();
+      await signIn('google');
       const redirect = route.params?.redirect;
       if (redirect) navigateUnsafe(navigation, redirect.screen, redirect.params);
       else navigation.goBack();

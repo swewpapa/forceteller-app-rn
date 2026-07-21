@@ -36,11 +36,12 @@ function ThemedStatusBar() {
 }
 
 function App() {
-  // MMKV 토큰 존재 여부로 초기 auth status를 결정한다.
+  // MMKV 저장 토큰으로 초기 auth status를 복원한다(하이브리드: 유효 토큰은 즉시 확정
+  // + 백그라운드 갱신, 만료 세션만 갱신 완료까지 'loading').
   // useEffect를 사용하는 이유: restore()는 store 상태를 변경하는 액션이라
   // React 18 StrictMode에서 렌더 사이클 밖 store mutation이 경고를 유발할 수 있고,
   // App 마운트 전 상태 변경은 SplashGate 등 downstream consumer에 hydration 불일치 위험이 있다.
-  // authStorage(MMKV)는 동기 읽기이므로 async 타이밍 문제는 없다.
+  // restore가 반환하는 promise(갱신 완료 신호)는 부팅을 막지 않도록 의도적으로 대기하지 않는다.
   // 원격 config 백그라운드 갱신(SWR)도 같은 부팅 이펙트에서 트리거한다 — syncRemoteConfig는
   // 훅이 아닌 일반 함수라 restore()와 나란히 호출한다. 부팅 스냅샷은 위 initRemoteConfig로 이미 동기 로드됨.
   useEffect(() => {
