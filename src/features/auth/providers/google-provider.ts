@@ -16,8 +16,8 @@ export const googleProvider: AuthProvider = {
     // 25.x + google-signin 16.x: signInWithCredential이 accessToken을 요구해
     // getTokens로 accessToken을 받아 credential에 함께 전달한다.
     const { accessToken } = await GoogleSignin.getTokens();
-    const { idToken, uid, name } = await firebaseSignInWithGoogle(googleIdToken, accessToken);
-    return { firebaseIdToken: idToken, uid, name };
+
+    return firebaseSignInWithGoogle(googleIdToken, accessToken);
   },
   async signOut() {
     await GoogleSignin.signOut();

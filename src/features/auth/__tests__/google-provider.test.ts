@@ -19,6 +19,6 @@ import { googleProvider } from '@/features/auth/providers/google-provider';
 describe('google-provider', () => {
   it('returns firebase id token + user info from google sign-in', async () => {
     const result = await googleProvider.signIn();
-    expect(result).toEqual({ firebaseIdToken: 'fb-id-token', uid: 'uid-1', name: 'Tester' });
+    expect(result).toEqual({ idToken: 'fb-id-token', uid: 'uid-1', name: 'Tester' });
   });
 });
