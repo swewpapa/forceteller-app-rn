@@ -93,7 +93,7 @@ feature 내부 컴포넌트는 **데이터 결합 축**으로 나눈다 (판정 
 | `create*` | 순수 팩토리 — 값 반환, 부수효과 없음 | `createThemeApi(client)`, `createConfigStorage(store)` |
 | `init*` | 부팅 1회 부수효과 — 반환값·정리 없음 | `initRemoteConfig()`, `initQueryOnlineManager()` |
 | `subscribe*` | 구독 시작 — **해제 함수 반환**, 호출부가 cleanup 책임 | `subscribeQueryFocusManager()` |
-| `sync*` | 백그라운드 재검증(SWR revalidate) | `syncRemoteConfig()` |
+| `sync*` | 재검증(revalidate) — 실패를 던지지 않고 결과는 상태로 관찰, 주로 백그라운드(SWR) | `syncRemoteConfig()`, `syncSession(refreshToken)` |
 
 ### 계층별 네이밍 언어 (2026-07-06 확정)
 
@@ -128,6 +128,16 @@ feature 내부 컴포넌트는 **데이터 결합 축**으로 나눈다 (판정 
 - **공용 `KVStorage` 계약**(`shared/types/kv-storage-types.ts`): MMKV 부분 인터페이스(`getString`/`set`/`remove`). 팩토리는 구체 MMKV가 아니라 이 계약에 의존해 jest에서 fake 주입이 가능하고, 라이브러리와의 구조 호환은 각 싱글턴 배선 지점에서 컴파일러가 검증한다. `-store`(Zustand)와의 접미사 구분에 따라 이름도 `KVStorage`다 — "store" 어휘는 쓰지 않는다.
 - 값은 **문자열 직렬화 전용**. boolean 등 다른 값 타입이 필요하면 공용 계약을 넓히지 말고 모듈 로컬 계약을 정의한다(`popover-dismiss`의 `BoolKV` 선례).
 - MMKV 인스턴스 `id`·저장 키는 기기 데이터 계약이다 — 바꾸면 기존 설치 사용자의 값을 잃는다.
+- **액세서 동사 (2026-07-21 확정)**: `get<명사>` / `set<명사>`, 모듈 영속 상태 전체 제거는 `clear`. `read`/`write`는 폐기(동의어 드리프트 — 기존 `config-storage`/`splash-storage`는 후속 정렬 대상). KVStorage 계약(getString/set/remove)과 같은 어휘 계열을 유지하고, 명사를 강제해 호출부에서 대상이 드러나게 한다.
+- **get/set 대칭은 강제하지 않는다** — getter는 소비 단위, setter는 저장 단위. 예: `auth-storage`는 개별 getter(`getAccessToken`/`getRefreshToken`/`getProvider`) + 쌍/세트 setter(`setTokenPair`/`setSession`).
+- **키 상수는 `*_KEY` 접미** (`ACCESS_TOKEN_KEY`), 값은 `<모듈>.<필드>` 네임스페이스(`auth.accessToken`). 기존 `KEY_*` 접두(theme/splash)는 후속 정렬 대상.
+
+## Store 패턴 (Zustand 클라이언트 상태) — 2026-07-21 확정
+
+- 파일 `<도메인>-store.ts`, 훅 `use<도메인>Store`, 상태+액션 타입 `<도메인>State` (첫 사례: auth).
+- **액션은 도메인 명령/이벤트 동사**(`signIn`, `expireSession`) — `setStatus` 같은 setter식 액션은 만들지 않는다. 상태 전이는 액션 내부 소관이며, 액션은 상태와 콜로케이트한다(zustand 공식 권장 — "the recommended way is to colocate actions and states within the store").
+- `create` 콜백 파라미터는 축약 `(set, get)` 대신 **`(setState, getState)`** 로 명시한다.
+- 도메인 타입(`AuthTokenPair` 등)과 이를 소비하는 메서드 명사는 어휘를 정렬한다(`setTokenPair`).
 
 ## Import 규칙
 
