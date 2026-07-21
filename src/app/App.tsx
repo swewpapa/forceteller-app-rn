@@ -4,7 +4,7 @@ import { http, initQueryOnlineManager, subscribeQueryFocusManager } from '@/shar
 import {
   useAuthStore,
   authStorage,
-  createTokenInterceptor,
+  createAuthTokenInterceptor,
   createSessionExpiredInterceptor,
 } from '@/features/auth';
 import { useTheme } from '@/shared/theme';
@@ -17,7 +17,7 @@ import { AppProviders } from './providers';
 
 // 앱 시작 시 토큰 주입 request 인터셉터를 등록한다(모듈 로드 1회).
 // shared(http)가 features(auth)를 모르도록 app 레이어에서 연결한다.
-http.interceptors.request.use(createTokenInterceptor(authStorage));
+http.interceptors.request.use(createAuthTokenInterceptor(authStorage));
 // 401(토큰 만료) → 로컬 세션 만료(guest 전환). shared(http)가 features(auth store)를
 // 모르도록 여기서 연결한다 — 위 request 인터셉터와 동일 선례.
 http.interceptors.response.use(undefined, createSessionExpiredInterceptor());

@@ -1,4 +1,7 @@
-import { createTokenInterceptor, AUTH_HEADER } from '@/features/auth/api/token-interceptor';
+import {
+  createAuthTokenInterceptor,
+  AUTH_HEADER,
+} from '@/features/auth/api/auth-token-interceptor';
 import { createAuthStorage } from '@/features/auth/stores/auth-storage';
 import type { RequestConfig } from '@/shared/lib/http';
 import type { KVStorage } from '@/shared/types';
@@ -16,23 +19,23 @@ function fakeKV(): KVStorage {
   };
 }
 
-describe('createTokenInterceptor', () => {
+describe('createAuthTokenInterceptor', () => {
   const baseConfig = (): RequestConfig => ({
     url: 'https://api.test/x',
     method: 'GET',
     headers: {},
   });
 
-  it('토큰이 있으면 헤더에 주입한다', () => {
+  it('액세스 토큰이 있으면 헤더에 주입한다', () => {
     const storage = createAuthStorage(fakeKV());
-    storage.set('tok');
-    const interceptor = createTokenInterceptor(storage);
+    storage.setTokenPair({ accessToken: 'tok', refreshToken: 'ref' });
+    const interceptor = createAuthTokenInterceptor(storage);
     expect(interceptor(baseConfig()).headers[AUTH_HEADER]).toBe('tok');
   });
 
   it('토큰이 없으면 헤더를 추가하지 않는다', () => {
     const storage = createAuthStorage(fakeKV());
-    const interceptor = createTokenInterceptor(storage);
+    const interceptor = createAuthTokenInterceptor(storage);
     expect(interceptor(baseConfig()).headers[AUTH_HEADER]).toBeUndefined();
   });
 });

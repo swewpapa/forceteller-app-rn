@@ -4,5 +4,5 @@ export { authStorage } from './stores/auth-storage';
 export { useAppNavigation } from './navigation/use-app-navigation';
 export { useAuthGuard } from './guard/use-auth-guard';
 export { createSessionExpiredInterceptor } from './api/session-expired-interceptor';
-export { createTokenInterceptor } from './api/token-interceptor';
+export { createAuthTokenInterceptor } from './api/auth-token-interceptor';
 export { LoginScreen } from './screens/login-screen';
